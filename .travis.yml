@@ -1,0 +1,7 @@
+language: java
+script: cd boozepal && mvn clean install
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+    - $HOME/.m2

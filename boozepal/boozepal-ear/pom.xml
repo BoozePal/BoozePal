@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>hu.deik</groupId>
+		<artifactId>boozepal</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>boozepal-ear</artifactId>
+	<packaging>ear</packaging>
+	<name>BoozePal EAR</name>
+	<dependencies>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-backend</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-frontend</artifactId>
+			<version>1.0</version>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.10.1</version>
+				<configuration>
+					<version>7</version>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<modules>
+						<webModule>
+							<groupId>hu.deik</groupId>
+							<artifactId>boozepal-frontend</artifactId>
+							<contextRoot>boozepal</contextRoot>
+						</webModule>
+						<jarModule>
+							<groupId>hu.deik</groupId>
+							<artifactId>boozepal-backend</artifactId>
+						</jarModule>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

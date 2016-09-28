@@ -5,13 +5,7 @@
     <artifactId>boozepal</artifactId>
     <version>1.0</version>
   </parent>
-  <artifactId>boozepal-backend</artifactId>
-  <name>BoozePal Backend</name>
-  <dependencies>
-  	<dependency>
-  		<groupId>hu.deik</groupId>
-  		<artifactId>boozepal-api</artifactId>
-  		<version>1.0</version>
-  	</dependency>
-  </dependencies>
+  <artifactId>boozepal-integration-api</artifactId>
+  <name>BoozePal Integration API</name>
+  <description>Module for REST Service API stuff.</description>
 </project>

@@ -9,8 +9,12 @@
 	<name>BoozePal Parent</name>
 	<modules>
 		<module>boozepal-frontend</module>
-		<module>boozepal-api</module>
-		<module>boozepal-backend</module>
+		<module>boozepal-common-api</module>
+		<module>boozepal-core-api</module>
+		<module>boozepal-integration-api</module>
+		<module>boozepal-service-api</module>
+		<module>boozepal-integration</module>
+		<module>boozepal-service</module>
 		<module>boozepal-ear</module>
 	</modules>
 	<licenses>
@@ -31,7 +35,7 @@
 				<role>Java Developer</role>
 			</roles>
 		</developer>
-	<!-- Dobja be ide mindenki magát -->
+		<!-- Dobja be ide mindenki magát -->
 	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,6 +47,8 @@
 		<maven.site.version>3.3</maven.site.version>
 		<maven.war.version>2.6</maven.war.version>
 		<maven.surefire.version>2.19.1</maven.surefire.version>
+		<arquillian.bom.version>1.0.0.Final</arquillian.bom.version>
+		<shinkwrap.version>2.0.0-beta-2</shinkwrap.version>
 		<checkstyle.version>2.17</checkstyle.version>
 		<javadoc.version>2.10.3</javadoc.version>
 		<jxr.version>2.5</jxr.version>
@@ -73,6 +79,45 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<!-- BoozePal dependencies -->
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-common-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-service-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-integration-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-core-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-frontend</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-integration</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+
 			<!-- Java EE -->
 			<dependency>
 				<groupId>javax</groupId>
@@ -240,18 +285,17 @@
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>
 				<artifactId>arquillian-bom</artifactId>
-				<version>1.0.0.Final</version>
+				<version>${arquillian.bom.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.shrinkwrap.resolver</groupId>
 				<artifactId>shrinkwrap-resolver-bom</artifactId>
-				<version>2.0.0-beta-2</version>
+				<version>${shinkwrap.version}</version>
 				<scope>test</scope>
 				<type>pom</type>
 			</dependency>
-
 
 			<!-- Third Party plugins -->
 			<dependency>
@@ -378,7 +422,7 @@
 	</build>
 	<distributionManagement>
 		<site>
-			<id>ProjectSite</id>
+			<id>BoozePal Site</id>
 			<url>file://projectsite</url>
 		</site>
 	</distributionManagement>

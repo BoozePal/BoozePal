@@ -5,6 +5,7 @@
     <artifactId>boozepal</artifactId>
     <version>1.0</version>
   </parent>
-  <artifactId>boozepal-api</artifactId>
-  <name>BoozePal API</name>
+  <artifactId>boozepal-integration</artifactId>
+  <name>BoozePal Integration</name>
+  <description>Module for integration implementations stuff.</description>
 </project>

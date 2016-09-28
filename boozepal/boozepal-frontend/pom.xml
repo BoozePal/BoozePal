@@ -35,8 +35,15 @@
 		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
-			<artifactId>boozepal-api</artifactId>
-			<version>1.0</version>
+			<artifactId>boozepal-integration-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-service-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-common-api</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

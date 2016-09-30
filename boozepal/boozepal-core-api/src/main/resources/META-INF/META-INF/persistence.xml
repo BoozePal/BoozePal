@@ -3,6 +3,6 @@
 	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="boozePal">
-		<jar-file>lib/boozepal-common-api</jar-file>
+		<jar-file>lib/boozepal-common-api-1.0.jar</jar-file>
 	</persistence-unit>
 </persistence>

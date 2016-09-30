@@ -13,8 +13,9 @@
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-common-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>

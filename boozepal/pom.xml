@@ -47,7 +47,9 @@
 		<maven.site.version>3.3</maven.site.version>
 		<maven.war.version>2.6</maven.war.version>
 		<maven.surefire.version>2.19.1</maven.surefire.version>
+		<maven.ejb.version>2.5.1</maven.ejb.version>
 		<arquillian.bom.version>1.0.0.Final</arquillian.bom.version>
+		<ejb.version>3.1</ejb.version>
 		<shinkwrap.version>2.0.0-beta-2</shinkwrap.version>
 		<checkstyle.version>2.17</checkstyle.version>
 		<javadoc.version>2.10.3</javadoc.version>
@@ -79,45 +81,6 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			<!-- BoozePal dependencies -->
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-common-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-service-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-integration-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-core-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-frontend</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-service</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>hu.deik</groupId>
-				<artifactId>boozepal-integration</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-
 			<!-- Java EE -->
 			<dependency>
 				<groupId>javax</groupId>
@@ -136,7 +99,6 @@
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
 			</dependency>
-
 
 			<!-- Spring Framework -->
 			<dependency>
@@ -416,6 +378,14 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${maven.war.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${maven.ejb.version}</version>
+					<configuration>
+						<ejbVersion>${ejb.version}</ejbVersion>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

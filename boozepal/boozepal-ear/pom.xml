@@ -13,11 +13,25 @@
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-frontend</artifactId>
+			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-integration</artifactId>
+			<version>${project.version}</version>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-service</artifactId>
+			<version>${project.version}</version>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-core-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -28,13 +42,25 @@
 				<version>2.10.1</version>
 				<configuration>
 					<version>7</version>
-					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<defaultLibBundleDir>/lib/</defaultLibBundleDir>
 					<modules>
 						<webModule>
 							<groupId>hu.deik</groupId>
 							<artifactId>boozepal-frontend</artifactId>
 							<contextRoot>boozepal</contextRoot>
 						</webModule>
+						<ejbModule>
+							<groupId>hu.deik</groupId>
+							<artifactId>boozepal-integration</artifactId>
+						</ejbModule>
+						<ejbModule>
+							<groupId>hu.deik</groupId>
+							<artifactId>boozepal-service</artifactId>
+						</ejbModule>
+						<jarModule>
+							<groupId>hu.deik</groupId>
+							<artifactId>boozepal-core-api</artifactId>
+						</jarModule>
 					</modules>
 				</configuration>
 			</plugin>

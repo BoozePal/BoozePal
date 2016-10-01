@@ -18,10 +18,4 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-
-	<ejb-local-ref>
-		<ejb-ref-name>userRestService</ejb-ref-name>
-		<local>hu.deik.boozepal.rest.service.UserServiceRest</local>
-	</ejb-local-ref>
-
 </web-app>

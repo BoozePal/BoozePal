@@ -8,19 +8,31 @@
 	</parent>
 	<artifactId>boozepal-service</artifactId>
 	<name>BoozePal Service</name>
+	<description>Module for service implementations stuff.</description>
+	<packaging>ejb</packaging>
 	<dependencies>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-service-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-common-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>hu.deik</groupId>
-			<artifactId>boozepal-core-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<description>Module for service implementations stuff.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -36,25 +36,24 @@
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-integration-api</artifactId>
+			<version>${project.version}</version>
+			<!-- Provided mert különben EJB nem megy ! -->
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-service-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>hu.deik</groupId>
-			<artifactId>boozepal-common-api</artifactId>
+			<version>${project.version}</version>
+			<!-- Provided mert különben EJB nem megy ! -->
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>boozepal-frontend</finalName>
+		<finalName>boozepal</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

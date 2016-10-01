@@ -10,11 +10,15 @@
 	<name>BoozePal Service API</name>
 	<description>Module for Service API stuff.</description>
 	<dependencies>
-
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-common-api</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
 </project>

@@ -1,7 +1,7 @@
 language: java
 script: 
- -chmod ugo+x scripts/travis.sh
- -./scripts/travis.sh
+- chmod ugo+x scripts/travis.sh
+- ./scripts/travis.sh
 jdk:
   - oraclejdk8
 cache:

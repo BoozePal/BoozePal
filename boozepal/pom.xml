@@ -67,7 +67,7 @@
 		<cobertura.version>2.7</cobertura.version>
 		<lombok.version>1.16.8</lombok.version>
 		<javaee.api.version>7.0</javaee.api.version>
-<!-- 		<spring.version>4.3.0.RELEASE</spring.version> -->
+		<!-- <spring.version>4.3.0.RELEASE</spring.version> -->
 		<junit.version>4.12</junit.version>
 		<logback.version>1.1.7</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -91,6 +91,15 @@
 		<mysql.version>5.1.38</mysql.version>
 		<spring.platform.bom.version>2.0.8.RELEASE</spring.platform.bom.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+	</repositories>
+	
 	<dependencyManagement>
 		<dependencies>
 			<!-- Java EE -->

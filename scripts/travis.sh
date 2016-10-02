@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -ev
+git checkout master
 branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p');
 echo "Actual branch is:" $branch;
 if [ $branch = "master" ]; 

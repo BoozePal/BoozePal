@@ -35,6 +35,16 @@
 				<role>Java Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>Developer</id>
+			<organization>UNIDEB</organization>
+			<name>Viktor Pusinszky</name>
+			<email>pushinsky.viktor@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>Java Developer</role>
+			</roles>
+		</developer>
 		<!-- Dobja be ide mindenki magát -->
 	</developers>
 	<properties>
@@ -57,7 +67,7 @@
 		<cobertura.version>2.7</cobertura.version>
 		<lombok.version>1.16.8</lombok.version>
 		<javaee.api.version>7.0</javaee.api.version>
-		<spring.version>4.3.0.RELEASE</spring.version>
+<!-- 		<spring.version>4.3.0.RELEASE</spring.version> -->
 		<junit.version>4.12</junit.version>
 		<logback.version>1.1.7</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -69,15 +79,17 @@
 		<powermock.version>1.6.5</powermock.version>
 		<primefaces.version>5.3</primefaces.version>
 		<primefaces.extension.version>4.0.0</primefaces.extension.version>
-		<maven.compiler.version>3.5.1</maven.compiler.version>
+		<primefaces.themes.version>1.0.10</primefaces.themes.version>
+		<maven.compiler.version>3.3</maven.compiler.version>
 		<jaxws.version>2.2.3</jaxws.version>
 		<jaxws.spring.version>1.8</jaxws.spring.version>
-		<spring.data.jpa.version>1.10.2.RELEASE</spring.data.jpa.version>
+		<!-- <spring.data.jpa.version>1.10.2.RELEASE</spring.data.jpa.version> -->
 		<hibernate.jpa.api.version>1.0.0.Final</hibernate.jpa.api.version>
-		<spring.db.version>4.1.6.RELEASE</spring.db.version>
+		<!-- <spring.db.version>4.1.6.RELEASE</spring.db.version> -->
 		<hibernate.version>3.6.9.Final</hibernate.version>
 		<hibernate.commons.version>5.0.1.Final</hibernate.commons.version>
 		<mysql.version>5.1.38</mysql.version>
+		<spring.platform.bom.version>2.0.8.RELEASE</spring.platform.bom.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -101,68 +113,76 @@
 			</dependency>
 
 			<!-- Spring Framework -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-core</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
+
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-web</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
+
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-context</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-context-support</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-webmvc</artifactId> -->
+			<!-- <version>${spring.version}</version> -->
+			<!-- </dependency> -->
+
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-jdbc</artifactId> -->
+			<!-- <version>${spring.db.version}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-tx</artifactId> -->
+			<!-- <version>${spring.db.version}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework</groupId> -->
+			<!-- <artifactId>spring-orm</artifactId> -->
+			<!-- <version>${spring.db.version}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.springframework.data</groupId> -->
+			<!-- <artifactId>spring-data-jpa</artifactId> -->
+			<!-- <version>${spring.data.jpa.version}</version> -->
+			<!-- </dependency> -->
+
+			<!-- Ez mindent behúz ami kell :) -->
 			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.version}</version>
+				<groupId>io.spring.platform</groupId>
+				<artifactId>platform-bom</artifactId>
+				<version>${spring.platform.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
 
+			<!-- Hibernate -->
 			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context-support</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-jpa</artifactId>
-				<version>${spring.data.jpa.version}</version>
+				<groupId>org.hibernate.common</groupId>
+				<artifactId>hibernate-commons-annotations</artifactId>
+				<version>${hibernate.commons.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.0-api</artifactId>
 				<version>${hibernate.jpa.api.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.db.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-tx</artifactId>
-				<version>${spring.db.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.db.version}</version>
-			</dependency>
-
-			<!-- Hibernate Common Stuff -->
-			<dependency>
-				<groupId>org.hibernate.common</groupId>
-				<artifactId>hibernate-commons-annotations</artifactId>
-				<version>${hibernate.commons.version}</version>
-			</dependency>
-
-			<!-- Hibernate -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
@@ -301,8 +321,8 @@
 			<!-- Primefaces themes -->
 			<dependency>
 				<groupId>org.primefaces.themes</groupId>
-				<artifactId>bootstrap</artifactId>
-				<version>1.0.10</version>
+				<artifactId>humanity</artifactId>
+				<version>${primefaces.themes.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

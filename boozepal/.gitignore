@@ -1,6 +1,6 @@
-/target/
+*target/
 .settings/
 .project
 .classpath
-/bin/
+*bin/
 .factorypath

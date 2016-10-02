@@ -12,8 +12,13 @@
 	<packaging>war</packaging>
 	<name>BoozePal Frontend</name>
 	<url>http://maven.apache.org</url>
+
 	<dependencies>
 		<!-- Java EE -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -33,6 +38,7 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-integration-api</artifactId>
@@ -47,7 +53,36 @@
 			<!-- Provided mert különben EJB nem megy ! -->
 			<scope>provided</scope>
 		</dependency>
+
+
+		<!-- Spring security -->
+		<dependency>
+			<groupId>org.springframework.webflow</groupId>
+			<artifactId>spring-faces</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+
+		<!-- primefaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>humanity</artifactId>
+		</dependency>
 	</dependencies>
+
 	<build>
 		<finalName>boozepal</finalName>
 		<plugins>

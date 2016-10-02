@@ -1,2 +1,6 @@
-/.project
-/.settings
+/target/
+.settings/
+.project
+.classpath
+/bin/
+.factorypath

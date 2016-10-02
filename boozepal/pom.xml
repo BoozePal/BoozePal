@@ -35,6 +35,16 @@
 				<role>Java Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>Developer</id>
+			<organization>UNIDEB</organization>
+			<name>Viktor Pusinszky</name>
+			<email>pushinsky.viktor@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>Java Developer</role>
+			</roles>
+		</developer>
 		<!-- Dobja be ide mindenki magát -->
 	</developers>
 	<properties>

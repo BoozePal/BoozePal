@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/masterLayout.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+	<ui:define name="pageTitle">Bejelentkezés</ui:define>
+	<ui:define name="content">
+		<section class="content">
+			<div class="login-box">
+				<!-- Login Form -->
+				<div>
+					<form action="#{request.contextPath}/login" method="post">
+						<div>
+							<h:panelGroup layout="block" rendered="#{param['error'] == 1}">Hibás</h:panelGroup>
+							<div>
+								<input type="text" name="j_username" />
+							</div>
+							<div>
+								<input type="password" name="j_password" />
+							</div>
+						</div>
+
+						<div>
+							<button type="submit" class="btn btn-info">Bejelentkezés</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	</ui:define>
+</ui:composition>

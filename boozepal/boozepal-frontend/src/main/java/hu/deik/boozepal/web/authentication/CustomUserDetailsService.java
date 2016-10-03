@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private final static String ADMIN_ROLE = "ROLE_ADMIN";
 
 	@EJB
-	UserService userService;
+	private UserService userService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

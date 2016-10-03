@@ -1,5 +1,6 @@
-package hu.deik.boozepal.web.authentication;
+package hu.deik.boozepal.web.session.bean;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +21,9 @@ import lombok.Setter;
 @Setter
 @SessionScoped
 @ManagedBean(name = "userSessionBean")
-public class UserSessionBean {
+public class UserSessionBean implements Serializable{
+
+	private static final long serialVersionUID = -1660866024225185114L;
 
 	@EJB
 	private UserService userService;

@@ -5,8 +5,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/templates/masterLayout.xhtml"
 	xmlns:sec="http://www.springframework.org/security/tags">
-	<ui:define name="pageTitle">Boozepal</ui:define>
+	<ui:define name="pageTitle">#{out.pageTitle}</ui:define>
 	<ui:define name="content">
-		<h:outputText value="BE VAGY LÉPVE!"></h:outputText>
+		<h:outputText value="#{out.welcomePage}"></h:outputText>
 	</ui:define>
 </ui:composition>

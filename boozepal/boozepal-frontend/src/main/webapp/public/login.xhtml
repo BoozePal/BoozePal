@@ -5,25 +5,31 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/templates/masterLayout.xhtml"
 	xmlns:sec="http://www.springframework.org/security/tags">
-	<ui:define name="pageTitle">Bejelentkezés</ui:define>
+	<ui:define name="pageTitle">#{out.login}</ui:define>
 	<ui:define name="content">
 		<section class="content">
 			<div class="login-box">
 				<!-- Login Form -->
-				<div>
-					<form action="#{request.contextPath}/login" method="post">
-						<div>
-							<h:panelGroup layout="block" rendered="#{param['error'] == 1}">Hibás</h:panelGroup>
+				<div class="box box-primary" style="text-align: center">
+					<div class="box-header with-border">
+						<h3 class="box-title">#{out.login}</h3>
+					</div>
+					<form class="form-horizontal" action="#{request.contextPath}/login"
+						method="post">
+						<div class="box-body">
+							<h:panelGroup layout="block" class="callout callout-danger"
+								rendered="#{param['error'] == 1}">#{out.errorMessage}</h:panelGroup>
 							<div>
-								<input type="text" name="j_username" />
+								<input class="form-control" placeholder="#{out.userName}"
+									type="text" name="j_username" />
 							</div>
 							<div>
-								<input type="password" name="j_password" />
+								<input class="form-control" placeholder="#{out.password}"
+									type="password" name="j_password" />
 							</div>
 						</div>
-
-						<div>
-							<button type="submit" class="btn btn-info">Bejelentkezés</button>
+						<div class="box-footer">
+							<button type="submit" class="btn btn-primary">#{out.login}</button>
 						</div>
 					</form>
 				</div>

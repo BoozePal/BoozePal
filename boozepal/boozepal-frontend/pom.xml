@@ -14,11 +14,18 @@
 	<url>http://maven.apache.org</url>
 
 	<dependencies>
-		<!-- Java EE -->
+
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Java EE -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -33,12 +40,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
+
 		<dependency>
 			<groupId>hu.deik</groupId>
 			<artifactId>boozepal-integration-api</artifactId>
@@ -54,23 +56,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-
-		<!-- Spring security -->
-		<dependency>
-			<groupId>org.springframework.webflow</groupId>
-			<artifactId>spring-faces</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-		</dependency>
-
 		<!-- primefaces -->
 		<dependency>
 			<groupId>org.primefaces</groupId>
@@ -80,6 +65,12 @@
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>humanity</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

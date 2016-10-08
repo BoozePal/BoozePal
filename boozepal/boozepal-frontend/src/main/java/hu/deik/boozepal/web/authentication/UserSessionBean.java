@@ -9,9 +9,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import hu.deik.boozepal.common.entity.UserVO;
+import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.service.UserService;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +23,7 @@ public class UserSessionBean {
 	@EJB
 	private UserService userService;
 
-	private UserVO sessionUser;
+	private User sessionUser;
 
 	@PostConstruct
 	public void init() {
@@ -36,7 +34,7 @@ public class UserSessionBean {
 			if (principal != null && !principal.getName().isEmpty()) {
 				try {
 					sessionUser = userService.findUserByName(principal.getName());
-				} catch (UsernameNotFoundException e) {
+				} catch (Exception e) {
 					e.getMessage();
 				}
 			}

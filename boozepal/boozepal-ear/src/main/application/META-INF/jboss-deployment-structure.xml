@@ -4,5 +4,8 @@
 		<exclusions>
 			<module name="logging" />
 		</exclusions>
+		<dependencies>
+            <module name="org.dom4j"/>
+        </dependencies>
 	</deployment>
 </jboss-deployment-structure>

@@ -26,6 +26,12 @@
 			<artifactId>boozepal-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-core-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

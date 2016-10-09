@@ -3,12 +3,25 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-	<persistence-unit name="boozePalH2"
-		transaction-type="JTA">
+	<persistence-unit name="boozePalTest"
+		transaction-type="RESOURCE_LOCAL">
+		<description>FOR TESTS.</description>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>hu.deik.boozepal.common.entity.User</class>
+		<class>hu.deik.boozepal.common.entity.Role</class>
+		<properties>
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.use_sql_comments" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+		</properties>
+	</persistence-unit>
+
+
+	<persistence-unit name="boozePalH2" transaction-type="JTA">
 		<description>The persistence unit for the entity manager.</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<jta-data-source>java:jboss/datasources/boozePalH2</jta-data-source>
 		<class>hu.deik.boozepal.common.entity.User</class>
 		<class>hu.deik.boozepal.common.entity.Role</class>
 		<properties>
@@ -19,6 +32,25 @@
 			<property name="hibernate.transaction.jta.platform"
 				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 			<property name="hibernate.enable_lazy_load_no_trans" value="true" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="boozePalMySQL"
+		transaction-type="JTA">
+		<description>The persistence unit for the entity manager.</description>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>java:/boozePalMySQL</jta-data-source>
+		<class>hu.deik.boozepal.common.entity.User</class>
+		<class>hu.deik.boozepal.common.entity.Role</class>
+		<properties>
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.use_sql_comments" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+			<property name="hibernate.enable_lazy_load_no_trans" value="true" />
+			<property name="wildfly.jpa.default-unit" value="true" />
 		</properties>
 	</persistence-unit>
 

@@ -20,7 +20,7 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="boozePalH2" />
+		<property name="persistenceUnitName" value="boozePalMySQL" />
 	</bean>
 	<bean id="transactionManager"
 		class="org.springframework.transaction.jta.JtaTransactionManager">

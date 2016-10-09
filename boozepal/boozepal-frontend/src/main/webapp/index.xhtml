@@ -5,8 +5,16 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/templates/masterLayout.xhtml"
 	xmlns:sec="http://www.springframework.org/security/tags">
-	<ui:define name="pageTitle">Boozepal</ui:define>
+	<ui:define name="pageTitle">#{out.pageTitle}</ui:define>
 	<ui:define name="content">
-		<h:outputText value="Üdvözöllek a Boozepal oldalán"></h:outputText>
+		<div >
+			<h:outputText value="#{out.welcomePage}"></h:outputText>
+			<sec:authorize ifNotGranted="ROLE_ADMIN">
+				<a href="#{request.contextPath}/public/login.xhtml"
+					class="btn btn-info" title="Login"> <b>#{out.login}</b>
+				</a>
+			</sec:authorize>
+		</div>
+
 	</ui:define>
 </ui:composition>

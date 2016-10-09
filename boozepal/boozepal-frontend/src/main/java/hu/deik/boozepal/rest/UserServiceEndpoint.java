@@ -2,7 +2,6 @@ package hu.deik.boozepal.rest;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
 import javax.ws.rs.GET;

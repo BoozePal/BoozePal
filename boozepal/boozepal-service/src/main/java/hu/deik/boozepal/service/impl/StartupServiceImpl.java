@@ -32,12 +32,12 @@ public class StartupServiceImpl implements StartupService {
 
     @Override
     public void createAdminUser() {
-        // if (logger != null)
-        // logger.info("Creating admin user");
-        // UserVO user = new UserVO();
-        // user.setUsername("admin");
-        // user.setEmail("admin@admin.com");
-        // userDao.save(user);
+        if (logger != null)
+            logger.info("Creating admin user");
+        User user = new User();
+        user.setUsername("admin");
+        user.setEmail("admin@admin.com");
+        userDao.save(user);
 
     }
 

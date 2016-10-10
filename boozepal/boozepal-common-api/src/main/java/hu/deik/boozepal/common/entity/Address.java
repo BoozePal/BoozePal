@@ -5,28 +5,37 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Felhasználóni jogokat reprezentáló entitás.
+ * Cím-eket reprezentáló entitás.
  * 
  * @version 1.0
+ *
  */
-@Entity
-@Table(name = "boozepal_role")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "boozepal_address")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Role extends BaseEntity {
+@Builder
+public class Address extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Város.
+     */
+    @Column(length = 128)
+    private String town;
 
     /**
-     * Jog neve.
+     * Utca
      */
-    @Column(nullable = false, length = 64)
-    private String roleName;
+    @Column(length = 128)
+    private String street;
+
 }

@@ -14,6 +14,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Felhasználót reprezentáló entitás.
+ * 
+ * @version 1.0
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,20 +31,36 @@ import lombok.ToString;
 public class User extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * Felhasználónév.
+     */
     @Column(unique = true, length = 64)
     private String username;
 
+    /**
+     * Jelszó BCryptel titkosítva.
+     */
     @Column(nullable = false, length = 64)
     private String password;
 
+    /**
+     * Felhasználó e-mail címe.
+     */
     @Column(unique = true, length = 64)
     private String email;
 
+    /**
+     * Logikai törlés.
+     */
     @Column(nullable = false)
     private boolean remove;
 
+    /**
+     * Felhasználó jogai.
+     */
     @ManyToMany
     private List<Role> roles;
+    
+    
 
 }

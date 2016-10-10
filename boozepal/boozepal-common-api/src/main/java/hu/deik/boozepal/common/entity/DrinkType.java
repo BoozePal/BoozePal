@@ -5,28 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Felhasználóni jogokat reprezentáló entitás.
+ * Italokat típusokat reprenzetáló entitás.
  * 
  * @version 1.0
+ *
  */
-@Entity
-@Table(name = "boozepal_role")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "boozepal_drinktype")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Role extends BaseEntity {
+@Builder
+public class DrinkType extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
     /**
-     * Jog neve.
+     * Ital típusa.
      */
-    @Column(nullable = false, length = 64)
-    private String roleName;
+    @Column(nullable = false, length = 128)
+    private String name;
+
 }

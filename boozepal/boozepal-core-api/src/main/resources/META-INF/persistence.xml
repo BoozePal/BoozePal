@@ -27,7 +27,12 @@
 		<description>The persistence unit for the entity manager.</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/boozePalH2</jta-data-source>
-		<jar-file>lib/boozepal-common-api-1.0.jar</jar-file>
+		<class>hu.deik.boozepal.common.entity.User</class>
+		<class>hu.deik.boozepal.common.entity.Role</class>
+		<class>hu.deik.boozepal.common.entity.Drink</class>
+		<class>hu.deik.boozepal.common.entity.DrinkType</class>
+		<class>hu.deik.boozepal.common.entity.Address</class>
+		<class>hu.deik.boozepal.common.entity.Pub</class>
 		<properties>
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.use_sql_comments" value="true" />
@@ -45,7 +50,12 @@
 		<description>The persistence unit for the entity manager.</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:/boozePalMySQL</jta-data-source>
-		<jar-file>lib/boozepal-common-api-1.0.jar</jar-file>
+		<class>hu.deik.boozepal.common.entity.User</class>
+		<class>hu.deik.boozepal.common.entity.Role</class>
+		<class>hu.deik.boozepal.common.entity.Drink</class>
+		<class>hu.deik.boozepal.common.entity.DrinkType</class>
+		<class>hu.deik.boozepal.common.entity.Address</class>
+		<class>hu.deik.boozepal.common.entity.Pub</class>
 		<properties>
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.use_sql_comments" value="true" />

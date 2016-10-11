@@ -2,9 +2,12 @@ package hu.deik.boozepal.common.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -60,7 +63,57 @@ public class User extends BaseEntity {
      */
     @ManyToMany
     private List<Role> roles;
-    
-    
+
+    /**
+     * Felhasználó kedvenc itala.
+     */
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Drink favouriteDrink;
+
+    /**
+     * Felhasználó kedvenc sörözője.
+     */
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Pub favouritePub;
+
+    /**
+     * Preferált árkategória, 0-5 terjedő skálán.
+     */
+    @Column
+    private Integer priceCategory;
+
+    /**
+     * Felhasználó lakóhelye.
+     */
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Address address;
+
+    /**
+     * Utolsó ismert tartózkodiási hely.
+     */
+    @Embedded
+    private Coordinate lastKnownCoordinate;
+
+    /**
+     * Keresési sugár, km-ben megadva.
+     */
+    private Long searchRadius;
+
+    /**
+     * Aktuális cimborák.
+     */
+    @ManyToMany
+    private List<User> actualPals;
+
+    /**
+     * Bejelentkezett-e éppen.
+     */
+    private boolean loggedIn;
+
+    /**
+     * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
+     */
+    @Column(length = 256)
+    private String timeBoard;
 
 }

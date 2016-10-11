@@ -13,18 +13,19 @@ import hu.deik.boozepal.service.UserService;
 @Local(UserService.class)
 public class UserServiceImpl implements UserService {
 
-	/* TODO: FIX Implementálni !!! */
-	@Override
-	public User findUserByName(String username) {
-		return testUser(username);
-	}
+    /* TODO: FIX Implementálni !!! */
+    @Override
+    public User findUserByName(String username) {
+        return testUser(username);
+    }
 
-	private User testUser(String username) {
-		Role role = new Role("ROLE_ADMIN");
-		/* A jelszó "alma" BCrypt */
-		User retUser = new User(username, "$2a$04$sIC5RDGG8CESaA7JGmn4huaC2av5olRYp3D7Cyaxq3/JNhMSzqC1O",
-				"teszt@teszt.com", false, Arrays.asList(role));
-		return retUser;
-	}
+    private User testUser(String username) {
+        Role role = new Role("ROLE_ADMIN");
+        /* A jelszó "alma" BCrypt */
+        User retUser = User.builder().username(username)
+                .password("$2a$04$sIC5RDGG8CESaA7JGmn4huaC2av5olRYp3D7Cyaxq3/JNhMSzqC1O").email("teszt@teszt.com")
+                .remove(false).roles(Arrays.asList(role)).build();
+        return retUser;
+    }
 
 }

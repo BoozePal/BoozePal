@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,12 +26,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @EJB
     UserService userService;
+    
+    
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userService.findUserByName(username);
-
+        logger.info("Felhasználó belépés: {}", user.getUsername());
         if (user == null || user.getRoles().isEmpty()) {
             throw new UsernameNotFoundException(username);
         }

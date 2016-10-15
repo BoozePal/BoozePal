@@ -1,5 +1,6 @@
 package hu.deik.boozepal.common.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -36,7 +37,7 @@ public class Drink extends BaseEntity {
     /**
      * Ital típusa.
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     private DrinkType drinkType;
 
 }

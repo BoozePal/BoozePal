@@ -37,7 +37,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    public void testFindSavedUserByUserName() {
+    public void testFindSavedRoleByName() {
         role = createRole();
         roleDao.save(role);
         Role role = roleDao.findByRoleName(ROLENAME);

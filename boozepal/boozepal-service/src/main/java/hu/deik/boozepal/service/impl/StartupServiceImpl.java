@@ -26,6 +26,9 @@ import hu.deik.boozepal.service.StartupService;
 @Interceptors({ SpringBeanAutowiringInterceptor.class })
 public class StartupServiceImpl implements StartupService {
 
+	/* password = admin */
+	private static final String PASSWORD = "$2a$04$e9R7K4j5IYZRxOUB4.yVweDsguwUCdiqkd5kzJ0uO/0F7CQxJdjZ.";
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -45,6 +48,9 @@ public class StartupServiceImpl implements StartupService {
 			user = userDao.findByUsername("admin");
 			if (userRole == null && user == null) {
 				createAdminUser();
+			} else {
+				user.setPassword(PASSWORD);
+				userDao.save(user);
 			}
 		} catch (Exception e) {
 			logger.error("Failed to deploy application.", e);
@@ -55,10 +61,9 @@ public class StartupServiceImpl implements StartupService {
 	/* A jelszó admin */
 	public void createAdminUser() {
 		userRole = roleDao.save(new Role("ROLE_ADMIN"));
-		logger.info("Create admin role : " + userRole.toString());
-		user = userDao.save(User.builder().username("admin")
-				.password("$2a$04$sIC5RDGG8CESaA7JGmn4huaC2av5olRYp3D7Cyaxq3/JNhMSzqC1O").email("teszt@teszt.com")
-				.remove(false).roles(Arrays.asList(userRole)).build());
-		logger.info("Create user : " + user.toString());
+		logger.debug("Create admin role : " + userRole.toString());
+		user = userDao.save(User.builder().username("admin").password(PASSWORD).email("admin@admin.com").remove(false)
+				.roles(Arrays.asList(userRole)).build());
+		logger.debug("Create user : " + user.toString());
 	}
 }

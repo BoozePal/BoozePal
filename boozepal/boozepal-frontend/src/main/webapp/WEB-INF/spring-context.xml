@@ -12,7 +12,8 @@
 
 	<import resource="classpath:spring-core.xml"/>
 	<import resource="classpath:spring-security.xml"/>
-	<context:component-scan base-package="hu.deik.boozepal.web.authentication" />
+	
+	<context:component-scan base-package="hu.deik.boozepal.web" />
 	<!-- Ha EJB szeretnél injektálni fel kell venni ide és a web.xml-be! -->
 	<jee:local-slsb id="userService" jndi-name="ejb.UserService"
 		business-interface="hu.deik.boozepal.service.UserService" />

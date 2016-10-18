@@ -26,5 +26,4 @@
 		class="org.springframework.transaction.jta.JtaTransactionManager">
 	</bean>
 	<tx:annotation-driven />
-	<tx:jta-transaction-manager></tx:jta-transaction-manager>
 </beans>

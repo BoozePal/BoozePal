@@ -1,31 +1,28 @@
 package hu.deik.boozepal.service.impl;
 
-import java.util.Arrays;
-
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
-import hu.deik.boozepal.common.entity.Role;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
+
 import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.service.UserService;
 
-@Stateless
+@Stateless(mappedName = "UserService")
+@Interceptors(SpringBeanAutowiringInterceptor.class)
 @Local(UserService.class)
 public class UserServiceImpl implements UserService {
 
-    /* TODO: FIX Implementálni !!! */
-    @Override
-    public User findUserByName(String username) {
-        return testUser(username);
-    }
+	@Autowired
+	private UserRepository userDao;
 
-    private User testUser(String username) {
-        Role role = new Role("ROLE_ADMIN");
-        /* A jelszó "alma" BCrypt */
-        User retUser = User.builder().username(username)
-                .password("$2a$04$sIC5RDGG8CESaA7JGmn4huaC2av5olRYp3D7Cyaxq3/JNhMSzqC1O").email("teszt@teszt.com")
-                .remove(false).roles(Arrays.asList(role)).build();
-        return retUser;
-    }
+	@Override
+	public User findUserByName(String username) {
+		User user = userDao.findByUsername(username);
+		return user;
+	}
 
 }

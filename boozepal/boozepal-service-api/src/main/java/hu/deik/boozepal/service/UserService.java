@@ -8,4 +8,5 @@ import hu.deik.boozepal.common.entity.User;
 public interface UserService {
 
 	public User findUserByName(String username);
+
 }

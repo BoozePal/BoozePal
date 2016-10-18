@@ -41,6 +41,12 @@ public class User extends BaseEntity {
     private String username;
 
     /**
+     * Felhasználó teljes neve.
+     */
+    @Column(length = 128)
+    private String fullName;
+
+    /**
      * Jelszó BCryptel titkosítva.
      */
     @Column(nullable = false, length = 64)

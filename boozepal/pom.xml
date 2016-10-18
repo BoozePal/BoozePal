@@ -94,6 +94,9 @@
 		<spring.security.taglibs.version>4.1.3.RELEASE</spring.security.taglibs.version>
 		<spring.security.version>4.1.3.RELEASE</spring.security.version>
 		<spring.faces.version>2.4.2.RELEASE</spring.faces.version>
+		<selenium.version>2.53.0</selenium.version>
+		<cucumber.version>1.2.4</cucumber.version>
+		<google.api.version>1.22.0</google.api.version>
 	</properties>
 
 	<repositories>
@@ -259,6 +262,61 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-java</artifactId>
+				<version>${selenium.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-chrome-driver</artifactId>
+				<version>${selenium.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-core</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-java</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-junit</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-picocontainer</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-spring</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>info.cukes</groupId>
+				<artifactId>cucumber-openejb</artifactId>
+				<version>${cucumber.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+
 			<!-- Integration Testing -->
 			<!-- <dependency> -->
 			<!-- <groupId>org.jboss.arquillian</groupId> -->
@@ -281,6 +339,13 @@
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.google.api-client</groupId>
+				<artifactId>google-api-client</artifactId>
+				<version>${google.api.version}</version>
+			</dependency>
+
 
 			<!-- Logging -->
 			<dependency>

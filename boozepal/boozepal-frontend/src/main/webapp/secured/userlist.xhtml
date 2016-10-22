@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="/templates/masterLayout.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags">
+	<ui:define name="pageTitle">#{out.userMenu}</ui:define>
+
+	<f:metadata>
+		<ui:param name="mbean" value="#{userListMBean}" />
+	</f:metadata>
+	<ui:define name="content">
+		<h:form id="form">
+			<p:dataTable var="user" value="#{mbean.users}">
+				<f:facet name="header">#{out.userList}</f:facet>
+				<p:column headerText="#{out.userName}">
+					<h:outputText value="#{user.username}" />
+				</p:column>
+				<p:column headerText="#{out.activeUser}">
+					<h:outputText value="#{user.loggedIn}" />
+				</p:column>
+				<p:column headerText="#{out.email}">
+					<h:outputText value="#{user.email}" />
+				</p:column>
+
+				<f:facet name="footer">#{out.userTableFooter} : #{fn:length(mbean.users)}</f:facet>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

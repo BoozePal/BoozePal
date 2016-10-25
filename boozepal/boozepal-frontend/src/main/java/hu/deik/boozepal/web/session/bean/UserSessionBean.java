@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.security.Principal;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -44,5 +45,11 @@ public class UserSessionBean implements Serializable {
 				}
 			}
 		}
+	}
+
+	@PreDestroy
+	public void destroy() {
+		sessionUser.setLoggedIn(false);
+		userService.save(sessionUser);
 	}
 }

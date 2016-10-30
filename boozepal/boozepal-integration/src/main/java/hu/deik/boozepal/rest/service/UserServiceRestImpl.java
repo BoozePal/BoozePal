@@ -24,9 +24,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.LoginException;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
+import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 @Stateless
@@ -63,25 +64,16 @@ public class UserServiceRestImpl implements UserServiceRest {
      * boozepal.rest.vo.RemoteUserVO)
      */
     @Override
-    public User createOrLoginUser(RemoteUserVO remoteUser) throws LoginException {
+    public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
+        PayloadUserVO userByGoogleToken;
         try {
-            GoogleIdToken idToken = verifier.verify(remoteUser.getToken());
-            if (idToken != null) {
-                Payload payload = idToken.getPayload();
-                User user = userDao.findByEmail(payload.getEmail());
-                if (user == null)
-                    return createNewUser(payload);
-                else {
-                    user.setLoggedIn(true);
-                    return userDao.save(user);
-                }
-            } else {
-                throw new LoginException("Invalid token.");
-            }
+            userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
         } catch (GeneralSecurityException | IOException e) {
             logger.error(e.getMessage(), e);
-            throw new LoginException("Login error, " + e.getMessage());
+            throw new AuthenticationException("Login error, " + e.getMessage());
         }
+
+        return createNewUserOrGetExisting(userByGoogleToken);
 
     }
 
@@ -89,18 +81,54 @@ public class UserServiceRestImpl implements UserServiceRest {
      * (non-Javadoc)
      * 
      * @see
-     * hu.deik.boozepal.rest.service.UserServiceRest#logoutUserLogically(java.
-     * lang.Long)
+     * hu.deik.boozepal.rest.service.UserServiceRest#logoutUserLogically(hu.deik
+     * .boozepal.rest.vo.RemoteUserVO)
      */
     @Override
-    public void logoutUserLogically(Long userId) {
-        // TODO implementálni.
+    public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
+        PayloadUserVO userByGoogleToken;
+        try {
+            userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
+        } catch (GeneralSecurityException | IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new AuthenticationException("Logout error, " + e.getMessage());
+        }
+        logoutUser(userByGoogleToken.getUser());
     }
 
     private User createNewUser(Payload payload) {
         User newUser = User.builder().email(payload.getEmail()).fullName((String) payload.get("name"))
                 .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).build();
         return userDao.save(newUser);
+    }
+
+    private User createNewUserOrGetExisting(PayloadUserVO userByGoogleToken) {
+        User user = userByGoogleToken.getUser();
+        if (user == null)
+            return createNewUser(userByGoogleToken.getPayload());
+        else {
+            user.setLoggedIn(true);
+            return userDao.save(user);
+        }
+    }
+
+    private PayloadUserVO getUserByGoogleToken(String token)
+            throws AuthenticationException, GeneralSecurityException, IOException {
+        GoogleIdToken idToken = verifier.verify(token);
+        PayloadUserVO payloadUserVO;
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+            User user = userDao.findByEmail(payload.getEmail());
+            payloadUserVO = PayloadUserVO.builder().user(user).payload(payload).build();
+        } else {
+            throw new AuthenticationException("Invalid token.");
+        }
+        return payloadUserVO;
+    }
+
+    private void logoutUser(User user) {
+        user.setLoggedIn(false);
+        userDao.save(user);
     }
 
 }

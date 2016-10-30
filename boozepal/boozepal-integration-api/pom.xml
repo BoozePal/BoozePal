@@ -21,6 +21,10 @@
 			<artifactId>boozepal-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

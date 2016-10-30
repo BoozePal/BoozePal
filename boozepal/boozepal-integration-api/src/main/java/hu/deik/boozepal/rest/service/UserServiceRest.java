@@ -3,7 +3,7 @@ package hu.deik.boozepal.rest.service;
 import javax.ejb.Local;
 
 import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.LoginException;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
@@ -23,17 +23,18 @@ public interface UserServiceRest {
      * @param remoteUser
      *            távoli felhasználó.
      * @return az újonnan létrehozott felhasználó vagy egy már meglévő.
-     * @throws LoginException
+     * @throws AuthenticationException
      *             ha nem sikerült a token validálása.
      */
-    public User createOrLoginUser(RemoteUserVO remoteUser) throws LoginException;
+    public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException;
 
     /**
      * Felhasználó logikai kiléptetése a rendszerből.
      * 
      * @param userId
      *            felhasználó azonosítója.
+     * @throws AuthenticationException
      */
-    public void logoutUserLogically(Long userId);
+    public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException;
 
 }

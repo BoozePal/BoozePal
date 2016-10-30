@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.LoginException;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
@@ -54,7 +54,7 @@ public class UserServiceEndpoint implements Serializable {
         try {
             user = userServiceRest.createOrLoginUser(remoteUser);
             logger.info("Felhasználó beléptetése sikeres!");
-        } catch (LoginException e) {
+        } catch (AuthenticationException e) {
             logger.error(e.getMessage(), e);
         }
         return user;

@@ -21,6 +21,11 @@ import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.service.StartupService;
 import static hu.deik.boozepal.common.contants.BoozePalConstants.*;
 
+/**
+ * A rendszer felállásakor elinduló bean ami a szükséges létező adatokat
+ * biztosítja a felületnek.
+ *
+ */
 @Startup
 @Singleton
 // ====================================================
@@ -33,22 +38,44 @@ import static hu.deik.boozepal.common.contants.BoozePalConstants.*;
 public class StartupServiceImpl implements StartupService {
 
     /* password = admin */
+    /**
+     * Adminisztrátor BCryptel kódolt jelszava.
+     */
     private static final String PASSWORD = "$2a$04$e9R7K4j5IYZRxOUB4.yVweDsguwUCdiqkd5kzJ0uO/0F7CQxJdjZ.";
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    /**
+     * Az osztály loggere.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartupServiceImpl.class);
 
+    /**
+     * Felhasználókat elérő adathozzáférési osztály.
+     */
     @Autowired
     private UserRepository userDao;
-
+    
+    /**
+     * Szerepköröket elérő adathozzáférési osztály.
+     */
     @Autowired
     private RoleRepository roleDao;
 
+    /**
+     * Felhasználói szerpekör.
+     */
     private Role userRole;
+    
+    /**
+     * Felhasználó entitás amelyet betöltünk majd.
+     */
     private User user;
 
+    /**
+     * Init metódus mely elsőként fut le a szolgáltatás elindulása után.
+     */
     @PostConstruct
     public void init() {
-        logger.info("StartupService#init()");
+        LOGGER.info("StartupService#init()");
         createDefaultApplicationContext();
     }
 
@@ -63,17 +90,23 @@ public class StartupServiceImpl implements StartupService {
                 userDao.save(user);
             }
         } catch (Exception e) {
-            logger.error("Failed to deploy application.", e);
+            LOGGER.error("Failed to deploy application.", e);
         }
     }
 
-    /* A jelszó admin */
+    /**
+     * {@inheritDoc}
+     */
     public void createAdminUser() {
-        logger.info("Admin profil létrehozása.");
+        LOGGER.info("Admin profil létrehozása.");
         userRole = roleDao.save(new Role(ROLE_ADMIN));
-        logger.debug("Create admin role : " + userRole.toString());
-        user = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email("admin@admin.com").remove(false)
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Create admin role : " + userRole.toString());
+        }
+        user = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email(ADMINEMAIL).remove(false)
                 .roles(Arrays.asList(userRole)).build());
-        logger.debug("Create user : " + user.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Create user : " + user.toString());
+        }
     }
 }

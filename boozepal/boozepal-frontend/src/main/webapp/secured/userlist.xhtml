@@ -12,8 +12,15 @@
 		<ui:param name="mbean" value="#{userListMBean}" />
 	</f:metadata>
 	<ui:define name="content">
+
 		<h:form id="form">
-			<p:dataTable var="user" value="#{mbean.users}">
+			<p:growl id="msg" />
+			<h:outputText value="#{out.userSwitcher}: " />
+			<p:inputSwitch value="#{mbean.activeUser}">
+				<p:ajax listener="#{mbean.addMessage}" update="msg" />
+				<p:ajax listener="#{mbean.switchUsers}" update="logListId" />
+			</p:inputSwitch>
+			<p:dataTable id="logListId" var="user" value="#{mbean.users}">
 				<f:facet name="header">#{out.userList}</f:facet>
 				<p:column headerText="#{out.userName}">
 					<h:outputText value="#{user.username}" />
@@ -24,7 +31,6 @@
 				<p:column headerText="#{out.email}">
 					<h:outputText value="#{user.email}" />
 				</p:column>
-
 				<f:facet name="footer">#{out.userTableFooter} : #{fn:length(mbean.users)}</f:facet>
 			</p:dataTable>
 		</h:form>

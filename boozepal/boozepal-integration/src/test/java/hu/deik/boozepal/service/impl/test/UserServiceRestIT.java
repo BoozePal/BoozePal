@@ -1,7 +1,5 @@
 package hu.deik.boozepal.service.impl.test;
 
-import static org.junit.Assert.fail;
-
 import javax.ejb.EJB;
 
 import org.jboss.arquillian.junit.Arquillian;

@@ -89,8 +89,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void activateUser(@Param("userId") Long userId);
     
     /**
-     * 
-     * @return
+     * Az aktuálisan online felhasználók listázása.
+     * @return az online felhasználók listája.
      */
     @Query("select u from User u where u.loggedIn = true")
     List<User> findOnlineUsers();

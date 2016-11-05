@@ -16,6 +16,7 @@ import hu.deik.boozepal.common.exceptions.RegistrationException;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.service.UserServiceRestImpl;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
  * Arquillian tesztek bázis osztálya, a konténert hozza létre majd amit
@@ -31,22 +32,28 @@ public class ArquillianContainer {
     private static final String SRPING_BEANS = "org.springframework:spring-beans:" + SPRING_VERSION;
     private static final String SRPING_WEB = "org.springframework:spring-web:" + SPRING_VERSION;
     private static final String SPRING_CONTEXT = "org.springframework:spring-context:" + SPRING_VERSION;
-
+    private static final String GOOGLE_JSON = "com.google.http-client:google-http-client:1.22.0";
+    private static final String GOOGLE_JACKSON = "com.google.http-client:google-http-client-jackson2:1.22.0";
+    private static final String GOOGLE_API = "com.google.api-client:google-api-client:1.22.0";
     @Deployment
     public static Archive<WebArchive> createDeployment() {
         File[] springContext = Maven.resolver().resolve(SPRING_CONTEXT).withTransitivity().asFile();
         File[] springWeb = Maven.resolver().resolve(SRPING_WEB).withTransitivity().asFile();
         File[] springBeans = Maven.resolver().resolve(SRPING_BEANS).withTransitivity().asFile();
+        File[] googleJson = Maven.resolver().resolve(GOOGLE_JSON).withTransitivity().asFile();
+        File[] googleJackson = Maven.resolver().resolve(GOOGLE_JACKSON).withTransitivity().asFile();
+        File[] googleApi = Maven.resolver().resolve(GOOGLE_API).withTransitivity().asFile();
         JavaArchive[] coreApi = Maven.resolver().resolve(CORE_API).withTransitivity().as(JavaArchive.class);
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
+                .addPackage(RemoteUserVO.class.getPackage())
                 .addPackage(UserServiceRest.class.getPackage()).addPackage(UserServiceRestImpl.class.getPackage())
                 .addPackage(UserRepository.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
                 .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
-                .addAsLibraries(coreApi);
+                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi);
         return webArchive;
     }
 

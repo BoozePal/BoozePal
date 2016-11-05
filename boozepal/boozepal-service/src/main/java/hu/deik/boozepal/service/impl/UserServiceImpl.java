@@ -1,5 +1,7 @@
 package hu.deik.boozepal.service.impl;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -23,6 +25,16 @@ public class UserServiceImpl implements UserService {
 	public User findUserByName(String username) {
 		User user = userDao.findByUsername(username);
 		return user;
+	}
+
+	@Override
+	public List<User> findAll() {
+		return userDao.findAll();
+	}
+
+	@Override
+	public void save(User user) {
+		userDao.save(user);
 	}
 
 }

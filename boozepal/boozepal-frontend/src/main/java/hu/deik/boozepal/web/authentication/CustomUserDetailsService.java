@@ -33,10 +33,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		User user = userService.findUserByName(username);
-		logger.info("Felhasználó belépés: {}", user.getUsername());
+
 		if (user == null || user.getRoles().isEmpty()) {
+			logger.error("Nem talált felhasználó{}", username);
 			throw new UsernameNotFoundException(username);
 		}
+		logger.info("Felhasználó belépés: {}", user.getUsername());
 		for (Role e : user.getRoles()) {
 			if (e.getRoleName().equals(ROLE_ADMIN) && !user.isRemove()) {
 				user.setRemove(true);

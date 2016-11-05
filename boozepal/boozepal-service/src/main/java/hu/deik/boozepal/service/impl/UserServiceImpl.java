@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
      */
     @Autowired
     private UserRepository userDao;
+    
     /**
      * Szerepköröket elérő adathozzáférési osztály.
      */

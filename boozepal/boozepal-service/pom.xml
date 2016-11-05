@@ -10,9 +10,6 @@
 	<name>BoozePal Service</name>
 	<description>Module for service implementations stuff.</description>
 	<packaging>ejb</packaging>
-	<properties>
-		<version.wildfly>10.1.0.Final</version.wildfly>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>

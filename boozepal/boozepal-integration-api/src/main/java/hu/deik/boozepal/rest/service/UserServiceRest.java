@@ -1,5 +1,7 @@
 package hu.deik.boozepal.rest.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import hu.deik.boozepal.common.entity.User;
@@ -36,5 +38,14 @@ public interface UserServiceRest {
      * @throws AuthenticationException
      */
     public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException;
+    
+    /**
+     * 
+     * @param lattitude
+     * @param altitude
+     * @param radius
+     * @return
+     */
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double lattitude, Double altitude, Double radius);
 
 }

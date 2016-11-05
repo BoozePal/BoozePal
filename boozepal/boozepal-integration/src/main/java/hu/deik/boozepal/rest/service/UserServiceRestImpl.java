@@ -5,6 +5,8 @@ import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
@@ -40,13 +42,26 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 
+     */
     @Autowired
     private UserRepository userDao;
 
+    /**
+     * 
+     */
     @Autowired
     private RoleRepository roleDao;
 
+    /**
+     * 
+     */
     private Role userRole;
+
+    /**
+     * 
+     */
     private GoogleIdTokenVerifier verifier;
 
     @PostConstruct
@@ -56,12 +71,8 @@ public class UserServiceRestImpl implements UserServiceRest {
                 .setIssuer(HTTPS_ACCOUNTS_GOOGLE_COM).build();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * hu.deik.boozepal.rest.service.UserServiceRest#createOrLoginUser(hu.deik.
-     * boozepal.rest.vo.RemoteUserVO)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
@@ -77,12 +88,8 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * hu.deik.boozepal.rest.service.UserServiceRest#logoutUserLogically(hu.deik
-     * .boozepal.rest.vo.RemoteUserVO)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
@@ -94,6 +101,27 @@ public class UserServiceRestImpl implements UserServiceRest {
             throw new AuthenticationException("Logout error, " + e.getMessage());
         }
         logoutUser(userByGoogleToken.getUser());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double lattitude, Double altitude, Double radius) {
+        List<User> onlineUsers = userDao.findOnlineUsers();
+        List<User> usersInRadius = onlineUsers.stream()
+                .filter(p -> isInRadius(lattitude, altitude, radius, p))
+                .collect(Collectors.toList());
+        return usersInRadius;
+    }
+
+    private boolean isInRadius(Double lattitude, Double altitude, Double radius, User p) {
+        return distanceBetweenPoints(lattitude, altitude, p) <= radius;
+    }
+
+    private double distanceBetweenPoints(Double lattitude, Double altitude, User p) {
+        return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - lattitude))
+                + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
     }
 
     private User createNewUser(Payload payload) {
@@ -129,6 +157,10 @@ public class UserServiceRestImpl implements UserServiceRest {
     private void logoutUser(User user) {
         user.setLoggedIn(false);
         userDao.save(user);
+    }
+
+    private Double toSquare(Double number) {
+        return Math.pow(number, 2);
     }
 
 }

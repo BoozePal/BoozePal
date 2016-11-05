@@ -1,5 +1,7 @@
 package hu.deik.boozepal.dao.test;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -97,6 +99,23 @@ public class UserRepositoryTest {
         Assert.assertTrue(findOne.isRemove());
     }
 
+    @Test
+    public void testFindOnlineUsers() {
+        User onlineUser = createUser("onlineUser","online@online.com");
+        onlineUser.setLoggedIn(true);
+        User offlineUser = createUser("offlineUser","offline@offline.com");
+        offlineUser.setLoggedIn(false);
+        userDao.save(onlineUser);
+        userDao.save(offlineUser);
+
+        List<User> findByLoggedIn = userDao.findOnlineUsers();
+        Assert.assertTrue(findByLoggedIn.contains(onlineUser));
+        Assert.assertFalse(findByLoggedIn.contains(offlineUser));
+        userDao.delete(onlineUser);
+        userDao.delete(offlineUser);
+
+    }
+
     @After
     public void tearDown() {
         if (user != null && user.getId() != null)
@@ -108,6 +127,17 @@ public class UserRepositoryTest {
         return User.builder()
                 .username(TEST_USER)
                 .email(TEST_EMAIL_COM)
+                .password(TEST_PASSWORD)
+                .remove(false)
+                .lastKnownCoordinate(new Coordinate(10.0, 10.0))
+                .priceCategory(3)
+                .build();
+    }
+    
+    private User createUser(String username, String email) {
+        return User.builder()
+                .username(username)
+                .email(email)
                 .password(TEST_PASSWORD)
                 .remove(false)
                 .lastKnownCoordinate(new Coordinate(10.0, 10.0))

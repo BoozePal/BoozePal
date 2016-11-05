@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, of = { "username", "fullName", "email" })
 @ToString(exclude = { "password" })
 @Builder
 public class User extends BaseEntity {

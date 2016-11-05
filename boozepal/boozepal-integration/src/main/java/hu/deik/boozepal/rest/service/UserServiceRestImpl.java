@@ -32,6 +32,10 @@ import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
+/**
+ * A távoli felhasználók igényeit megvalósító szolgáltatás.
+ *
+ */
 @Stateless
 @Local(UserServiceRest.class)
 @Interceptors(SpringBeanAutowiringInterceptor.class)
@@ -43,27 +47,30 @@ public class UserServiceRestImpl implements UserServiceRest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * 
+     * Felhasználókat elérő adathozzáférési osztály.
      */
     @Autowired
     private UserRepository userDao;
 
     /**
-     * 
+     * Szerepköröket elérő adathozzáférési osztály.
      */
     @Autowired
     private RoleRepository roleDao;
 
     /**
-     * 
+     * Alapértelmezett felhasználói jog.
      */
     private Role userRole;
 
     /**
-     * 
+     * A REST hívásokon keresztül kapott Google Token validáló.
      */
     private GoogleIdTokenVerifier verifier;
 
+    /**
+     * A szolgáltatás felállásakor lefutó metódus.
+     */
     @PostConstruct
     public void init() {
         userRole = roleDao.findByRoleName(ROLE_USER);
@@ -107,20 +114,19 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    public List<User> getUsersInGivenRadiusAndCoordinate(Double lattitude, Double altitude, Double radius) {
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
         List<User> onlineUsers = userDao.findOnlineUsers();
-        List<User> usersInRadius = onlineUsers.stream()
-                .filter(p -> isInRadius(lattitude, altitude, radius, p))
+        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
                 .collect(Collectors.toList());
         return usersInRadius;
     }
 
-    private boolean isInRadius(Double lattitude, Double altitude, Double radius, User p) {
-        return distanceBetweenPoints(lattitude, altitude, p) <= radius;
+    private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
+        return distanceBetweenPoints(latitude, altitude, p) <= radius;
     }
 
-    private double distanceBetweenPoints(Double lattitude, Double altitude, User p) {
-        return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - lattitude))
+    private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
+        return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
                 + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
     }
 
@@ -161,6 +167,11 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private Double toSquare(Double number) {
         return Math.pow(number, 2);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userDao.save(user);
     }
 
 }

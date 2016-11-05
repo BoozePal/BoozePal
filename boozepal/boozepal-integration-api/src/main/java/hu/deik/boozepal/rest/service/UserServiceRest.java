@@ -19,6 +19,14 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
 public interface UserServiceRest {
 
     /**
+     * Felhasználó mentése.
+     * 
+     * @param user
+     * @return
+     */
+    public User saveUser(User user);
+
+    /**
      * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
      * felhasználó létrehozása.
      * 
@@ -38,14 +46,19 @@ public interface UserServiceRest {
      * @throws AuthenticationException
      */
     public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException;
-    
+
     /**
+     * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
+     * helyezkednek el a megadott koordinátákhoz képest.
      * 
-     * @param lattitude
+     * @param latitude
+     *            szélesség.
      * @param altitude
+     *            magasság.
      * @param radius
-     * @return
+     *            megadott körsugár.
+     * @return a megadott körsugárban elérhető felhasználók.
      */
-    public List<User> getUsersInGivenRadiusAndCoordinate(Double lattitude, Double altitude, Double radius);
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius);
 
 }

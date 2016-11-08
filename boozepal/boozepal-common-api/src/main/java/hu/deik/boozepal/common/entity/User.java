@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, of = { "username", "fullName", "email" })
 @ToString(exclude = { "password" })
 @Builder
 public class User extends BaseEntity {
@@ -73,6 +73,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
+    //TODO legyen lista
     @OneToOne(cascade = CascadeType.PERSIST)
     private Drink favouriteDrink;
 
@@ -119,6 +120,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
+    //TODO legyen List<Date>
     @Column(length = 256)
     private String timeBoard;
 

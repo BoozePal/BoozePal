@@ -1,5 +1,7 @@
 package hu.deik.boozepal.core.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -85,5 +87,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query("update User set remove = 0 where id = :userId")
     void activateUser(@Param("userId") Long userId);
+    
+    /**
+     * Az aktuálisan online felhasználók listázása.
+     * @return az online felhasználók listája.
+     */
+    @Query("select u from User u where u.loggedIn = true")
+    List<User> findOnlineUsers();
    //@formatter:on
 }

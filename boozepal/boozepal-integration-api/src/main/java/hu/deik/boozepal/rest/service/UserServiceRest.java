@@ -1,5 +1,7 @@
 package hu.deik.boozepal.rest.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import hu.deik.boozepal.common.entity.User;
@@ -15,6 +17,14 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
  */
 @Local
 public interface UserServiceRest {
+
+    /**
+     * Felhasználó mentése.
+     * 
+     * @param user
+     * @return
+     */
+    public User saveUser(User user);
 
     /**
      * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
@@ -36,5 +46,19 @@ public interface UserServiceRest {
      * @throws AuthenticationException
      */
     public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException;
+
+    /**
+     * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
+     * helyezkednek el a megadott koordinátákhoz képest.
+     * 
+     * @param latitude
+     *            szélesség.
+     * @param altitude
+     *            magasság.
+     * @param radius
+     *            megadott körsugár.
+     * @return a megadott körsugárban elérhető felhasználók.
+     */
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius);
 
 }

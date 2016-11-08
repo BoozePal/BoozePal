@@ -5,6 +5,8 @@ import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
@@ -30,6 +32,10 @@ import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
+/**
+ * A távoli felhasználók igényeit megvalósító szolgáltatás.
+ *
+ */
 @Stateless
 @Local(UserServiceRest.class)
 @Interceptors(SpringBeanAutowiringInterceptor.class)
@@ -40,15 +46,31 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * Felhasználókat elérő adathozzáférési osztály.
+     */
     @Autowired
     private UserRepository userDao;
 
+    /**
+     * Szerepköröket elérő adathozzáférési osztály.
+     */
     @Autowired
     private RoleRepository roleDao;
 
+    /**
+     * Alapértelmezett felhasználói jog.
+     */
     private Role userRole;
+
+    /**
+     * A REST hívásokon keresztül kapott Google Token validáló.
+     */
     private GoogleIdTokenVerifier verifier;
 
+    /**
+     * A szolgáltatás felállásakor lefutó metódus.
+     */
     @PostConstruct
     public void init() {
         userRole = roleDao.findByRoleName(ROLE_USER);
@@ -56,12 +78,8 @@ public class UserServiceRestImpl implements UserServiceRest {
                 .setIssuer(HTTPS_ACCOUNTS_GOOGLE_COM).build();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * hu.deik.boozepal.rest.service.UserServiceRest#createOrLoginUser(hu.deik.
-     * boozepal.rest.vo.RemoteUserVO)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
@@ -77,12 +95,8 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * hu.deik.boozepal.rest.service.UserServiceRest#logoutUserLogically(hu.deik
-     * .boozepal.rest.vo.RemoteUserVO)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
@@ -94,6 +108,26 @@ public class UserServiceRestImpl implements UserServiceRest {
             throw new AuthenticationException("Logout error, " + e.getMessage());
         }
         logoutUser(userByGoogleToken.getUser());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
+        List<User> onlineUsers = userDao.findOnlineUsers();
+        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
+                .collect(Collectors.toList());
+        return usersInRadius;
+    }
+
+    private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
+        return distanceBetweenPoints(latitude, altitude, p) <= radius;
+    }
+
+    private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
+        return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
+                + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
     }
 
     private User createNewUser(Payload payload) {
@@ -129,6 +163,15 @@ public class UserServiceRestImpl implements UserServiceRest {
     private void logoutUser(User user) {
         user.setLoggedIn(false);
         userDao.save(user);
+    }
+
+    private Double toSquare(Double number) {
+        return Math.pow(number, 2);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userDao.save(user);
     }
 
 }

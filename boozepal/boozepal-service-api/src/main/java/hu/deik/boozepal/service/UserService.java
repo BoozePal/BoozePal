@@ -38,6 +38,6 @@ public interface UserService {
     public User createNewAdministrator(String username, String password) throws RegistrationException;
 
 	public List<User> findAll();
-
+	
 	public void save(User user);
 }

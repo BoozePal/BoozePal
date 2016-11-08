@@ -23,28 +23,6 @@
 		</properties>
 	</persistence-unit>
 
-	<!-- For development -->
-	<persistence-unit name="boozePalH2" transaction-type="JTA">
-		<description>The persistence unit for the entity manager.</description>
-		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<jta-data-source>java:jboss/datasources/boozePalH2</jta-data-source>
-		<class>hu.deik.boozepal.common.entity.User</class>
-		<class>hu.deik.boozepal.common.entity.Role</class>
-		<class>hu.deik.boozepal.common.entity.Drink</class>
-		<class>hu.deik.boozepal.common.entity.DrinkType</class>
-		<class>hu.deik.boozepal.common.entity.Address</class>
-		<class>hu.deik.boozepal.common.entity.Pub</class>
-		<properties>
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.use_sql_comments" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
-			<property name="hibernate.transaction.jta.platform"
-				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
-			<property name="hibernate.enable_lazy_load_no_trans" value="true" />
-		</properties>
-	</persistence-unit>
-
 	<!-- For production -->
 	<persistence-unit name="boozePalMySQL"
 		transaction-type="JTA">

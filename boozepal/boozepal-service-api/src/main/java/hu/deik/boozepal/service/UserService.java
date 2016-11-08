@@ -1,5 +1,7 @@
 package hu.deik.boozepal.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import hu.deik.boozepal.common.entity.User;
@@ -35,4 +37,7 @@ public interface UserService {
      */
     public User createNewAdministrator(String username, String password) throws RegistrationException;
 
+	public List<User> findAll();
+
+	public void save(User user);
 }

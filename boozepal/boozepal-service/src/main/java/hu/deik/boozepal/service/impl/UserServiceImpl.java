@@ -1,6 +1,7 @@
 package hu.deik.boozepal.service.impl;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -67,5 +68,15 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Username has been already exists.");
         }
     }
+
+	@Override
+	public List<User> findAll() {
+		return userDao.findAll();
+	}
+
+	@Override
+	public void save(User user) {
+		userDao.save(user);
+	}
 
 }

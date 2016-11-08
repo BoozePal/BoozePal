@@ -35,6 +35,7 @@ public class ArquillianContainer {
     private static final String GOOGLE_JSON = "com.google.http-client:google-http-client:1.22.0";
     private static final String GOOGLE_JACKSON = "com.google.http-client:google-http-client-jackson2:1.22.0";
     private static final String GOOGLE_API = "com.google.api-client:google-api-client:1.22.0";
+    private static final String COBERTURA = "net.sourceforge.cobertura:cobertura:2.1.1";
     @Deployment
     public static Archive<WebArchive> createDeployment() {
         File[] springContext = Maven.resolver().resolve(SPRING_CONTEXT).withTransitivity().asFile();
@@ -43,6 +44,7 @@ public class ArquillianContainer {
         File[] googleJson = Maven.resolver().resolve(GOOGLE_JSON).withTransitivity().asFile();
         File[] googleJackson = Maven.resolver().resolve(GOOGLE_JACKSON).withTransitivity().asFile();
         File[] googleApi = Maven.resolver().resolve(GOOGLE_API).withTransitivity().asFile();
+        File[] cobertura = Maven.resolver().resolve(COBERTURA).withTransitivity().asFile();
         JavaArchive[] coreApi = Maven.resolver().resolve(CORE_API).withTransitivity().as(JavaArchive.class);
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
@@ -53,7 +55,7 @@ public class ArquillianContainer {
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
                 .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
-                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi);
+                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi).addAsLibraries(cobertura);
         return webArchive;
     }
 

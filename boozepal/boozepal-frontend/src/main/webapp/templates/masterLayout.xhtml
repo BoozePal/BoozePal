@@ -6,6 +6,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:sec="http://www.springframework.org/security/tags"
 	xmlns:p="http://primefaces.org/ui">
 <f:view locale="#{localeBean.locale}">
@@ -89,8 +90,8 @@
 							</p:outputPanel></li>
 						<li><a
 							href="#{request.contextPath}/secured/authentication.xhtml">#{out.button}</a></li>
-						<li><a
-							href="#{request.contextPath}/secured/adminuser.xhtml">#{out.newAdminInsert}</a></li>
+						<li><a href="#{request.contextPath}/secured/adminuser.xhtml">#{out.newAdminInsert}</a></li>
+						<li><a href="#{request.contextPath}/secured/userlist.xhtml">#{out.userMenu}</a></li>
 					</sec:authorize>
 				</ul>
 			</div>

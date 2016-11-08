@@ -73,6 +73,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
+    //TODO legyen lista
     @OneToOne(cascade = CascadeType.PERSIST)
     private Drink favouriteDrink;
 
@@ -119,6 +120,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
+    //TODO legyen List<Date>
     @Column(length = 256)
     private String timeBoard;
 

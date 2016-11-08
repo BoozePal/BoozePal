@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.security.Principal;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Setter
 @SessionScoped
 @ManagedBean(name = "userSessionBean")
-public class UserSessionBean implements Serializable{
+public class UserSessionBean implements Serializable {
 
 	private static final long serialVersionUID = -1660866024225185114L;
 
@@ -37,10 +38,18 @@ public class UserSessionBean implements Serializable{
 			if (principal != null && !principal.getName().isEmpty()) {
 				try {
 					sessionUser = userService.findUserByName(principal.getName());
+					sessionUser.setLoggedIn(true);
+					userService.save(sessionUser);
 				} catch (Exception e) {
 					e.getMessage();
 				}
 			}
 		}
+	}
+
+	@PreDestroy
+	public void destroy() {
+		sessionUser.setLoggedIn(false);
+		userService.save(sessionUser);
 	}
 }

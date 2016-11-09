@@ -53,7 +53,7 @@ public class StartupServiceImpl implements StartupService {
      */
     @Autowired
     private UserRepository userDao;
-    
+
     /**
      * Szerepköröket elérő adathozzáférési osztály.
      */
@@ -61,10 +61,15 @@ public class StartupServiceImpl implements StartupService {
     private RoleRepository roleDao;
 
     /**
+     * Admin szerpekör.
+     */
+    private Role adminRole;
+
+    /**
      * Felhasználói szerpekör.
      */
     private Role userRole;
-    
+
     /**
      * Felhasználó entitás amelyet betöltünk majd.
      */
@@ -81,9 +86,9 @@ public class StartupServiceImpl implements StartupService {
 
     private void createDefaultApplicationContext() {
         try {
-            userRole = roleDao.findByRoleName(ROLE_ADMIN);
+            adminRole = roleDao.findByRoleName(ROLE_ADMIN);
             user = userDao.findByUsername(ADMIN);
-            if (userRole == null && user == null) {
+            if (adminRole == null && user == null) {
                 createAdminUser();
             } else {
                 user.setPassword(PASSWORD);
@@ -99,12 +104,13 @@ public class StartupServiceImpl implements StartupService {
      */
     public void createAdminUser() {
         LOGGER.info("Admin profil létrehozása.");
-        userRole = roleDao.save(new Role(ROLE_ADMIN));
+        adminRole = roleDao.save(new Role(ROLE_ADMIN));
+        userRole = roleDao.save(new Role(ROLE_USER));
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Create admin role : " + userRole.toString());
+            LOGGER.debug("Create admin role : " + adminRole.toString());
         }
         user = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email(ADMINEMAIL).remove(false)
-                .roles(Arrays.asList(userRole)).build());
+                .roles(Arrays.asList(adminRole)).build());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Create user : " + user.toString());
         }

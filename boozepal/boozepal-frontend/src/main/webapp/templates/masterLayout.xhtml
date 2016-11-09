@@ -16,7 +16,7 @@
 		<meta name="viewport"
 			content="width=device-width, initial-scale=1.0, user-scalable=no" />
 		<title><ui:insert name="pageTitle"></ui:insert></title>
-		<ui:insert name="head-extra" />
+		<ui:insert name="head-extra"></ui:insert>
 
 		<h:outputStylesheet library="bootstrap" name="css/bootstrap.css"></h:outputStylesheet>
 		<h:outputStylesheet library="bootstrap" name="css/basic.css"
@@ -92,6 +92,7 @@
 							href="#{request.contextPath}/secured/authentication.xhtml">#{out.button}</a></li>
 						<li><a href="#{request.contextPath}/secured/adminuser.xhtml">#{out.newAdminInsert}</a></li>
 						<li><a href="#{request.contextPath}/secured/userlist.xhtml">#{out.userMenu}</a></li>
+						<li><a href="#{request.contextPath}/secured/onlineUsers.xhtml">#{out.onlineUsers}</a></li>
 					</sec:authorize>
 				</ul>
 			</div>

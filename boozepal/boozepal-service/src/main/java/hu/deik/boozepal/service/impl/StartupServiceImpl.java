@@ -87,7 +87,17 @@ public class StartupServiceImpl implements StartupService {
     /**
      * {@inheritDoc}
      */
-    public void createAdminUser() {
+    @Override
+    public void createDefaultApplicationContext() {
+        try {
+            checkIfDefaultAdministratorExists();
+            checkIfDefaultUserRoleExists();
+        } catch (Exception e) {
+            LOGGER.error("Failed to deploy application.", e);
+        }
+    }
+
+    private void createAdminUser() {
         LOGGER.info("Admin profil létrehozása.");
         adminRole = roleDao.save(new Role(ROLE_ADMIN));
         if (LOGGER.isDebugEnabled()) {
@@ -97,15 +107,6 @@ public class StartupServiceImpl implements StartupService {
                 .roles(Arrays.asList(adminRole)).build());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Create user : {} ", adminUser.toString());
-        }
-    }
-
-    private void createDefaultApplicationContext() {
-        try {
-            checkIfDefaultAdministratorExists();
-            checkIfDefaultUserRoleExists();
-        } catch (Exception e) {
-            LOGGER.error("Failed to deploy application.", e);
         }
     }
 

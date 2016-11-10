@@ -53,7 +53,7 @@ public class StartupServiceImpl implements StartupService {
      */
     @Autowired
     private UserRepository userDao;
-    
+
     /**
      * Szerepköröket elérő adathozzáférési osztály.
      */
@@ -61,14 +61,19 @@ public class StartupServiceImpl implements StartupService {
     private RoleRepository roleDao;
 
     /**
+     * Admin szerpekör.
+     */
+    private Role adminRole;
+
+    /**
      * Felhasználói szerpekör.
      */
     private Role userRole;
-    
+
     /**
      * Felhasználó entitás amelyet betöltünk majd.
      */
-    private User user;
+    private User adminUser;
 
     /**
      * Init metódus mely elsőként fut le a szolgáltatás elindulása után.
@@ -79,34 +84,67 @@ public class StartupServiceImpl implements StartupService {
         createDefaultApplicationContext();
     }
 
-    private void createDefaultApplicationContext() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createDefaultApplicationContext() {
         try {
-            userRole = roleDao.findByRoleName(ROLE_ADMIN);
-            user = userDao.findByUsername(ADMIN);
-            if (userRole == null && user == null) {
-                createAdminUser();
-            } else {
-                user.setPassword(PASSWORD);
-                userDao.save(user);
-            }
+            checkIfDefaultAdministratorExists();
+            checkIfDefaultUserRoleExists();
         } catch (Exception e) {
             LOGGER.error("Failed to deploy application.", e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void createAdminUser() {
+    private void createAdminUser() {
         LOGGER.info("Admin profil létrehozása.");
-        userRole = roleDao.save(new Role(ROLE_ADMIN));
+        adminRole = roleDao.save(new Role(ROLE_ADMIN));
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Create admin role : " + userRole.toString());
+            LOGGER.debug("Create admin role : {}", adminRole.toString());
         }
-        user = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email(ADMINEMAIL).remove(false)
-                .roles(Arrays.asList(userRole)).build());
+        adminUser = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email(ADMINEMAIL).remove(false)
+                .roles(Arrays.asList(adminRole)).build());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Create user : " + user.toString());
+            LOGGER.debug("Create user : {} ", adminUser.toString());
         }
     }
+
+    private void checkIfDefaultUserRoleExists() {
+        userRole = roleDao.findByRoleName(ROLE_USER);
+        if (isUserRoleNull()) {
+            userRole = roleDao.save(new Role(ROLE_USER));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Create user role : {}", userRole.toString());
+            }
+        }
+    }
+
+    private void checkIfDefaultAdministratorExists() {
+        loadAdmin();
+        if (isAdminRoleNull() && isAdminUserNull()) {
+            createAdminUser();
+        } else {
+            adminUser.setPassword(PASSWORD);
+            userDao.save(adminUser);
+        }
+    }
+
+    private boolean isUserRoleNull() {
+        return userRole == null;
+    }
+
+    private void loadAdmin() {
+        adminRole = roleDao.findByRoleName(ROLE_ADMIN);
+        adminUser = userDao.findByUsername(ADMIN);
+    }
+
+    private boolean isAdminUserNull() {
+        return adminUser == null;
+    }
+
+    private boolean isAdminRoleNull() {
+        return adminRole == null;
+    }
+
 }

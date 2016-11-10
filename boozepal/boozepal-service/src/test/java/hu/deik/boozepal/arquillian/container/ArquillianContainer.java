@@ -13,9 +13,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.RegistrationException;
+import hu.deik.boozepal.common.vo.MapUserVO;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.service.UserService;
 import hu.deik.boozepal.service.impl.UserServiceImpl;
+import hu.deik.boozepal.util.MapUserConveter;
 
 /**
  * Arquillian tesztek bázis osztálya, a konténert hozza létre majd amit
@@ -43,10 +45,12 @@ public class ArquillianContainer {
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
                 .addPackage(UserService.class.getPackage()).addPackage(UserServiceImpl.class.getPackage())
                 .addPackage(UserRepository.class.getPackage())
+                .addPackage(MapUserConveter.class.getPackage())
+                .addPackage(MapUserVO.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
-                .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
-                .addAsLibraries(coreApi);
+                .addAsResource("logback-test.xml").addAsResource("spring-core-test.xml")
+                .addAsResource(EmptyAsset.INSTANCE, "beans.xml").addAsLibraries(springContext).addAsLibraries(springWeb)
+                .addAsLibraries(springBeans).addAsLibraries(coreApi);
         return webArchive;
     }
 

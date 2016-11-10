@@ -131,7 +131,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     private User createNewUser(Payload payload) {
-        User newUser = User.builder().email(payload.getEmail()).fullName((String) payload.get("name"))
+        User newUser = User.builder().email(payload.getEmail()).username((String) payload.get("name"))
                 .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).build();
         return userDao.save(newUser);
     }

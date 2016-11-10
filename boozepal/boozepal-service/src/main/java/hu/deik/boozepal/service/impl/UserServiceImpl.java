@@ -122,8 +122,8 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public User createNewUser(String fullName, String email) {
-        User newUser = User.builder().email(email).fullName(fullName).lastKnownCoordinate(ORIGO)
+    public User createNewUser(String username, String email) {
+        User newUser = User.builder().email(email).username(username).lastKnownCoordinate(ORIGO)
                 .password(BoozePalConstants.ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(getRoleUser()))
                 .build();
         logger.debug("New User:{}", newUser);

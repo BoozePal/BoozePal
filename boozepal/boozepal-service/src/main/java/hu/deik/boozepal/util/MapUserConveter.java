@@ -18,7 +18,7 @@ public class MapUserConveter {
      */
     public static MapUserVO toMapUserVO(User user) {
         if (notNull(user) && notNull(user.getLastKnownCoordinate()))
-            return MapUserVO.builder().fullName(user.getFullName())
+            return MapUserVO.builder().username(user.getUsername())
                     .latitude(user.getLastKnownCoordinate().getLatitude())
                     .altitude(user.getLastKnownCoordinate().getAltitude()).build();
         else

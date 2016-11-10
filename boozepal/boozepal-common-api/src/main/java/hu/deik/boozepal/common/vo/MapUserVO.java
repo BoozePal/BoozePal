@@ -22,7 +22,7 @@ public class MapUserVO {
     /**
      * Felhasználó teljes neve.
      */
-    private String fullName;
+    private String username;
 
     /**
      * Szélesség.

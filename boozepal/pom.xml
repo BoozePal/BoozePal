@@ -115,6 +115,7 @@
 		<version.wildfly>10.1.0.Final</version.wildfly>
 		<harmcrest.version>1.3</harmcrest.version>
 		<lombok.version>1.16.8</lombok.version>
+		<jboss.home>../boozepal-wildfly/target/wildfly-10.1.0.Final</jboss.home>
 	</properties>
 
 	<repositories>

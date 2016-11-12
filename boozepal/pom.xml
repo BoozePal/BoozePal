@@ -49,6 +49,7 @@
 	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- MAVEN -->
 		<maven.compiler.version>3.5.1</maven.compiler.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -56,53 +57,63 @@
 		<maven.enforcer.version>1.4.1</maven.enforcer.version>
 		<maven.site.version>3.3</maven.site.version>
 		<maven.war.version>2.6</maven.war.version>
-		<maven.surefire.version>2.19.1</maven.surefire.version>
+		<maven.surefire.version>2.12.2</maven.surefire.version>
 		<maven.ejb.version>2.5.1</maven.ejb.version>
+		<maven.common.junit.version>2.17</maven.common.junit.version>
+		<maven.failsafe.version>2.19.1</maven.failsafe.version>
+		<maven.dependency.version>2.8</maven.dependency.version>
+		<maven.compiler.version>3.3</maven.compiler.version>
+		<!-- ARQUILLIAN -->
 		<arquillian.bom.version>1.1.11.Final</arquillian.bom.version>
-		<ejb.version>3.1</ejb.version>
+		<arquillian.container.version>1.1.0.Final</arquillian.container.version>
+		<arquillian.jacoco.version>1.0.0.Alpha8</arquillian.jacoco.version>
 		<shinkwrap.version>2.2.4</shinkwrap.version>
+		<!-- TESTING -->
+		<junit.version>4.12</junit.version>
+		<mockito-all.version>2.0.2-beta</mockito-all.version>
+		<mockito.core.version>2.0.53-beta</mockito.core.version>
+		<powermock.version>1.6.5</powermock.version>
+		<h2db.version>1.4.192</h2db.version>
+		<!-- JAVA EE -->
+		<ejb.version>3.1</ejb.version>
+		<javaee.api.version>6.0</javaee.api.version>
+		<javax.servlet.api.version>3.1.0</javax.servlet.api.version>
+		<servlet.api.version>2.5</servlet.api.version>
+		<!-- REPORTING -->
 		<checkstyle.version>2.17</checkstyle.version>
 		<javadoc.version>2.10.3</javadoc.version>
 		<jxr.version>2.5</jxr.version>
 		<cobertura.version>2.7</cobertura.version>
-		<lombok.version>1.16.8</lombok.version>
-		<javaee.api.version>6.0</javaee.api.version>
-		<spring.version>4.3.2.RELEASE</spring.version>
-		<junit.version>4.12</junit.version>
+		<jacoco.version>0.7.7.201606060606</jacoco.version>
+		<!-- LOGGING -->
 		<logback.version>1.1.7</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
-		<h2db.version>1.4.192</h2db.version>
-		<javax.servlet.api.version>3.1.0</javax.servlet.api.version>
-		<servlet.api.version>2.5</servlet.api.version>
-		<mockito-all.version>2.0.2-beta</mockito-all.version>
-		<mockito.core.version>2.0.53-beta</mockito.core.version>
-		<powermock.version>1.6.5</powermock.version>
+		<!-- PRIMEFACES -->
 		<primefaces.version>5.3</primefaces.version>
 		<primefaces.extension.version>4.0.0</primefaces.extension.version>
 		<primefaces.themes.version>1.0.10</primefaces.themes.version>
-		<maven.compiler.version>3.3</maven.compiler.version>
-		<jaxws.version>2.2.3</jaxws.version>
-		<jaxws.spring.version>1.8</jaxws.spring.version>
-		<spring.data.jpa.version>1.9.4.RELEASE</spring.data.jpa.version>
+		<!-- HIBERNATE -->
 		<hibernate.jpa.api.version>1.0.1.Final</hibernate.jpa.api.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
 		<hibernate.commons.version>5.0.1.Final</hibernate.commons.version>
-		<mysql.version>5.1.38</mysql.version>
+		<!-- SPRING -->
 		<spring.platform.bom.version>2.0.5.RELEASE</spring.platform.bom.version>
-		<hikaricp.version>2.5.1</hikaricp.version>
+		<spring.version>4.3.2.RELEASE</spring.version>
+		<spring.data.jpa.version>1.9.4.RELEASE</spring.data.jpa.version>
 		<spring.webflow.version>2.4.2.RELEASE</spring.webflow.version>
 		<spring.security.taglibs.version>4.1.3.RELEASE</spring.security.taglibs.version>
 		<spring.security.version>4.1.3.RELEASE</spring.security.version>
 		<spring.faces.version>2.4.2.RELEASE</spring.faces.version>
+		<!-- THIRD PARTY -->
+		<hikaricp.version>2.5.1</hikaricp.version>
+		<mysql.version>5.1.38</mysql.version>
 		<selenium.version>2.53.0</selenium.version>
 		<cucumber.version>1.2.4</cucumber.version>
 		<google.api.version>1.22.0</google.api.version>
-		<arquillian.container.version>1.1.0.Final</arquillian.container.version>
-		<maven.failsafe.version>2.18.1</maven.failsafe.version>
-		<maven.dependency.version>2.8</maven.dependency.version>
+		<google.gson.version>2.7</google.gson.version>
 		<version.wildfly>10.1.0.Final</version.wildfly>
 		<harmcrest.version>1.3</harmcrest.version>
-		<google.gson.version>2.7</google.gson.version>
+		<lombok.version>1.16.8</lombok.version>
 	</properties>
 
 	<repositories>
@@ -361,6 +372,17 @@
 				<version>${arquillian.container.version}</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.extension</groupId>
+				<artifactId>arquillian-jacoco</artifactId>
+				<scope>test</scope>
+				<version>${arquillian.jacoco.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jacoco</groupId>
+				<artifactId>org.jacoco.core</artifactId>
+				<version>${jacoco.version}</version>
+			</dependency>
 
 			<!-- Third Party plugins -->
 			<dependency>
@@ -473,7 +495,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.7.201606060606</version>
+				<version>${jacoco.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -520,13 +542,26 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>common-junit48</artifactId>
+							<version>${maven.common.junit.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>${maven.failsafe.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.maven.surefire</groupId>
-							<artifactId>surefire-junit47</artifactId>
-							<version>${maven.failsafe.version}</version>
+							<artifactId>common-junit48</artifactId>
+							<version>${maven.common.junit.version}</version>
 						</dependency>
 					</dependencies>
 					<executions>
@@ -546,29 +581,42 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.7.7.201606060606</version>
+					<version>${jacoco.version}</version>
+					<configuration>
+						<includes>
+						</includes>
+						<excludes>
+							<exclude>.....</exclude>
+						</excludes>
+					</configuration>
 					<executions>
 						<execution>
-							<id>pre-integration-test</id>
-							<phase>pre-integration-test</phase>
+							<id>default-prepare-agent</id>
 							<goals>
 								<goal>prepare-agent</goal>
 							</goals>
+						</execution>
+						<execution>
+							<id>default-prepare-agent-integration</id>
+							<goals>
+								<goal>prepare-agent-integration</goal>
+							</goals>
 							<configuration>
-								<destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-								<propertyName>failsafeArgLine</propertyName>
+								<destFile>${project.build.directory}/jacoco-it.exec</destFile>
 							</configuration>
 						</execution>
 						<execution>
-							<id>post-integration-test</id>
-							<phase>post-integration-test</phase>
+							<id>Create Unit Test Report</id>
+							<phase>prepare-package</phase>
 							<goals>
 								<goal>report</goal>
 							</goals>
-							<configuration>
-								<dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
-								<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-							</configuration>
+						</execution>
+						<execution>
+							<id>Create Integration Test Report</id>
+							<goals>
+								<goal>report-integration</goal>
+							</goals>
 						</execution>
 					</executions>
 				</plugin>
@@ -588,4 +636,12 @@
 		<url>https://github.com/BoozePal/BoozePal-WEB</url>
 		<developerConnection>scm:git:https://github.com/BoozePal/BoozePal-WEB</developerConnection>
 	</scm>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/BoozePal/BoozePal</url>
+	</ciManagement>
+	<issueManagement>
+		<system>Waffle IO / GitHub</system>
+		<url>https://waffle.io/BoozePal/BoozePal</url>
+	</issueManagement>
 </project>

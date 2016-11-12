@@ -115,6 +115,10 @@
 			<groupId>org.jacoco</groupId>
 			<artifactId>org.jacoco.core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>hu.deik</groupId>
+			<artifactId>boozepal-wildfly</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -138,33 +142,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<!-- <phase>process-test-classes</phase> -->
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.wildfly</groupId>
-									<artifactId>wildfly-dist</artifactId>
-									<version>${version.wildfly}</version>
-									<type>zip</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>target</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ejb-plugin</artifactId>

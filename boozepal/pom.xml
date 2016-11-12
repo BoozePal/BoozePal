@@ -16,6 +16,7 @@
 		<module>boozepal-integration</module>
 		<module>boozepal-service</module>
 		<module>boozepal-ear</module>
+		<module>boozepal-wildfly</module>
 	</modules>
 	<licenses>
 		<license>
@@ -446,6 +447,12 @@
 				<version>1.4.192</version>
 			</dependency>
 
+			<dependency>
+				<groupId>hu.deik</groupId>
+				<artifactId>boozepal-wildfly</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>

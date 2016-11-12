@@ -101,6 +101,11 @@
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>humanity</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

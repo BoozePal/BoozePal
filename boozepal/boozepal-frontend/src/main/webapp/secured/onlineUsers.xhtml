@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/masterLayout.xhtml">
+	<ui:define name="head-extra">
+		<script
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa4dOjlTdQeTmLQhBqu4h-khzsREWwqsw" />
+		<h:outputScript library="boozepal" name="js/online-users.js" />
+		<h:outputStylesheet library="boozepal" name="css/map.css" />
+		<script type="text/javascript">
+			window.onload = function() {
+				var usersInMap = '${mapBean.onlineUsers}';
+				var text = '${out.yourPosition}';
+				var parsedUsers = JSON.parse(usersInMap);
+				google.maps.event.addDomListener(window, 'load', BoozePal.initMap(parsedUsers,text));
+			}
+
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<h3>
+			<p:outputLabel value="${out.onlineUsers}" />
+		</h3>
+		<div id="map"></div>
+	</ui:define>
+</ui:composition>

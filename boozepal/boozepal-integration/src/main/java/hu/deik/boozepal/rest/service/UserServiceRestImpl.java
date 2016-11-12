@@ -27,9 +27,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
@@ -41,137 +43,176 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
 @Interceptors(SpringBeanAutowiringInterceptor.class)
 public class UserServiceRestImpl implements UserServiceRest {
 
-    private static final String HTTPS_ACCOUNTS_GOOGLE_COM = "https://accounts.google.com";
-    private static final String ANDROID_USER_DOES_NOT_NEED_PASSWORD = "AndroidUserDoesNotNeedPassword";
+	private static final String HTTPS_ACCOUNTS_GOOGLE_COM = "https://accounts.google.com";
+	private static final String ANDROID_USER_DOES_NOT_NEED_PASSWORD = "AndroidUserDoesNotNeedPassword";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * Felhasználókat elérő adathozzáférési osztály.
-     */
-    @Autowired
-    private UserRepository userDao;
+	/**
+	 * Felhasználókat elérő adathozzáférési osztály.
+	 */
+	@Autowired
+	private UserRepository userDao;
 
-    /**
-     * Szerepköröket elérő adathozzáférési osztály.
-     */
-    @Autowired
-    private RoleRepository roleDao;
+	/**
+	 * Szerepköröket elérő adathozzáférési osztály.
+	 */
+	@Autowired
+	private RoleRepository roleDao;
 
-    /**
-     * Alapértelmezett felhasználói jog.
-     */
-    private Role userRole;
+	/**
+	 * Alapértelmezett felhasználói jog.
+	 */
+	private Role userRole;
 
-    /**
-     * A REST hívásokon keresztül kapott Google Token validáló.
-     */
-    private GoogleIdTokenVerifier verifier;
+	/**
+	 * A REST hívásokon keresztül kapott Google Token validáló.
+	 */
+	private GoogleIdTokenVerifier verifier;
 
-    /**
-     * A szolgáltatás felállásakor lefutó metódus.
-     */
-    @PostConstruct
-    public void init() {
-        userRole = roleDao.findByRoleName(ROLE_USER);
-        verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setIssuer(HTTPS_ACCOUNTS_GOOGLE_COM).build();
-    }
+	/**
+	 * A szolgáltatás felállásakor lefutó metódus.
+	 */
+	@PostConstruct
+	public void init() {
+		userRole = roleDao.findByRoleName(ROLE_USER);
+		verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+				.setIssuer(HTTPS_ACCOUNTS_GOOGLE_COM).build();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
-        PayloadUserVO userByGoogleToken;
-        try {
-            userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
-        } catch (GeneralSecurityException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new AuthenticationException("Login error, " + e.getMessage());
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
+		PayloadUserVO userByGoogleToken;
+		try {
+			userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
+		} catch (GeneralSecurityException | IOException e) {
+			logger.error(e.getMessage(), e);
+			throw new AuthenticationException("Login error, " + e.getMessage());
+		}
 
-        return createNewUserOrGetExisting(userByGoogleToken);
+		return createNewUserOrGetExisting(userByGoogleToken);
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
-        PayloadUserVO userByGoogleToken;
-        try {
-            userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
-        } catch (GeneralSecurityException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new AuthenticationException("Logout error, " + e.getMessage());
-        }
-        logoutUser(userByGoogleToken.getUser());
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
+		PayloadUserVO userByGoogleToken;
+		try {
+			userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
+		} catch (GeneralSecurityException | IOException e) {
+			logger.error(e.getMessage(), e);
+			throw new AuthenticationException("Logout error, " + e.getMessage());
+		}
+		logoutUser(userByGoogleToken.getUser());
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
-        List<User> onlineUsers = userDao.findOnlineUsers();
-        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
-                .collect(Collectors.toList());
-        return usersInRadius;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
+		List<User> onlineUsers = userDao.findOnlineUsers();
+		List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
+				.collect(Collectors.toList());
+		return usersInRadius;
+	}
 
-    private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
-        return distanceBetweenPoints(latitude, altitude, p) <= radius;
-    }
+	private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
+		return distanceBetweenPoints(latitude, altitude, p) <= radius;
+	}
 
-    private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
-        return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
-                + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
-    }
+	private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
+		return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
+				+ toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
+	}
 
-    private User createNewUser(Payload payload) {
-        User newUser = User.builder().email(payload.getEmail()).fullName((String) payload.get("name"))
-                .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).build();
-        return userDao.save(newUser);
-    }
+	private User createNewUser(Payload payload) {
+		User newUser = User.builder().email(payload.getEmail()).fullName((String) payload.get("name"))
+				.password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).build();
+		return userDao.save(newUser);
+	}
 
-    private User createNewUserOrGetExisting(PayloadUserVO userByGoogleToken) {
-        User user = userByGoogleToken.getUser();
-        if (user == null)
-            return createNewUser(userByGoogleToken.getPayload());
-        else {
-            user.setLoggedIn(true);
-            return userDao.save(user);
-        }
-    }
+	private User createNewUserOrGetExisting(PayloadUserVO userByGoogleToken) {
+		User user = userByGoogleToken.getUser();
+		if (user == null)
+			return createNewUser(userByGoogleToken.getPayload());
+		else {
+			user.setLoggedIn(true);
+			return userDao.save(user);
+		}
+	}
 
-    private PayloadUserVO getUserByGoogleToken(String token)
-            throws AuthenticationException, GeneralSecurityException, IOException {
-        GoogleIdToken idToken = verifier.verify(token);
-        PayloadUserVO payloadUserVO;
-        if (idToken != null) {
-            Payload payload = idToken.getPayload();
-            User user = userDao.findByEmail(payload.getEmail());
-            payloadUserVO = PayloadUserVO.builder().user(user).payload(payload).build();
-        } else {
-            throw new AuthenticationException("Invalid token.");
-        }
-        return payloadUserVO;
-    }
+	private PayloadUserVO getUserByGoogleToken(String token)
+			throws AuthenticationException, GeneralSecurityException, IOException {
+		GoogleIdToken idToken = verifier.verify(token);
+		PayloadUserVO payloadUserVO;
+		if (idToken != null) {
+			Payload payload = idToken.getPayload();
+			User user = userDao.findByEmail(payload.getEmail());
+			payloadUserVO = PayloadUserVO.builder().user(user).payload(payload).build();
+		} else {
+			throw new AuthenticationException("Invalid token.");
+		}
+		return payloadUserVO;
+	}
 
-    private void logoutUser(User user) {
-        user.setLoggedIn(false);
-        userDao.save(user);
-    }
+	private void logoutUser(User user) {
+		user.setLoggedIn(false);
+		userDao.save(user);
+	}
 
-    private Double toSquare(Double number) {
-        return Math.pow(number, 2);
-    }
+	private Double toSquare(Double number) {
+		return Math.pow(number, 2);
+	}
 
-    @Override
-    public User saveUser(User user) {
-        return userDao.save(user);
-    }
+	@Override
+	public User saveUser(User user) {
+		return userDao.save(user);
+	}
 
+	/**
+	 * Kapot token adataiból kikeressük az adott felhasználót.
+	 */
+	@Override
+	public void updateUserDetails(RemoteUserDetailsVO remoteUserToken) throws UserDetailsUpdateException {
+		PayloadUserVO userByGoogleToken;
+		try {
+			userByGoogleToken = getUserByGoogleToken(remoteUserToken.getToken());
+		} catch (AuthenticationException | GeneralSecurityException | IOException e) {
+			throw new UserDetailsUpdateException("Sikertelen bejelentkezés, " + e.getMessage());
+		}
+		updateUserInformation(userByGoogleToken.getUser(), remoteUserToken.getUser());
+	}
+
+	/**
+	 * A felhasználó adatainak tényleges frissitése.
+	 */
+	private boolean updateUserInformation(final User user, final User remoteUser) throws UserDetailsUpdateException {
+		if (user == null || remoteUser == null)
+			return false;
+		else {
+			user.setEmail(remoteUser.getEmail());
+			user.setUsername(remoteUser.getUsername());
+			user.setEmail(remoteUser.getEmail());
+			user.setFavouriteDrink(remoteUser.getFavouriteDrink());
+			user.setFavouritePub(remoteUser.getFavouritePub());
+			user.setPriceCategory(remoteUser.getPriceCategory());
+			user.setAddress(remoteUser.getAddress());
+			user.setSearchRadius(remoteUser.getSearchRadius());
+			user.setActualPals(remoteUser.getActualPals());
+			user.setTimeBoard(remoteUser.getTimeBoard());
+			try {
+				userDao.save(user);
+			} catch (Exception e) {
+				throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait" + e.getMessage());
+			}
+			return true;
+		}
+	}
 }

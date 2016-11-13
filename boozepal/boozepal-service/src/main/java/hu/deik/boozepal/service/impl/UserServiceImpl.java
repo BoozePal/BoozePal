@@ -35,12 +35,12 @@ import hu.deik.boozepal.util.MapUserConveter;
 @Interceptors(SpringBeanAutowiringInterceptor.class)
 @Local(UserService.class)
 public class UserServiceImpl implements UserService {
-    
+
     /**
      * Origo koordináta.
      */
     private static final Coordinate ORIGO = Coordinate.builder().latitude(0.0).altitude(0.0).build();
-    
+
     /**
      * Osztály loggere.
      */
@@ -124,8 +124,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createNewUser(String username, String email) {
         User newUser = User.builder().email(email).username(username).lastKnownCoordinate(ORIGO)
-                .password(BoozePalConstants.ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(getRoleUser()))
-                .build();
+                .password(BoozePalConstants.ANDROID_USER_DOES_NOT_NEED_PASSWORD)
+                .roles(Arrays.asList(getRole(BoozePalConstants.ROLE_USER))).build();
         logger.debug("New User:{}", newUser);
         return userDao.save(newUser);
     }
@@ -148,11 +148,23 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean hasRoleUser(User user) {
-        return user.getRoles().contains(getRoleUser());
+        return user.getRoles().contains(getRole(BoozePalConstants.ROLE_USER));
     }
 
-    private Role getRoleUser() {
-        return roleDao.findByRoleName(BoozePalConstants.ROLE_USER);
+    private boolean notAdmin(User user) {
+        return !user.getRoles().contains(getRole(BoozePalConstants.ROLE_ADMIN));
+    }
+
+    private Role getRole(String role) {
+        return roleDao.findByRoleName(role);
+    }
+
+    @Override
+    public void deleteAllUsers() {
+        logger.info("Deleting all users from db.");
+        List<User> allUsers = userDao.findAll();
+        List<User> onlyUsers = allUsers.stream().filter(this::notAdmin).collect(Collectors.toList());
+        userDao.delete(onlyUsers);
     }
 
 }

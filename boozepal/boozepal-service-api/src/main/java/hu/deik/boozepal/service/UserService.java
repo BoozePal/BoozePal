@@ -54,6 +54,11 @@ public interface UserService {
     public void save(User user);
 
     /**
+     * Összes felhasználó törtlése, de az adminokat nem.
+     */
+    public void deleteAllUsers();
+
+    /**
      * Létrehoz és adatbázisba ment egy új felhasználót a megadott névvel és
      * e-mail címmel.
      * 

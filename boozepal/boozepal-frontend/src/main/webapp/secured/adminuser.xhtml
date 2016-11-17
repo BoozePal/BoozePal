@@ -4,11 +4,20 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	template="/templates/masterLayout.xhtml">
+	<ui:define name="head-extra">
+		<style type="text/css">
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+</style>
+	</ui:define>
 	<ui:define name="content">
 		<p:messages id="messages" autoUpdate="true" closable="true" />
 		<h:form id="adminUserRegistrationForm">
 			<p:panel id="panel">
-				<h:panelGrid columns="3" cellpadding="10" cellspacing="10">
+				<h:panelGrid columns="3" styleClass="center" cellpadding="10"
+					cellspacing="10">
 					<p:outputLabel for="username" value="${out.userName}" />
 					<p:inputText id="username"
 						requiredMessage="${out.usernameRequired}"
@@ -16,7 +25,6 @@
 						label="${out.userName}">
 					</p:inputText>
 					<p:message for="username" id="usrmsg" display="text" />
-
 					<p:outputLabel for="password" value="${out.password}" />
 					<p:inputText id="password" type="password"
 						requiredMessage="${out.passwordRequired}"
@@ -24,8 +32,8 @@
 						required="true">
 					</p:inputText>
 					<p:message for="password" id="passwordMessage" display="text" />
-					<p:commandButton value="${out.registration}" validateClient="true"
-						update="passwordMessage usrmsg"
+					<p:commandButton styleClass="center" value="${out.registration}"
+						validateClient="true" update="passwordMessage usrmsg"
 						actionListener="#{adminRegistrationBean.createNewAdminAccount()}"
 						icon="ui-icon-check" />
 				</h:panelGrid>

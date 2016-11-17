@@ -16,7 +16,8 @@
 		<h:form id="form">
 			<p:growl id="msg" />
 			<h:outputText value="#{out.userSwitcher}: " />
-			<p:inputSwitch value="#{mbean.activeUser}">
+			<p:inputSwitch value="#{mbean.activeUser}" onLabel="${out.on}"
+				offLabel="${out.off}">
 				<p:ajax listener="#{mbean.addMessage}" update="msg" />
 				<p:ajax listener="#{mbean.switchUsers}" update="logListId" />
 			</p:inputSwitch>
@@ -26,7 +27,8 @@
 					<h:outputText value="#{user.username}" />
 				</p:column>
 				<p:column headerText="#{out.activeUser}">
-					<h:outputText value="#{user.loggedIn}" />
+					<h:outputText
+						value="#{user.loggedIn == true?out.online:out.offline}" />
 				</p:column>
 				<p:column headerText="#{out.email}">
 					<h:outputText value="#{user.email}" />

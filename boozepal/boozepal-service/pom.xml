@@ -54,6 +54,16 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+		</dependency>
+
 		<!-- for ARQUILLIAN IT -->
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>

@@ -2,11 +2,14 @@ package hu.deik.boozepal.service.impl.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.EJB;
 
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +88,53 @@ public class UserServiceIT extends ArquillianContainer {
         List<MapUserVO> onlineUsersToMap = userService.getOnlineUsersToMap();
         Assert.assertEquals(1, onlineUsersToMap.size());
         Assert.assertEquals(MapUserConveter.toMapUserVO(onlineUser), onlineUsersToMap.get(0));
+    }
+
+    @Test
+    public final void testGetOnlineUsers() {
+        // given two users
+        User onlineUser = User.builder().username("oneOnlineUser").password(ENCODED_PASSWORD)
+                .email("onlineuser@boozepal.com").loggedIn(true).build();
+        userService.save(onlineUser);
+
+        User offlineUser = User.builder().username("oneOfflineUser").password(ENCODED_PASSWORD)
+                .email("offlineuser@boozepal.com").loggedIn(false).build();
+        userService.save(offlineUser);
+
+        // when
+        List<User> onlineUsers = userService.getOnlineUsers();
+
+        // then
+        Assert.assertEquals(1, onlineUsers.size());
+        Assert.assertThat(Arrays.asList(onlineUser), Matchers.containsInAnyOrder(onlineUsers.toArray()));
+    }
+
+    @Test
+    public final void testFindAll() {
+        // given some users, now two + the admin user who always exists!!
+        User onlineUser = User.builder().username("user1").password(ENCODED_PASSWORD).email("user1@boozepal.com")
+                .loggedIn(true).build();
+        userService.save(onlineUser);
+
+        User offlineUser = User.builder().username("user2").password(ENCODED_PASSWORD).email("user2@boozepal.com")
+                .loggedIn(false).build();
+        userService.save(offlineUser);
+
+        User adminUser = userService.findUserByName(BoozePalConstants.ADMIN);
+
+        // when
+        List<User> allUser = userService.findAll();
+        System.out.println(allUser);
+
+        // then
+        Assert.assertEquals(2 + 1, allUser.size());
+        Assert.assertThat(Arrays.asList(onlineUser, offlineUser, adminUser),
+                Matchers.containsInAnyOrder(allUser.toArray()));
+    }
+
+    @After
+    public void tearDown() {
+        userService.deleteAllUsers();
     }
 
 }

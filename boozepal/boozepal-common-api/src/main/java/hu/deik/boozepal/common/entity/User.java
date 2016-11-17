@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -74,8 +75,8 @@ public class User extends BaseEntity {
      * Felhasználó kedvenc itala.
      */
     //TODO legyen lista
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Drink favouriteDrink;
+    @OneToMany
+    private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.

@@ -34,17 +34,27 @@ public class DrinkRepositoryTest {
 
     @Test
     public void testFindDrinkByType() {
-        List<Drink> createDrinks = createDrinks();
-        drinkDao.save(createDrinks);
+//        List<Drink> createDrinks = createDrinks();
+//        drinkDao.save(createDrinks);
         DrinkType beerType = drinkTypeDao.findByName("beer");
         List<Drink> beers = drinkDao.findByDrinkType(beerType);
-        Assert.assertEquals(2, beers.size());
+        Assert.assertEquals(3, beers.size());
 
         DrinkType rumType = drinkTypeDao.findByName("rum");
         List<Drink> rums = drinkDao.findByDrinkType(rumType);
         Assert.assertEquals(3, rums.size());
     }
-
+    
+    @Test
+    public void testGetNumberOfFavouriteDrink() {
+        Integer numberOfFavouriteDrinkBorsodiSor = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Borsodi Sör"));
+        Assert.assertEquals(Integer.valueOf(1), numberOfFavouriteDrinkBorsodiSor);
+        
+        Integer numberOfFavouriteDrinkHabosSor = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Habos sör"));
+        Assert.assertEquals(Integer.valueOf(0), numberOfFavouriteDrinkHabosSor);
+    }
+    
+    @Deprecated
     private List<Drink> createDrinks() {
         List<Drink> drinks = new ArrayList<Drink>();
         // 2 darab sörtípus létrehozása

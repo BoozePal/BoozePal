@@ -43,6 +43,10 @@ public class DrinkRepositoryTest {
         DrinkType rumType = drinkTypeDao.findByName("rum");
         List<Drink> rums = drinkDao.findByDrinkType(rumType);
         Assert.assertEquals(3, rums.size());
+        
+        DrinkType vodkaType = drinkTypeDao.findByName("vodka");
+        List<Drink> vodkas = drinkDao.findByDrinkType(vodkaType);
+        Assert.assertEquals(1, vodkas.size());
     }
     
     @Test
@@ -52,6 +56,9 @@ public class DrinkRepositoryTest {
         
         Integer numberOfFavouriteDrinkHabosSor = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Habos sör"));
         Assert.assertEquals(Integer.valueOf(0), numberOfFavouriteDrinkHabosSor);
+        
+        Integer numberOfFavouriteDrinkErosRum = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Erős rum"));
+        Assert.assertEquals(Integer.valueOf(2), numberOfFavouriteDrinkErosRum);
     }
     
     @Deprecated

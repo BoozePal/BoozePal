@@ -11,7 +11,10 @@ insert into boozepal_drink(id,name,drinkType_id) values(6,'Közepes rum',3);
 insert into boozepal_drink(id,name,drinkType_id) values(7,'Erős rum',3);
 
 insert into boozepal_user(id,username,password,remove,loggedin) values(10,'DrinkTestUser','XXX',false,false);
+insert into boozepal_user(id,username,password,remove,loggedin) values(11,'DrinkTestUser2','XXX',false,false);
 
 insert into boozepal_user_boozepal_drink(boozepal_user_id,favouriteDrinks_id) values(10,1);
 insert into boozepal_user_boozepal_drink(boozepal_user_id,favouriteDrinks_id) values(10,2);
+insert into boozepal_user_boozepal_drink(boozepal_user_id,favouriteDrinks_id) values(10,7);
+insert into boozepal_user_boozepal_drink(boozepal_user_id,favouriteDrinks_id) values(11,7);
 

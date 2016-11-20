@@ -100,23 +100,17 @@ public class StartupServiceImpl implements StartupService {
     private void createAdminUser() {
         LOGGER.info("Admin profil létrehozása.");
         adminRole = roleDao.save(new Role(ROLE_ADMIN));
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Create admin role : {}", adminRole.toString());
-        }
+        LOGGER.debug("Create admin role : {}", adminRole.toString());
         adminUser = userDao.save(User.builder().username(ADMIN).password(PASSWORD).email(ADMINEMAIL).remove(false)
                 .roles(Arrays.asList(adminRole)).build());
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Create user : {} ", adminUser.toString());
-        }
+        LOGGER.debug("Create user : {} ", adminUser.toString());
     }
 
     private void checkIfDefaultUserRoleExists() {
         userRole = roleDao.findByRoleName(ROLE_USER);
         if (isUserRoleNull()) {
             userRole = roleDao.save(new Role(ROLE_USER));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Create user role : {}", userRole.toString());
-            }
+            LOGGER.debug("Create user role : {}", userRole.toString());
         }
     }
 

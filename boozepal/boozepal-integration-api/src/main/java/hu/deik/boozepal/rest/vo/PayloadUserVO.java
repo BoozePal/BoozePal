@@ -16,8 +16,6 @@ import lombok.NonNull;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class PayloadUserVO {
-    @NonNull
     private Payload payload;
-    @NonNull
     private User user;
 }

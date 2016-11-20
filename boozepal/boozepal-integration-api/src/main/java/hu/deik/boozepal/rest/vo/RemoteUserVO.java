@@ -14,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class RemoteUserVO {
 
-    private String id;
+    private Long id;
     private String name;
     private String city;
     private List<String> boozes;
@@ -22,5 +22,5 @@ public class RemoteUserVO {
     private List<Date> savedDates;
     private int searchRadius;
     private int priceCategory;
-
+    private List<RemoteUserVO> myPals;
 }

@@ -92,7 +92,7 @@ public class User extends BaseEntity {
     /**
      * Keresési sugár, km-ben megadva.
      */
-    private Long searchRadius;
+    private Integer searchRadius;
 
     /**
      * Aktuális cimborák.
@@ -109,6 +109,6 @@ public class User extends BaseEntity {
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
     @ElementCollection
+    @CollectionTable(name="boozepal_user_timeBoards", joinColumns=@JoinColumn(name="user_id"))
     private List<Date> timeBoard;
-
 }

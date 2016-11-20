@@ -75,7 +75,7 @@ public class User extends BaseEntity {
      * Preferált árkategória, 0-5 terjedő skálán.
      */
     @Column
-    private Integer priceCategory;
+    private int priceCategory;
 
     /**
      * Felhasználó lakóhelye.
@@ -92,7 +92,7 @@ public class User extends BaseEntity {
     /**
      * Keresési sugár, km-ben megadva.
      */
-    private Integer searchRadius;
+    private int searchRadius;
 
     /**
      * Aktuális cimborák.

@@ -108,18 +108,40 @@ public class UserServiceRestIT extends ArquillianContainer {
             Assert.fail(e.getMessage());
         }
         Assert.assertNotNull(savedUser);
-        Assert.assertEquals(remoteUser.getSearchRadius(), savedUser.getSearchRadius().intValue());
-        Assert.assertEquals(remoteUser.getPriceCategory(), savedUser.getPriceCategory().intValue());
+        Assert.assertEquals(remoteUser.getSearchRadius(), savedUser.getSearchRadius());
+        Assert.assertEquals(remoteUser.getPriceCategory(), savedUser.getPriceCategory());
         userService.deleteUser(savedUser);
     }
-    @Test(expected=UserDetailsUpdateException.class)
+
+    @Test(expected = UserDetailsUpdateException.class)
     public void testDeniedUpdateUserDetails() throws UserDetailsUpdateException {
         User testUser = buildTestUser();
         RemoteUserVO remoteUser = buildTestRemoteUser();
         remoteUser.setName("undefinedUser");
         testUser = userService.saveUser(testUser);
         userService.updateUserDetails(
+                remoteUser);
+        userService.deleteUser(testUser);
+    }
+
+    @Test
+    public void testUpdateOnlyUserTimeBoard() {
+        User testUser = buildTestUser();
+        Date day1 = new Date(2016, 11, 20);
+        Date day2 = new Date(2016, 11, 22);
+        RemoteUserVO remoteUser = RemoteUserVO.builder()
+                .name("tesztUser")
+                .savedDates(Arrays.asList(day1, day2))
+                .build();
+        testUser = userService.saveUser(testUser);
+        try {
+            testUser = userService.updateUserDetails(
                     remoteUser);
+        } catch (UserDetailsUpdateException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertTrue(testUser.getTimeBoard().contains(day1));
+        Assert.assertTrue(testUser.getTimeBoard().contains(day2));
         userService.deleteUser(testUser);
     }
 

@@ -14,7 +14,6 @@ import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,7 +193,7 @@ public class UserServiceRestImpl implements UserServiceRest {
         try {
             return remoteUserVoToUserEntity(remoteUser);
         } catch (RuntimeException e) {
-            throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait" + e.getMessage());
+            throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait " + e.getStackTrace());
         }
     }
 
@@ -205,18 +204,32 @@ public class UserServiceRestImpl implements UserServiceRest {
             throw new RuntimeException("User is null");
         } else {
             logger.info("User {}", user.toString());
+            if(remoteUserVO.getName() != null)
             user.setUsername(remoteUserVO.getName());
+            if(remoteUserVO.getCity() != null)
             user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
             user.setPriceCategory(remoteUserVO.getPriceCategory());
-            user.setSearchRadius((long) remoteUserVO.getSearchRadius());
+            user.setSearchRadius(remoteUserVO.getSearchRadius());
+            if(remoteUserVO.getSavedDates() != null)
             user.setTimeBoard(remoteUserVO.getSavedDates());
+            if(remoteUserVO.getBoozes() != null)
             user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
+            if(remoteUserVO.getPubs() != null)
             user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
-//            FIXME pushViktor ezekkel az adatokkal még gond van.
-// 			user.setActualPals(remoteUserVO.getActualPals());
+            if(remoteUserVO.getMyPals() != null)
+            user.setActualPals(getActualUsersList(remoteUserVO));
             logger.info("save update user");
             return userDao.save(user);
         }
+    }
+
+    private List<User> getActualUsersList(final RemoteUserVO remoteUserVO) {
+        List<User> users = new LinkedList<>();
+        for (RemoteUserVO user : remoteUserVO.getMyPals()) {
+            logger.info("Haver neve: " + user.getName());
+            users.add(userDao.findById(user.getId()));
+        }
+        return users;
     }
 
     private List<Pub> getRemoteUserPubs(final RemoteUserVO remoteUserVO) {

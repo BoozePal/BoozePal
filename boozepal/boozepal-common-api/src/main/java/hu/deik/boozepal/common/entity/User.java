@@ -1,14 +1,9 @@
 package hu.deik.boozepal.common.entity;
 
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +14,7 @@ import lombok.ToString;
 
 /**
  * Felhasználót reprezentáló entitás.
- * 
+ *
  * @version 1.0
  *
  */
@@ -39,12 +34,6 @@ public class User extends BaseEntity {
      */
     @Column(unique = true, length = 64)
     private String username;
-
-    /**
-     * Felhasználó teljes neve.
-     */
-    @Column(length = 128)
-    private String fullName;
 
     /**
      * Jelszó BCryptel titkosítva.
@@ -73,15 +62,14 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
-    //TODO legyen lista
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Drink favouriteDrink;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private List<Drink> favouriteDrink;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Pub favouritePub;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private List<Pub> favouritePub;
 
     /**
      * Preferált árkategória, 0-5 terjedő skálán.
@@ -120,8 +108,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
-    //TODO legyen List<Date>
-    @Column(length = 256)
-    private String timeBoard;
+    @ElementCollection
+    private List<Date> timeBoard;
 
 }

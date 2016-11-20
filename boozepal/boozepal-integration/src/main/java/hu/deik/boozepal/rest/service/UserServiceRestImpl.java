@@ -1,42 +1,41 @@
 package hu.deik.boozepal.rest.service;
 
-import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
-import hu.deik.boozepal.common.entity.Role;
-import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.common.entity.*;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.core.repo.DrinkRepository;
+import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
 
 /**
  * A távoli felhasználók igényeit megvalósító szolgáltatás.
- *
  */
 @Stateless
 @Local(UserServiceRest.class)
@@ -53,6 +52,12 @@ public class UserServiceRestImpl implements UserServiceRest {
      */
     @Autowired
     private UserRepository userDao;
+
+    @Autowired
+    private DrinkRepository drinkDao;
+
+    @Autowired
+    private PubRepository pubDao;
 
     /**
      * Szerepköröket elérő adathozzáférési osztály.
@@ -84,7 +89,7 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException {
+    public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException {
         PayloadUserVO userByGoogleToken;
         try {
             userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
@@ -101,7 +106,7 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException {
+    public void logoutUserLogically(RemoteTokenVO remoteUser) throws AuthenticationException {
         PayloadUserVO userByGoogleToken;
         try {
             userByGoogleToken = getUserByGoogleToken(remoteUser.getToken());
@@ -175,44 +180,64 @@ public class UserServiceRestImpl implements UserServiceRest {
     public User saveUser(User user) {
         return userDao.save(user);
     }
-    /**
-	 * Kapot token adataiból kikeressük az adott felhasználót.
-	 */
-	@Override
-	public void updateUserDetails(RemoteUserDetailsVO remoteUserToken) throws UserDetailsUpdateException {
-		PayloadUserVO userByGoogleToken;
-		try {
-			userByGoogleToken = getUserByGoogleToken(remoteUserToken.getToken());
-		} catch (AuthenticationException | GeneralSecurityException | IOException e) {
-			throw new UserDetailsUpdateException("Sikertelen bejelentkezés, " + e.getMessage());
-		}
-		updateUserInformation(userByGoogleToken.getUser(), remoteUserToken.getUser());
-	}
 
-	/**
-	 * A felhasználó adatainak tényleges frissitése.
-	 */
-	private boolean updateUserInformation(final User user, final User remoteUser) throws UserDetailsUpdateException {
-		if (user == null || remoteUser == null)
-			return false;
-		else {
-			user.setEmail(remoteUser.getEmail());
-			user.setUsername(remoteUser.getUsername());
-			user.setEmail(remoteUser.getEmail());
-			user.setFavouriteDrink(remoteUser.getFavouriteDrink());
-			user.setFavouritePub(remoteUser.getFavouritePub());
-			user.setPriceCategory(remoteUser.getPriceCategory());
-			user.setAddress(remoteUser.getAddress());
-			user.setSearchRadius(remoteUser.getSearchRadius());
-			user.setActualPals(remoteUser.getActualPals());
-			user.setTimeBoard(remoteUser.getTimeBoard());
-			try {
-				userDao.save(user);
-			} catch (Exception e) {
-				throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait" + e.getMessage());
-			}
-			return true;
-		}
-	}
+    @Override
+    public void deleteUser(User user) {
+        userDao.delete(user);
+    }
+
+    /**
+     * Kapot token adataiból kikeressük az adott felhasználót.
+     */
+    @Override
+    public User updateUserDetails(RemoteUserVO remoteUser) throws UserDetailsUpdateException {
+        try {
+            return remoteUserVoToUserEntity(remoteUser);
+        } catch (RuntimeException e) {
+            throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait" + e.getMessage());
+        }
+    }
+
+    private User remoteUserVoToUserEntity(final RemoteUserVO remoteUserVO) {
+        User user = userDao.findByUsername(remoteUserVO.getName());
+        if (user == null || remoteUserVO == null) {
+            logger.info("User is null");
+            throw new RuntimeException("User is null");
+        } else {
+            logger.info("User {}", user.toString());
+            user.setUsername(remoteUserVO.getName());
+            user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+            user.setPriceCategory(remoteUserVO.getPriceCategory());
+            user.setSearchRadius((long) remoteUserVO.getSearchRadius());
+            user.setTimeBoard(remoteUserVO.getSavedDates());
+            user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
+            user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
+//            FIXME pushViktor ezekkel az adatokkal még gond van.
+// 			user.setActualPals(remoteUserVO.getActualPals());
+            logger.info("save update user");
+            return userDao.save(user);
+        }
+    }
+
+    private List<Pub> getRemoteUserPubs(final RemoteUserVO remoteUserVO) {
+        List<Pub> pubs = new LinkedList<>();
+        for (String pubName : remoteUserVO.getPubs()) {
+            logger.info("Kocsma neve: " + pubName);
+            // TODO A pub értékeit vagy be kell majd szettelni normálisan vagy ki kell venni a null checket!
+            Pub savedPub = pubDao.save(Pub.builder().name(pubName).openHours("24:00").priceCategory(5).build());
+            pubs.add(savedPub);
+        }
+        return pubs;
+    }
+
+    private List<Drink> getRemoteUserFavoritDrinks(final RemoteUserVO remoteUserVO) {
+        List<Drink> drinks = new LinkedList<>();
+        for (String drinksName : remoteUserVO.getBoozes()) {
+            logger.info("alkohol neve: " + drinksName);
+            Drink savedDrink = drinkDao.save(Drink.builder().name(drinksName).build());
+            drinks.add(savedDrink);
+        }
+        return drinks;
+    }
 
 }

@@ -8,6 +8,7 @@ import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
@@ -38,7 +39,7 @@ public interface UserServiceRest {
 	 * @throws AuthenticationException
 	 *             ha nem sikerült a token validálása.
 	 */
-	public User createOrLoginUser(RemoteUserVO remoteUser) throws AuthenticationException;
+	public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException;
 
 	/**
 	 * Felhasználó logikai kiléptetése a rendszerből.
@@ -47,7 +48,7 @@ public interface UserServiceRest {
 	 *            felhasználó azonosítója.
 	 * @throws AuthenticationException
 	 */
-	public void logoutUserLogically(RemoteUserVO remoteUser) throws AuthenticationException;
+	public void logoutUserLogically(RemoteTokenVO remoteUser) throws AuthenticationException;
 
 	/**
 	 * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
@@ -71,5 +72,7 @@ public interface UserServiceRest {
 	 * @throws UserDetailsUpdateException
 	 *             ha nem sikerült a felhasználót frissiteni.
 	 */
-	public void updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
+	public User updateUserDetails(RemoteUserVO remoteUser) throws UserDetailsUpdateException;
+
+	public void deleteUser(User user);
 }

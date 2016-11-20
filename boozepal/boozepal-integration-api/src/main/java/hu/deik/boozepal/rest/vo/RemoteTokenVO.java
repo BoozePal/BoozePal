@@ -2,7 +2,12 @@ package hu.deik.boozepal.rest.vo;
 
 import java.io.Serializable;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * Távoli felhasználót repreneztáló érték osztály.
@@ -17,14 +22,18 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Builder
-@Getter
-@Setter
 @EqualsAndHashCode(callSuper = false)
-public class RemoteUserDetailsVO implements Serializable {
+public class RemoteTokenVO implements Serializable {
 
+    /**
+     * 
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Token.
+     */
+    @NonNull
     private String token;
 
-    private RemoteUserVO user;
 }

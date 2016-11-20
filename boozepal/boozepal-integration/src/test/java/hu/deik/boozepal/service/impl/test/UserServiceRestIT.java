@@ -1,10 +1,15 @@
 package hu.deik.boozepal.service.impl.test;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 
+import com.google.common.collect.Lists;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
@@ -88,4 +93,55 @@ public class UserServiceRestIT extends ArquillianContainer {
 
     }
 
+    @Test
+    public void testAccesUpdateUserDetails() {
+        User savedUser = null;
+        User testUser = buildTestUser();
+        RemoteUserVO remoteUser = buildTestRemoteUser();
+        userService.saveUser(testUser);
+
+        try {
+            savedUser = userService.updateUserDetails(
+                    remoteUser);
+            System.out.println("Mentett felhasznalo : " + savedUser.toString());
+        } catch (UserDetailsUpdateException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(savedUser);
+        Assert.assertEquals(remoteUser.getSearchRadius(), savedUser.getSearchRadius().intValue());
+        Assert.assertEquals(remoteUser.getPriceCategory(), savedUser.getPriceCategory().intValue());
+        userService.deleteUser(savedUser);
+    }
+    @Test(expected=UserDetailsUpdateException.class)
+    public void testDeniedUpdateUserDetails() throws UserDetailsUpdateException {
+        User testUser = buildTestUser();
+        RemoteUserVO remoteUser = buildTestRemoteUser();
+        remoteUser.setName("undefinedUser");
+        testUser = userService.saveUser(testUser);
+        userService.updateUserDetails(
+                    remoteUser);
+        userService.deleteUser(testUser);
+    }
+
+    private User buildTestUser() {
+        return User.builder()
+                .username("tesztUser")
+                .email("looking@test.com")
+                .password("Palss")
+                .loggedIn(false)
+                .lastKnownCoordinate(ORIGO)
+                .build();
+    }
+
+    private RemoteUserVO buildTestRemoteUser() {
+        return RemoteUserVO.builder()
+                .name("tesztUser")
+                .city("Debrecen")
+                .boozes(Arrays.asList("booze"))
+                .pubs(Arrays.asList("pub"))
+                .savedDates(Arrays.asList(new Date()))
+                .searchRadius(10)
+                .priceCategory(20)
+                .build();
+    }
 }

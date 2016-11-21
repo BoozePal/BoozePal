@@ -1,5 +1,6 @@
 package hu.deik.boozepal.service.statistics.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.service.statistics.DrinkStatisticsService;
 
 /**
- * 
+ * Az ital statiszikákat elkészítő szolgáltatás implementációja.
  *
  */
 @Stateless
@@ -38,7 +39,7 @@ import hu.deik.boozepal.service.statistics.DrinkStatisticsService;
 public class DrinkStatisticsServiceImpl extends AbstractStatisticsService<Drink> implements DrinkStatisticsService {
 
     /**
-     * 
+     * Osztály loggere.
      */
     private static Logger logger = LoggerFactory.getLogger(DrinkStatisticsServiceImpl.class);
 
@@ -60,18 +61,22 @@ public class DrinkStatisticsServiceImpl extends AbstractStatisticsService<Drink>
     @Override
     public DrinkType getTheFavouriteDrinkType() {
         logger.info("Getting favourite DrinkType");
-        List<User> users = userDao.findByRoleUser();
-        Map<DrinkType, Integer> drinkTypeMap = new HashMap<>();
-        collectDrinksType(users, drinkTypeMap);
-
-        Map<DrinkType, Integer> sortByValue = sortByValue(drinkTypeMap);
+        Map<DrinkType, Integer> sortByValue = collectDrinksInOrderOfTotal();
         Iterator<Entry<DrinkType, Integer>> iterator = sortByValue.entrySet().iterator();
         if (iterator.hasNext()) {
             Entry<DrinkType, Integer> next = iterator.next();
             return next.getKey();
         } else {
-            return null;
+            return new DrinkType();
         }
+    }
+
+    private Map<DrinkType, Integer> collectDrinksInOrderOfTotal() {
+        List<User> users = userDao.findByRoleUser();
+        Map<DrinkType, Integer> drinkTypeMap = new HashMap<>();
+        collectDrinksType(users, drinkTypeMap);
+        Map<DrinkType, Integer> sortByValue = sortByValue(drinkTypeMap);
+        return sortByValue;
     }
 
     private void collectDrinksType(List<User> users, Map<DrinkType, Integer> drinkTypeMap) {
@@ -121,6 +126,25 @@ public class DrinkStatisticsServiceImpl extends AbstractStatisticsService<Drink>
         Integer numberOfDrinkType = drinkTypDao.getNumberOfDrinkType(drinkType);
         logger.info("Map {} to VO with {} number of drink types", drinkType, numberOfDrinkType);
         return new DrinkStatisticsVO(drinkType, numberOfDrinkType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<DrinkStatisticsVO> getDrinksTopList() {
+        List<DrinkStatisticsVO> result = new ArrayList<DrinkStatisticsVO>();
+        Map<DrinkType, Integer> collectDrinksInOrderOfTotal = collectDrinksInOrderOfTotal();
+        Iterator<Entry<DrinkType, Integer>> iterator = collectDrinksInOrderOfTotal.entrySet().iterator();
+        fillResultList(result, iterator);
+        return result;
+    }
+
+    private void fillResultList(List<DrinkStatisticsVO> result, Iterator<Entry<DrinkType, Integer>> iterator) {
+        while (iterator.hasNext()) {
+            Entry<DrinkType, Integer> nextDrink = iterator.next();
+            result.add(new DrinkStatisticsVO(nextDrink.getKey(), nextDrink.getValue()));
+        }
     }
 
 }

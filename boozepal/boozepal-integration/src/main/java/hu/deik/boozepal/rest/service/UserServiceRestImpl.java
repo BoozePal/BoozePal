@@ -14,6 +14,7 @@ import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,38 +190,48 @@ public class UserServiceRestImpl implements UserServiceRest {
      * Kapot token adataiból kikeressük az adott felhasználót.
      */
     @Override
-    public User updateUserDetails(RemoteUserVO remoteUser) throws UserDetailsUpdateException {
+    public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException {
         try {
-            return remoteUserVoToUserEntity(remoteUser);
-        } catch (RuntimeException e) {
+            return remoteUserVoToUserEntity(remoteUser.getUser(), remoteUser.getToken());
+        } catch (AuthenticationException | UserDetailsUpdateException e) {
             throw new UserDetailsUpdateException("Nem sikerült lementeni a felhasználó adatait " + e.getStackTrace());
         }
     }
 
-    private User remoteUserVoToUserEntity(final RemoteUserVO remoteUserVO) {
-        User user = userDao.findByUsername(remoteUserVO.getName());
-        if (user == null || remoteUserVO == null) {
-            logger.info("User is null");
-            throw new RuntimeException("User is null");
-        } else {
-            logger.info("User {}", user.toString());
-            if(remoteUserVO.getName() != null)
-            user.setUsername(remoteUserVO.getName());
-            if(remoteUserVO.getCity() != null)
-            user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
-            user.setPriceCategory(remoteUserVO.getPriceCategory());
-            user.setSearchRadius(remoteUserVO.getSearchRadius());
-            if(remoteUserVO.getSavedDates() != null)
-            user.setTimeBoard(remoteUserVO.getSavedDates());
-            if(remoteUserVO.getBoozes() != null)
-            user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
-            if(remoteUserVO.getPubs() != null)
-            user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
-            if(remoteUserVO.getMyPals() != null)
-            user.setActualPals(getActualUsersList(remoteUserVO));
-            logger.info("save update user");
-            return userDao.save(user);
+    private User remoteUserVoToUserEntity(final RemoteUserVO remoteUserVO, final String token) throws UserDetailsUpdateException, AuthenticationException {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = verifier.verify(token);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new AuthenticationException("Invalid token." + e.getStackTrace());
         }
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+            User user = userDao.findByEmail(payload.getEmail());
+            if (user == null || remoteUserVO == null) {
+                logger.info("User is null");
+                throw new UserDetailsUpdateException("User is null");
+            } else {
+                logger.info("User {}", user.toString());
+                if (remoteUserVO.getName() != null)
+                    user.setUsername(remoteUserVO.getName());
+                if (remoteUserVO.getCity() != null)
+                    user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+                user.setPriceCategory(remoteUserVO.getPriceCategory());
+                user.setSearchRadius(remoteUserVO.getSearchRadius());
+                if (remoteUserVO.getSavedDates() != null)
+                    user.setTimeBoard(remoteUserVO.getSavedDates());
+                if (remoteUserVO.getBoozes() != null)
+                    user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
+                if (remoteUserVO.getPubs() != null)
+                    user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
+                if (remoteUserVO.getMyPals() != null)
+                    user.setActualPals(getActualUsersList(remoteUserVO));
+                logger.info("save update user");
+                return userDao.save(user);
+            }
+        }
+        throw new AuthenticationException("Invalid token.");
     }
 
     private List<User> getActualUsersList(final RemoteUserVO remoteUserVO) {

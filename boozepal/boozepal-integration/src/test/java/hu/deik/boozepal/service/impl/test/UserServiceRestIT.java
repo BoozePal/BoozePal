@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.common.collect.Lists;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
@@ -99,10 +103,13 @@ public class UserServiceRestIT extends ArquillianContainer {
         User testUser = buildTestUser();
         RemoteUserVO remoteUser = buildTestRemoteUser();
         userService.saveUser(testUser);
-
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
         try {
             savedUser = userService.updateUserDetails(
-                    remoteUser);
+                    remoteUserDetailsVO);
             System.out.println("Mentett felhasznalo : " + savedUser.toString());
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
@@ -118,9 +125,13 @@ public class UserServiceRestIT extends ArquillianContainer {
         User testUser = buildTestUser();
         RemoteUserVO remoteUser = buildTestRemoteUser();
         remoteUser.setName("undefinedUser");
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
         testUser = userService.saveUser(testUser);
         userService.updateUserDetails(
-                remoteUser);
+                remoteUserDetailsVO);
         userService.deleteUser(testUser);
     }
 
@@ -134,9 +145,13 @@ public class UserServiceRestIT extends ArquillianContainer {
                 .savedDates(Arrays.asList(day1, day2))
                 .build();
         testUser = userService.saveUser(testUser);
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
         try {
             testUser = userService.updateUserDetails(
-                    remoteUser);
+                    remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
         }

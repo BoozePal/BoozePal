@@ -1,5 +1,6 @@
 package hu.deik.boozepal.service.impl.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -99,10 +100,12 @@ public class UserServiceRestIT extends ArquillianContainer {
 
     @Test
     public void testAccesUpdateUserDetails() {
+
         User savedUser = null;
         User testUser = buildTestUser();
         RemoteUserVO remoteUser = buildTestRemoteUser();
-        userService.saveUser(testUser);
+        testUser = userService.saveUser(testUser);
+        remoteUser.setId(testUser.getId());
         RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
                 .token("1/fFAGRNJru1FTz70BzhT3Zg")
                 .user(remoteUser)
@@ -123,13 +126,13 @@ public class UserServiceRestIT extends ArquillianContainer {
     @Test(expected = UserDetailsUpdateException.class)
     public void testDeniedUpdateUserDetails() throws UserDetailsUpdateException {
         User testUser = buildTestUser();
+        testUser = userService.saveUser(testUser);
         RemoteUserVO remoteUser = buildTestRemoteUser();
-        remoteUser.setName("undefinedUser");
+        remoteUser.setId(testUser.getId() + 1);
         RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
                 .token("1/fFAGRNJru1FTz70BzhT3Zg")
                 .user(remoteUser)
                 .build();
-        testUser = userService.saveUser(testUser);
         userService.updateUserDetails(
                 remoteUserDetailsVO);
         userService.deleteUser(testUser);
@@ -137,14 +140,15 @@ public class UserServiceRestIT extends ArquillianContainer {
 
     @Test
     public void testUpdateOnlyUserTimeBoard() {
-        User testUser = buildTestUser();
         Date day1 = new Date(2016, 11, 20);
         Date day2 = new Date(2016, 11, 22);
+        User testUser = buildTestUser();
+        testUser = userService.saveUser(testUser);
         RemoteUserVO remoteUser = RemoteUserVO.builder()
                 .name("tesztUser")
+                .id(testUser.getId())
                 .savedDates(Arrays.asList(day1, day2))
                 .build();
-        testUser = userService.saveUser(testUser);
         RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
                 .token("1/fFAGRNJru1FTz70BzhT3Zg")
                 .user(remoteUser)
@@ -158,6 +162,54 @@ public class UserServiceRestIT extends ArquillianContainer {
         Assert.assertTrue(testUser.getTimeBoard().contains(day1));
         Assert.assertTrue(testUser.getTimeBoard().contains(day2));
         userService.deleteUser(testUser);
+    }
+
+    @Test
+    public void testUpdateUserPals() {
+        User testUser = buildTestUser();
+
+        User testUserPal1 = buildTestUser();
+        testUserPal1.setUsername("user@1");
+        testUserPal1.setEmail("user@1.com");
+
+        User testUserPal2 = buildTestUser();
+        testUserPal2.setUsername("user@2");
+        testUserPal2.setEmail("user@2.com");
+
+        testUser = userService.saveUser(testUser);
+        testUserPal1 = userService.saveUser(testUserPal1);
+        testUserPal2 = userService.saveUser(testUserPal2);
+
+
+        RemoteUserVO remoteTestUser = RemoteUserVO.builder()
+                .id(testUser.getId())
+                .build();
+
+        RemoteUserVO remoteTestUserPal1 = RemoteUserVO.builder()
+                .id(testUserPal1.getId())
+                .build();
+
+        RemoteUserVO remoteTestUserPal2 = RemoteUserVO.builder()
+                .id(testUserPal2.getId())
+                .build();
+
+        remoteTestUser.setId(testUser.getId());
+        remoteTestUser.setMyPals(Arrays.asList(remoteTestUserPal1,remoteTestUserPal2));
+
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteTestUser)
+                .build();
+        try {
+            testUser = userService.updateUserDetails(
+                    remoteUserDetailsVO);
+        } catch (UserDetailsUpdateException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertTrue(testUser.getActualPals().contains(testUserPal2));
+        userService.deleteUser(testUser);
+        userService.deleteUser(testUserPal1);
+        userService.deleteUser(testUserPal2);
     }
 
     private User buildTestUser() {

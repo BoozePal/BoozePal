@@ -6,7 +6,9 @@ import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,16 +69,15 @@ public class UserServiceEndpoint implements Serializable {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String updateUserInformation(RemoteUserDetailsVO remoteUser) {
-        logger.info("Felhasználó adatok módositása");
+    public Response updateUserInformation(RemoteUserDetailsVO remoteUser) {
+        logger.info("Update user information");
         try {
             User savedUser = userServiceRest.updateUserDetails(remoteUser);
         } catch (UserDetailsUpdateException e) {
-            logger.info("Felhasználó adatmódositás sikertelen volt! {}", e.getMessage());
-            return "nem ok";
+            logger.info(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        logger.info("Felhasználó adatmódositás sikeres volt!");
-        return "ok";
+        return Response.status(Response.Status.OK).build();
     }
 
 }

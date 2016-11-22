@@ -1,39 +1,26 @@
 package hu.deik.boozepal.rest.vo;
 
-import java.io.Serializable;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import java.util.Date;
+import java.util.List;
 
-/**
- * Távoli felhasználót repreneztáló érték osztály.
- * 
- * A távoli felhasználó az akit az Android kliensről "léptetünk" a
- * rendszerünkbe, azaz az adatait letároljuk a mi adatbázisunkban is.
- * 
- * @version 1.0
- *
- */
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
+@Getter
+@Setter
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class RemoteUserVO implements Serializable {
+public class RemoteUserVO {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Token.
-     */
-    @NonNull
-    private String token;
-
+    private Long id;
+    private String name;
+    private String city;
+    private List<String> boozes;
+    private List<String> pubs;
+    private List<Date> savedDates;
+    private int searchRadius;
+    private int priceCategory;
+    private List<RemoteUserVO> myPals;
 }

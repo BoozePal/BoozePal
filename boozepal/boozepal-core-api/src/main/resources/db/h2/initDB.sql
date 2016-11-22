@@ -13,8 +13,8 @@ insert into boozepal_drink(id,name,drinkType_id) values(5,'Gyengébb rum',3);
 insert into boozepal_drink(id,name,drinkType_id) values(6,'Közepes rum',3);
 insert into boozepal_drink(id,name,drinkType_id) values(7,'Eros rum',3);
 
-insert into boozepal_user(id,username,password,remove,loggedin) values(10,'DrinkTestUser','XXX',false,false);
-insert into boozepal_user(id,username,password,remove,loggedin) values(11,'DrinkTestUser2','XXX',false,false);
+insert into boozepal_user(id,username,password,remove,loggedin,searchradius,pricecategory) values(10,'DrinkTestUser','XXX',false,false,1,1);
+insert into boozepal_user(id,username,password,remove,loggedin,searchradius,pricecategory) values(11,'DrinkTestUser2','XXX',false,false,1,1);
 
 insert into boozepal_role (id,roleName) values(10,'ROLE_USER');
 

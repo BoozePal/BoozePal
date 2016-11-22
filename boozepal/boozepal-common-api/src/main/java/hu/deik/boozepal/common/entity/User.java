@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -22,7 +24,7 @@ import lombok.ToString;
 
 /**
  * Felhasználót reprezentáló entitás.
- * 
+ *
  * @version 1.0
  *
  */
@@ -42,12 +44,6 @@ public class User extends BaseEntity {
      */
     @Column(unique = true, length = 64)
     private String username;
-
-    /**
-     * Felhasználó teljes neve.
-     */
-    @Column(length = 128)
-    private String fullName;
 
     /**
      * Jelszó BCryptel titkosítva.
@@ -77,22 +73,21 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
-    // TODO legyen lista
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
     private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Pub favouritePub;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private List<Pub> favouritePub;
 
     /**
      * Preferált árkategória, 0-5 terjedő skálán.
      */
     @Column
-    private Integer priceCategory;
+    private int priceCategory;
 
     /**
      * Felhasználó lakóhelye.
@@ -109,7 +104,7 @@ public class User extends BaseEntity {
     /**
      * Keresési sugár, km-ben megadva.
      */
-    private Long searchRadius;
+    private int searchRadius;
 
     /**
      * Aktuális cimborák.
@@ -125,8 +120,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
-    //TODO legyen List<Date>
-    @Column(length = 256)
-    private String timeBoard;
-
+    @ElementCollection
+    @CollectionTable(name="boozepal_user_timeBoards", joinColumns=@JoinColumn(name="user_id"))
+    private List<Date> timeBoard;
 }

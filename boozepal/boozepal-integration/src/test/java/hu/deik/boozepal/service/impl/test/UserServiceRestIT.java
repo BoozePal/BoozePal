@@ -1,10 +1,19 @@
 package hu.deik.boozepal.service.impl.test;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.common.collect.Lists;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
@@ -88,4 +97,88 @@ public class UserServiceRestIT extends ArquillianContainer {
 
     }
 
+    @Test
+    public void testAccesUpdateUserDetails() {
+        User savedUser = null;
+        User testUser = buildTestUser();
+        RemoteUserVO remoteUser = buildTestRemoteUser();
+        userService.saveUser(testUser);
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
+        try {
+            savedUser = userService.updateUserDetails(
+                    remoteUserDetailsVO);
+            System.out.println("Mentett felhasznalo : " + savedUser.toString());
+        } catch (UserDetailsUpdateException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(savedUser);
+        Assert.assertEquals(remoteUser.getSearchRadius(), savedUser.getSearchRadius());
+        Assert.assertEquals(remoteUser.getPriceCategory(), savedUser.getPriceCategory());
+        userService.deleteUser(savedUser);
+    }
+
+    @Test(expected = UserDetailsUpdateException.class)
+    public void testDeniedUpdateUserDetails() throws UserDetailsUpdateException {
+        User testUser = buildTestUser();
+        RemoteUserVO remoteUser = buildTestRemoteUser();
+        remoteUser.setName("undefinedUser");
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
+        testUser = userService.saveUser(testUser);
+        userService.updateUserDetails(
+                remoteUserDetailsVO);
+        userService.deleteUser(testUser);
+    }
+
+    @Test
+    public void testUpdateOnlyUserTimeBoard() {
+        User testUser = buildTestUser();
+        Date day1 = new Date(2016, 11, 20);
+        Date day2 = new Date(2016, 11, 22);
+        RemoteUserVO remoteUser = RemoteUserVO.builder()
+                .name("tesztUser")
+                .savedDates(Arrays.asList(day1, day2))
+                .build();
+        testUser = userService.saveUser(testUser);
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
+                .token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser)
+                .build();
+        try {
+            testUser = userService.updateUserDetails(
+                    remoteUserDetailsVO);
+        } catch (UserDetailsUpdateException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertTrue(testUser.getTimeBoard().contains(day1));
+        Assert.assertTrue(testUser.getTimeBoard().contains(day2));
+        userService.deleteUser(testUser);
+    }
+
+    private User buildTestUser() {
+        return User.builder()
+                .username("tesztUser")
+                .email("looking@test.com")
+                .password("Palss")
+                .loggedIn(false)
+                .lastKnownCoordinate(ORIGO)
+                .build();
+    }
+
+    private RemoteUserVO buildTestRemoteUser() {
+        return RemoteUserVO.builder()
+                .name("tesztUser")
+                .city("Debrecen")
+                .boozes(Arrays.asList("booze"))
+                .pubs(Arrays.asList("pub"))
+                .savedDates(Arrays.asList(new Date()))
+                .searchRadius(10)
+                .priceCategory(20)
+                .build();
+    }
 }

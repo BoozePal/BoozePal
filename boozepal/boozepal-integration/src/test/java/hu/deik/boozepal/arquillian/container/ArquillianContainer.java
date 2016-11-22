@@ -16,7 +16,7 @@ import hu.deik.boozepal.common.exceptions.RegistrationException;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.service.UserServiceRestImpl;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 
 /**
  * Arquillian tesztek bázis osztálya, a konténert hozza létre majd amit
@@ -49,7 +49,7 @@ public class ArquillianContainer {
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
-                .addPackage(RemoteUserVO.class.getPackage())
+                .addPackage(RemoteTokenVO.class.getPackage())
                 .addPackage(UserServiceRest.class.getPackage()).addPackage(UserServiceRestImpl.class.getPackage())
                 .addPackage(UserRepository.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")

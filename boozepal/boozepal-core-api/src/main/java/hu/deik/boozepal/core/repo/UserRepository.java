@@ -38,6 +38,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
     /**
+     * Visszaadja azokat a felhasználókat amelyek csak <b>ROLE_USER</b>
+     * szerepkörrel rendelkeznek.
+     * 
+     * @return <b>ROLE_USER</b> szerepkörrel rendelkező felhaszálók listája.
+     */
+    @Query("SELECT u FROM User u join u.roles r WHERE r.roleName = 'ROLE_USER' ")
+    List<User> findByRoleUser();
+
+    /**
      * Felhasználó aktuális koordinátájának frissítése.
      * 
      * @param latitude

@@ -31,18 +31,22 @@
 		<property name="password" value="" />
 	</bean>
 	<tx:annotation-driven />
-
+	<!-- DB INIT -->
+	<jdbc:initialize-database data-source="dataSource">
+		<jdbc:script location="classpath:db/h2/initDB.sql" />
+	</jdbc:initialize-database>
 	<!-- Transaction Manager -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
+
 	<!-- EntityManagerFactory -->
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="persistenceUnitName" value="boozePalTest" />
-<!-- 		<property name="packagesToScan" value="hu.deik.boozepal.common.entity" /> -->
+		<!-- <property name="packagesToScan" value="hu.deik.boozepal.common.entity" 
+			/> -->
 	</bean>
 
 </beans>

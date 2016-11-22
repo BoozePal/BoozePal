@@ -224,7 +224,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             if (remoteUserVO.getSavedDates() != null)
                 user.setTimeBoard(remoteUserVO.getSavedDates());
             if (remoteUserVO.getBoozes() != null)
-                user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
+                user.setFavouriteDrinks(getRemoteUserFavoritDrinks(remoteUserVO));
             if (remoteUserVO.getPubs() != null)
                 user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
             if (remoteUserVO.getMyPals() != null)
@@ -251,7 +251,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             if (remoteUserVO.getSavedDates() != null)
                 user.setTimeBoard(remoteUserVO.getSavedDates());
             if (remoteUserVO.getBoozes() != null)
-                user.setFavouriteDrink(getRemoteUserFavoritDrinks(remoteUserVO));
+                user.setFavouriteDrinks(getRemoteUserFavoritDrinks(remoteUserVO));
             if (remoteUserVO.getPubs() != null)
                 user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
             if (remoteUserVO.getMyPals() != null)

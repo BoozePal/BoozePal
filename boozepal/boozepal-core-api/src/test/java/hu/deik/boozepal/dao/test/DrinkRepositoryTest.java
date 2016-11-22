@@ -34,17 +34,47 @@ public class DrinkRepositoryTest {
 
     @Test
     public void testFindDrinkByType() {
-        List<Drink> createDrinks = createDrinks();
-        drinkDao.save(createDrinks);
+        // List<Drink> createDrinks = createDrinks();
+        // drinkDao.save(createDrinks);
         DrinkType beerType = drinkTypeDao.findByName("beer");
         List<Drink> beers = drinkDao.findByDrinkType(beerType);
-        Assert.assertEquals(2, beers.size());
+        Assert.assertEquals(3, beers.size());
 
         DrinkType rumType = drinkTypeDao.findByName("rum");
         List<Drink> rums = drinkDao.findByDrinkType(rumType);
         Assert.assertEquals(3, rums.size());
+
+        DrinkType vodkaType = drinkTypeDao.findByName("vodka");
+        List<Drink> vodkas = drinkDao.findByDrinkType(vodkaType);
+        Assert.assertEquals(1, vodkas.size());
     }
 
+    @Test
+    public void testGetNumberOfFavouriteDrink() {
+        Integer numberOfFavouriteDrinkBorsodiSor = drinkDao
+                .getNumberOfFavouriteDrink(drinkDao.findByName("Borsodi"));
+        Assert.assertEquals(Integer.valueOf(1), numberOfFavouriteDrinkBorsodiSor);
+
+        Integer numberOfFavouriteDrinkHabosSor = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Habos sör"));
+        Assert.assertEquals(Integer.valueOf(0), numberOfFavouriteDrinkHabosSor);
+
+        Integer numberOfFavouriteDrinkErosRum = drinkDao.getNumberOfFavouriteDrink(drinkDao.findByName("Eros rum"));
+        Assert.assertEquals(Integer.valueOf(2), numberOfFavouriteDrinkErosRum);
+    }
+
+    @Test
+    public void testGetNumberOfDrinkType() {
+        Integer numberOfBeerType = drinkTypeDao.getNumberOfDrinkType(beerType());
+        Assert.assertEquals(Integer.valueOf(2), numberOfBeerType);
+
+        Integer numberOfVodkaType = drinkTypeDao.getNumberOfDrinkType(vodkaType());
+        Assert.assertEquals(Integer.valueOf(0), numberOfVodkaType);
+
+        Integer numberOfRumType = drinkTypeDao.getNumberOfDrinkType(rumType());
+        Assert.assertEquals(Integer.valueOf(3), numberOfRumType);
+    }
+
+    @Deprecated
     private List<Drink> createDrinks() {
         List<Drink> drinks = new ArrayList<Drink>();
         // 2 darab sörtípus létrehozása
@@ -58,21 +88,14 @@ public class DrinkRepositoryTest {
     }
 
     private DrinkType beerType() {
-        DrinkType beerType = drinkTypeDao.findByName("beer");
-        if (beerType == null) {
-            DrinkType build = DrinkType.builder().name("beer").build();
-            return drinkTypeDao.save(build);
-        } else
-            return beerType;
+        return drinkTypeDao.findByName("beer");
     }
 
     private DrinkType rumType() {
-        DrinkType rumType = drinkTypeDao.findByName("rum");
-        if (rumType == null) {
-            DrinkType build = DrinkType.builder().name("rum").build();
-            return drinkTypeDao.save(build);
-        } else
-            return rumType;
+        return drinkTypeDao.findByName("rum");
     }
 
+    private DrinkType vodkaType() {
+        return drinkTypeDao.findByName("vodka");
+    }
 }

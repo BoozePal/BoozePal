@@ -3,7 +3,17 @@ package hu.deik.boozepal.common.entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,13 +67,15 @@ public class User extends BaseEntity {
      * Felhasználó jogai.
      */
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
     /**
      * Felhasználó kedvenc itala.
      */
     @ManyToMany(cascade = CascadeType.PERSIST)
-    private List<Drink> favouriteDrink;
+    @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
+    private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.

@@ -17,6 +17,8 @@ import hu.deik.boozepal.common.vo.MapUserVO;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.service.UserService;
 import hu.deik.boozepal.service.impl.UserServiceImpl;
+import hu.deik.boozepal.service.statistics.DrinkStatisticsService;
+import hu.deik.boozepal.service.statistics.impl.DrinkStatisticsServiceImpl;
 import hu.deik.boozepal.util.MapUserConveter;
 
 /**
@@ -43,10 +45,10 @@ public class ArquillianContainer {
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
-                .addPackage(UserService.class.getPackage()).addPackage(UserServiceImpl.class.getPackage())
-                .addPackage(UserRepository.class.getPackage())
-                .addPackage(MapUserConveter.class.getPackage())
-                .addPackage(MapUserVO.class.getPackage())
+                .addPackage(UserService.class.getPackage()).addPackage(DrinkStatisticsService.class.getPackage())
+                .addPackage(UserServiceImpl.class.getPackage())
+                .addPackage(DrinkStatisticsServiceImpl.class.getPackage()).addPackage(UserRepository.class.getPackage())
+                .addPackage(MapUserConveter.class.getPackage()).addPackage(MapUserVO.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
                 .addAsResource("logback-test.xml").addAsResource("spring-core-test.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "beans.xml").addAsLibraries(springContext).addAsLibraries(springWeb)

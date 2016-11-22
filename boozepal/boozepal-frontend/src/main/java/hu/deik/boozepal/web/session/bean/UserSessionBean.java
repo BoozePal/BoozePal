@@ -15,6 +15,8 @@ import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.service.UserService;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
@@ -22,34 +24,37 @@ import lombok.Setter;
 @ManagedBean(name = "userSessionBean")
 public class UserSessionBean implements Serializable {
 
-	private static final long serialVersionUID = -1660866024225185114L;
+    private static final long serialVersionUID = -1660866024225185114L;
 
-	@EJB
-	private UserService userService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private User sessionUser;
+    @EJB
+    private UserService userService;
 
-	@PostConstruct
-	public void init() {
-		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
-				.getRequest();
-		if (sessionUser == null) {
-			Principal principal = req.getUserPrincipal();
-			if (principal != null && !principal.getName().isEmpty()) {
-				try {
-					sessionUser = userService.findUserByName(principal.getName());
-					sessionUser.setLoggedIn(true);
-					userService.save(sessionUser);
-				} catch (Exception e) {
-					e.getMessage();
-				}
-			}
-		}
-	}
+    private User sessionUser;
 
-	@PreDestroy
-	public void destroy() {
-		sessionUser.setLoggedIn(false);
-		userService.save(sessionUser);
-	}
+    @PostConstruct
+    public void init() {
+        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+                .getRequest();
+        if (sessionUser == null) {
+            Principal principal = req.getUserPrincipal();
+            if (principal != null && !principal.getName().isEmpty()) {
+                try {
+                    sessionUser = userService.findUserByName(principal.getName());
+                    sessionUser.setLoggedIn(true);
+                    userService.save(sessionUser);
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+            }
+        }
+    }
+
+    @PreDestroy
+    public void destroy() {
+        logger.info("Kijelentkezés: {}", sessionUser.getUsername());
+        sessionUser.setLoggedIn(false);
+        userService.save(sessionUser);
+    }
 }

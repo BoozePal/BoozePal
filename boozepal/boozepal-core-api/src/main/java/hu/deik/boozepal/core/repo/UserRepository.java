@@ -95,4 +95,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.loggedIn = true")
     List<User> findOnlineUsers();
    //@formatter:on
+
+    /**
+     * Felhasználó keresése megadott e-mail cím alapján.
+     *
+     * @param id
+     *            a keresett felhasználó azonositója.
+     * @return a megtalált felhasználó entitás.
+     */
+    User findById(Long id);
 }

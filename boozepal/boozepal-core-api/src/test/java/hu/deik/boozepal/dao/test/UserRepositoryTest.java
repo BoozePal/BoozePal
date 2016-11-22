@@ -115,6 +115,23 @@ public class UserRepositoryTest {
         userDao.delete(offlineUser);
 
     }
+    @Test
+    public void testFindById() {
+        User user = createUser("onlineUser","online@online.com");
+        user = userDao.save(user);
+        User dbUser = userDao.findById(user.getId());
+        Assert.assertNotNull(dbUser);
+        Assert.assertTrue(user.equals(dbUser));
+        userDao.delete(user);
+    }
+    @Test
+    public void testFindByUndefinedId() {
+        User user = createUser("onlineUser","online@online.com");
+        user = userDao.save(user);
+        User dbUser = userDao.findById(9999l);
+        Assert.assertNull(dbUser);
+        userDao.delete(user);
+    }
 
     @After
     public void tearDown() {

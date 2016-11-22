@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +81,7 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó adatmódositására a rendszerbe.
      *
-     * @param remoteUser
+     * @param string
      *            a felhasználó Google token-e.
      * @return ha sikerült az adatmódositás OK, ha nem akkor a hiba oka.
      * @throws IOException
@@ -93,16 +94,15 @@ public class UserServiceEndpoint implements Serializable {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateUserInformation(String string) {
         logger.info("Felhasználó adatok módositása");
-        RemoteUserDetailsVO remoteUser;
+        RemoteUserDetailsVO remoteUserDetailsVO;
 
         try {
-            remoteUser = getValue(string);
+            remoteUserDetailsVO = getValue(string);
         } catch (IOException e) {
             return Response.status(Status.BAD_REQUEST).build();
         }
-
         try {
-            userServiceRest.updateUserDetails(remoteUser.getUser());
+            userServiceRest.updateUserDetails(remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
             logger.info("Felhasználó adatmódositás sikertelen volt! {}", e.getMessage());
             return Response.status(Status.BAD_REQUEST).build();

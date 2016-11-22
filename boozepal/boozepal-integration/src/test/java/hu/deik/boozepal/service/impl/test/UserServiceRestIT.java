@@ -109,7 +109,7 @@ public class UserServiceRestIT extends ArquillianContainer {
                 .build();
         try {
             savedUser = userService.updateUserDetails(
-                    remoteUserDetailsVO);
+                    remoteUser);
             System.out.println("Mentett felhasznalo : " + savedUser.toString());
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
@@ -131,7 +131,7 @@ public class UserServiceRestIT extends ArquillianContainer {
                 .build();
         testUser = userService.saveUser(testUser);
         userService.updateUserDetails(
-                remoteUserDetailsVO);
+                remoteUser);
         userService.deleteUser(testUser);
     }
 
@@ -151,7 +151,7 @@ public class UserServiceRestIT extends ArquillianContainer {
                 .build();
         try {
             testUser = userService.updateUserDetails(
-                    remoteUserDetailsVO);
+                    remoteUser);
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
         }

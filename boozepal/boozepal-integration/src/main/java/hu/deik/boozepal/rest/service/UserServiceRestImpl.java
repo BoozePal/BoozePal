@@ -190,7 +190,7 @@ public class UserServiceRestImpl implements UserServiceRest {
      * Kapot token adataiból kikeressük az adott felhasználót.
      */
     @Override
-    public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException {
+    public User updateUserDetails(RemoteUserVO remoteUser) throws UserDetailsUpdateException {
         GoogleIdToken idToken = null;
         Payload payload = null;
         // FIXME a tesztek miatt kivettem vissza kell majd kötni
@@ -201,10 +201,10 @@ public class UserServiceRestImpl implements UserServiceRest {
 //        }
         if (idToken != null) {
             payload = idToken.getPayload();
-            return remoteUserVoToUserEntity(remoteUser.getUser(), payload);
+            return remoteUserVoToUserEntity(remoteUser, payload);
         } else {
             /* TODO a teszt miatt van benne amíg nem tudunk tokent generálni a teszteknél*/
-            return remoteUserVoToUserEntity(remoteUser.getUser());
+            return remoteUserVoToUserEntity(remoteUser);
         }
     }
 

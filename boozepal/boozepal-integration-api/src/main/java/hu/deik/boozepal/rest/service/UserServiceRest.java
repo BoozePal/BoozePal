@@ -72,7 +72,7 @@ public interface UserServiceRest {
 	 * @throws UserDetailsUpdateException
 	 *             ha nem sikerült a felhasználót frissiteni.
 	 */
-	public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
+	public User updateUserDetails(RemoteUserVO remoteUser) throws UserDetailsUpdateException;
 
 	public void deleteUser(User user);
 }

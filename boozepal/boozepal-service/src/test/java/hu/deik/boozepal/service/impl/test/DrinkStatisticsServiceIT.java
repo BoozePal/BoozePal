@@ -55,10 +55,21 @@ public class DrinkStatisticsServiceIT extends ArquillianContainer {
 
         // when
         List<DrinkStatisticsVO> drinkStatistics = drinkStatisticsService.getDrinkStatistics();
-        
+
         // then
         Assert.assertThat(Arrays.asList(beerTypeStat, rumTypeStat, vodkaTypeStat),
                 Matchers.containsInAnyOrder(drinkStatistics.toArray()));
 
+    }
+
+    @Test
+    public void testGetDrinksTopList() {
+        List<DrinkStatisticsVO> topList = drinkStatisticsService.getDrinksTopList();
+        // Beer type
+        DrinkStatisticsVO beerTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(BEER), 2);
+        // Rum type
+        DrinkStatisticsVO rumTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(RUM), 3);
+        // Assert in ORDER
+        Assert.assertEquals(Arrays.asList(rumTypeStat, beerTypeStat), topList);
     }
 }

@@ -130,7 +130,13 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     private boolean isInRadius(Double latitude, Double longitude, Double radius, User p) {
+        if(isNullCoordinate(p))
+            return false;
         return distanceBetweenPoints(latitude, longitude, p) <= radius / 100;
+    }
+
+    private boolean isNullCoordinate(User p) {
+        return p.getLastKnownCoordinate() == null || p.getLastKnownCoordinate().getLatitude() == null || p.getLastKnownCoordinate().getLatitude() == null;
     }
 
     private double distanceBetweenPoints(Double latitude, Double longitude, User p) {

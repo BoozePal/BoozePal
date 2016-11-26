@@ -2,11 +2,13 @@ package hu.deik.boozepal.rest;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,6 +29,7 @@ import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
  * A külső felhasználók által használt szolgáltatások végpontja.
@@ -56,7 +59,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó beléptetése a rendszerbe.
      *
-     * @param remoteUser a felhasználó Google token-e.
+     * @param remoteUser
+     *            a felhasználó Google token-e.
      * @return a beléptett felhasználót reprezentáló entitás.
      */
     @Path("/login")
@@ -78,7 +82,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó adatmódositására a rendszerbe.
      *
-     * @param string a felhasználó Google token-e.
+     * @param string
+     *            a felhasználó Google token-e.
      * @return ha sikerült az adatmódositás OK, ha nem akkor a hiba oka.
      * @throws IOException
      * @throws JsonMappingException
@@ -113,11 +118,11 @@ public class UserServiceEndpoint implements Serializable {
         return remoteUser;
     }
 
-
     /**
      * Külső felhasználó kiléptetése a rendszerből.
      *
-     * @param remoteUser a felhasználó Google token-e.
+     * @param remoteUser
+     *            a felhasználó Google token-e.
      * @return sikeres kiléptetésnél HTTP 200. ha nem sikeres akkor HTTP 500.
      */
     @Path("/logout")
@@ -133,6 +138,36 @@ public class UserServiceEndpoint implements Serializable {
             return Response.serverError().build();
         }
         return Response.status(Status.OK).build();
+    }
+
+    /**
+     * Cimborák visszaadása az endpointon keresztül.
+     * 
+     * @param string
+     * @return
+     */
+    @Path("/findPals")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response findPals(String string) {
+        logger.info("Cimborák keresése a közelben.");
+
+        RemoteUserDetailsVO remoteUserDetailsVO;
+
+        try {
+            remoteUserDetailsVO = getValue(string);
+        } catch (IOException e) {
+            logger.error("Hiba a JSON parsolása során, BAD_REQUEST küldése.");
+            return Response.status(Status.BAD_REQUEST).entity(e).build();
+        }
+        RemoteUserVO user = remoteUserDetailsVO.getUser();
+
+        List<User> usersInGivenRadiusAndCoordinate = userServiceRest.getUsersInGivenRadiusAndCoordinate(
+                user.getLastKnownCoordinate().getLatitude(), user.getLastKnownCoordinate().getLongitude(),
+                (double) user.getSearchRadius());
+
+        return Response.ok().entity(usersInGivenRadiusAndCoordinate).build();
     }
 
 }

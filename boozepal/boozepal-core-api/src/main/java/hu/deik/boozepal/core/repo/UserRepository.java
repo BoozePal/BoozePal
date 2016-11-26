@@ -59,10 +59,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //@formatter:off
     @Modifying
     @Transactional
-    @Query("update User set lastKnownCoordinate.latitude = :latitude,lastKnownCoordinate.altitude = :altitude where id = :userId")
+    @Query("update User set lastKnownCoordinate.latitude = :latitude,lastKnownCoordinate.longitude = :longitude where id = :userId")
     void updateUserCoordinate(
                               @Param("latitude") Double latitude,
-                              @Param("altitude") Double altitude,
+                              @Param("longitude") Double longitude,
                               @Param("userId") Long userId);
     /**
      * Felhasználó preferált árkategóriájának frissítése.

@@ -14,12 +14,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -99,13 +97,13 @@ public class UserServiceEndpoint implements Serializable {
         try {
             remoteUserDetailsVO = getValue(string);
         } catch (IOException e) {
-            return Response.status(Status.BAD_REQUEST).build();
+            return Response.serverError().build();
         }
         try {
             userServiceRest.updateUserDetails(remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
             logger.info("Felhasználó adatmódositás sikertelen volt! {}", e.getMessage());
-            return Response.status(Status.BAD_REQUEST).build();
+            return Response.serverError().build();
         }
         logger.info("Felhasználó adatmódositás sikeres volt!");
         return Response.status(Status.OK).build();

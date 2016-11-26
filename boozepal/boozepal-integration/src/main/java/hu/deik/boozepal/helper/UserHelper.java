@@ -1,6 +1,16 @@
 package hu.deik.boozepal.helper;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.ejb.Singleton;
+import javax.interceptor.Interceptors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
+
 import hu.deik.boozepal.common.entity.Address;
 import hu.deik.boozepal.common.entity.Drink;
 import hu.deik.boozepal.common.entity.Pub;
@@ -10,16 +20,6 @@ import hu.deik.boozepal.core.repo.DrinkRepository;
 import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
-
-import javax.ejb.Singleton;
-import javax.enterprise.context.Dependent;
-import javax.interceptor.Interceptors;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Pusinszky on 2016. 11. 22..
@@ -39,7 +39,8 @@ public class UserHelper {
     @Autowired
     private PubRepository pubDao;
 
-    public User remoteUserVoToUserEntityByGoogleToken(final RemoteUserVO remoteUserVO, final String email) throws UserDetailsUpdateException {
+    public User remoteUserVoToUserEntityByGoogleToken(final RemoteUserVO remoteUserVO, final String email)
+            throws UserDetailsUpdateException {
         User user = userDao.findByEmail(email);
         if (user == null || remoteUserVO == null) {
             logger.info("User is null");
@@ -84,8 +85,9 @@ public class UserHelper {
         List<Pub> pubs = new LinkedList<>();
         for (String pubName : remoteUserVO.getPubs()) {
             logger.info("Pub name: " + pubName);
-            // TODO A pub értékeit vagy be kell majd szettelni normálisan vagy ki kell venni a null checket!
-            Pub savedPub = pubDao.save(Pub.builder().name(pubName).openHours("24:00").priceCategory(5).build());
+            // TODO A pub értékeit vagy be kell majd szettelni normálisan vagy
+            // ki kell venni a null checket!
+            Pub savedPub = pubDao.saveAndFlush(Pub.builder().name(pubName).openHours("24:00").priceCategory(5).build());
             pubs.add(savedPub);
         }
         return pubs;
@@ -104,7 +106,7 @@ public class UserHelper {
         List<Drink> drinks = new LinkedList<>();
         for (String drinksName : remoteUserVO.getBoozes()) {
             logger.info("Drink name: " + drinksName);
-            Drink savedDrink = drinkDao.save(Drink.builder().name(drinksName).build());
+            Drink savedDrink = drinkDao.saveAndFlush(Drink.builder().name(drinksName).build());
             drinks.add(savedDrink);
         }
         return drinks;

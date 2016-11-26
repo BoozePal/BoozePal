@@ -33,7 +33,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false, of = { "username", "fullName", "email" })
+@EqualsAndHashCode(callSuper = false, of = { "username", "email" })
 @ToString(exclude = { "password" })
 @Builder
 public class User extends BaseEntity {
@@ -73,14 +73,14 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
     private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Pub> favouritePub;
 
     /**
@@ -121,6 +121,6 @@ public class User extends BaseEntity {
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
     @ElementCollection
-    @CollectionTable(name="boozepal_user_timeBoards", joinColumns=@JoinColumn(name="user_id"))
+    @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
 }

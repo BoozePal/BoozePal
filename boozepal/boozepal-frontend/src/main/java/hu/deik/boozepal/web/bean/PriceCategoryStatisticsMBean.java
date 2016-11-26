@@ -80,7 +80,7 @@ public class PriceCategoryStatisticsMBean extends BoozePalAbstractMBean implemen
 
     private ChartSeries createSeriesFromVO(PriceCategoryVO priceCategoryVO) {
         ChartSeries series = new ChartSeries();
-        series.setLabel(priceCategoryVO.getCategory().toString());
+        series.setLabel(getKeyFromProperty(priceCategoryVO.getCategory().toString()));
         series.set(getKeyFromProperty("price"), priceCategoryVO.getTotal());
         return series;
     }

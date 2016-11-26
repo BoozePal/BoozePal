@@ -7,7 +7,7 @@ var BoozePal = {
                 lat : -34.397,
                 lng : 150.644
             },
-            zoom : 13
+            zoom : 12
         });
 
         function createMarker(pos, text) {
@@ -34,7 +34,7 @@ var BoozePal = {
                 for (var i = 0; i < parsedUsers.length; i++) {
                     var userPos = {
                         lat : parsedUsers[i].latitude,
-                        lng : parsedUsers[i].altitude
+                        lng : parsedUsers[i].longitude
                     };
                     createMarker(userPos, parsedUsers[i].username);
                 }

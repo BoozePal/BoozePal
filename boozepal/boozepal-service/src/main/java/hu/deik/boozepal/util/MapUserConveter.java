@@ -20,7 +20,7 @@ public class MapUserConveter {
         if (notNull(user) && notNull(user.getLastKnownCoordinate()))
             return MapUserVO.builder().username(user.getUsername())
                     .latitude(user.getLastKnownCoordinate().getLatitude())
-                    .altitude(user.getLastKnownCoordinate().getLongitude()).build();
+                    .longitude(user.getLastKnownCoordinate().getLongitude()).build();
         else
             return MapUserVO.builder().build();
     }

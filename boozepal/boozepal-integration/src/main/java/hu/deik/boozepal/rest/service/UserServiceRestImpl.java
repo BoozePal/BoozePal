@@ -13,6 +13,7 @@ import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.helper.UserHelper;
+import hu.deik.boozepal.rest.vo.CoordinateVO;
 import hu.deik.boozepal.rest.vo.PayloadUserVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
@@ -129,7 +130,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     private boolean isInRadius(Double latitude, Double longitude, Double radius, User p) {
-        return distanceBetweenPoints(latitude, longitude, p) <= radius/100;
+        return distanceBetweenPoints(latitude, longitude, p) <= radius / 100;
     }
 
     private double distanceBetweenPoints(Double latitude, Double longitude, User p) {
@@ -197,7 +198,7 @@ public class UserServiceRestImpl implements UserServiceRest {
         } catch (Exception e) {
             logger.info("Bad token!");
             return userHelper.remoteUserVoToUserEntityById(remoteUser.getUser());
-            //throw new UserDetailsUpdateException("Bad token!");
+            // throw new UserDetailsUpdateException("Bad token!");
         }
         if (idToken != null) {
             Payload payload = idToken.getPayload();
@@ -205,6 +206,19 @@ public class UserServiceRestImpl implements UserServiceRest {
         } else {
             return userHelper.remoteUserVoToUserEntityById(remoteUser.getUser());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User updateUserLocation(RemoteUserVO remoteUser) {
+        logger.info("{} felhasználó aktuális pozíciójának módosítása.");
+        CoordinateVO coordinate = remoteUser.getLastKnownCoordinate();
+        Long userId = remoteUser.getId();
+        userDao.updateUserCoordinate(coordinate.getLatitude(), coordinate.getLongitude(), userId);
+        return userDao.findById(userId);
+
     }
 
 }

@@ -21,58 +21,63 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
 @Local
 public interface UserServiceRest {
 
-	/**
-	 * Felhasználó mentése.
-	 * 
-	 * @param user
-	 * @return
-	 */
-	public User saveUser(User user);
+    /**
+     * Felhasználó mentése.
+     * 
+     * @param user
+     * @return
+     */
+    public User saveUser(User user);
 
-	/**
-	 * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
-	 * felhasználó létrehozása.
-	 * 
-	 * @param remoteUser
-	 *            távoli felhasználó.
-	 * @return az újonnan létrehozott felhasználó vagy egy már meglévő.
-	 * @throws AuthenticationException
-	 *             ha nem sikerült a token validálása.
-	 */
-	public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException;
+    /**
+     * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
+     * felhasználó létrehozása.
+     * 
+     * @param remoteUser
+     *            távoli felhasználó.
+     * @return az újonnan létrehozott felhasználó vagy egy már meglévő.
+     * @throws AuthenticationException
+     *             ha nem sikerült a token validálása.
+     */
+    public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException;
 
-	/**
-	 * Felhasználó logikai kiléptetése a rendszerből.
-	 * 
-	 * @param userId
-	 *            felhasználó azonosítója.
-	 * @throws AuthenticationException
-	 */
-	public void logoutUserLogically(RemoteTokenVO remoteUser) throws AuthenticationException;
+    /**
+     * Felhasználó logikai kiléptetése a rendszerből.
+     * 
+     * @param userId
+     *            felhasználó azonosítója.
+     * @throws AuthenticationException
+     */
+    public void logoutUserLogically(RemoteTokenVO remoteUser) throws AuthenticationException;
 
-	/**
-	 * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
-	 * helyezkednek el a megadott koordinátákhoz képest.
-	 * 
-	 * @param latitude
-	 *            szélesség.
-	 * @param 
-	 *            magasság.
-	 * @param radius
-	 *            megadott körsugár.
-	 * @return a megadott körsugárban elérhető felhasználók.
-	 */
-	public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius);
+    /**
+     * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
+     * helyezkednek el a megadott koordinátákhoz képest.
+     * 
+     * @param latitude
+     *            szélesség.
+     * @param magasság.
+     * @param radius
+     *            megadott körsugár.
+     * @return a megadott körsugárban elérhető felhasználók.
+     */
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius);
 
-	/**
-	 * Távoli felhasználó adatmódositás
-	 * 
-	 * @param remoteUser
-	 *            távoli felhasználó.
-	 * @throws UserDetailsUpdateException
-	 *             ha nem sikerült a felhasználót frissiteni.
-	 */
-	public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
+    /**
+     * Távoli felhasználó adatmódositás
+     * 
+     * @param remoteUser
+     *            távoli felhasználó.
+     * @throws UserDetailsUpdateException
+     *             ha nem sikerült a felhasználót frissiteni.
+     */
+    public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
 
-	public void deleteUser(User user);
+    public void deleteUser(User user);
+
+    /**
+	 * Felhasználó aktuális helyzetének frissítése.
+	 * @param remoteUser a frissítendő felhasználó.
+	 */
+	public User updateUserLocation(RemoteUserVO remoteUser);
 }

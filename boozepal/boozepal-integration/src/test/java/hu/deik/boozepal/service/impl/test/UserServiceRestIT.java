@@ -18,6 +18,7 @@ import hu.deik.boozepal.common.entity.Coordinate;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.CoordinateVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
@@ -204,6 +205,22 @@ public class UserServiceRestIT extends ArquillianContainer {
         userService.deleteUser(testUser);
         userService.deleteUser(testUserPal1);
         userService.deleteUser(testUserPal2);
+    }
+    
+    @Test
+    public void testUpdateUserLocation() {
+        User user = buildTestUser();
+        User saveUser = userService.saveUser(user);
+        RemoteUserVO remoteUser = new RemoteUserVO();
+        remoteUser.setId(saveUser.getId());
+        Double latitude = 5.0;
+        Double longitude = 6.0;
+        CoordinateVO coordinateVO = CoordinateVO.builder().latitude(latitude).longitude(longitude).build();
+        remoteUser.setLastKnownCoordinate(coordinateVO);
+        User updateUserLocation = userService.updateUserLocation(remoteUser);
+        Assert.assertEquals(latitude, updateUserLocation.getLastKnownCoordinate().getLatitude());
+        Assert.assertEquals(longitude, updateUserLocation.getLastKnownCoordinate().getLongitude());
+        userService.deleteUser(saveUser);
     }
 
     private User buildTestUser() {

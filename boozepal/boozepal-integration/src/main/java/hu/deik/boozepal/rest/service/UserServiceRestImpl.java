@@ -121,20 +121,20 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius) {
         List<User> onlineUsers = userDao.findOnlineUsers();
-        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
+        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, longitude, radius, p))
                 .collect(Collectors.toList());
         return usersInRadius;
     }
 
-    private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
-        return distanceBetweenPoints(latitude, altitude, p) <= radius;
+    private boolean isInRadius(Double latitude, Double longitude, Double radius, User p) {
+        return distanceBetweenPoints(latitude, longitude, p) <= radius/100;
     }
 
-    private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
+    private double distanceBetweenPoints(Double latitude, Double longitude, User p) {
         return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
-                + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
+                + toSquare((p.getLastKnownCoordinate().getLongitude() - longitude)));
     }
 
     private User createNewUser(Payload payload) {

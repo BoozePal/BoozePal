@@ -73,7 +73,7 @@ public class UserRepositoryTest {
         userDao.updateUserCoordinate(latitude, altitude, savedUser.getId());
         User findOne = userDao.findOne(savedUser.getId());
         Assert.assertEquals(latitude, findOne.getLastKnownCoordinate().getLatitude(), 0.0);
-        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getAltitude(), 0.0);
+        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getLongitude(), 0.0);
         // userDao.delete(savedUser.getId());
     }
 

@@ -56,13 +56,13 @@ public interface UserServiceRest {
 	 * 
 	 * @param latitude
 	 *            szélesség.
-	 * @param altitude
+	 * @param 
 	 *            magasság.
 	 * @param radius
 	 *            megadott körsugár.
 	 * @return a megadott körsugárban elérhető felhasználók.
 	 */
-	public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius);
+	public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius);
 
 	/**
 	 * Távoli felhasználó adatmódositás

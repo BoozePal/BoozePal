@@ -51,6 +51,9 @@ public class RemoteUserVO implements Serializable {
     private int priceCategory;
     @JsonProperty("myPals")
     private List<RemoteUserVO> myPals;
+    @JsonProperty("lastKnownCoordinate")
+    private CoordinateVO lastKnownCoordinate;
+
 
     @JsonCreator
     public RemoteUserVO(String json) {
@@ -67,6 +70,7 @@ public class RemoteUserVO implements Serializable {
             this.searchRadius = remoteUser.getSearchRadius();
             this.priceCategory = remoteUser.getPriceCategory();
             this.myPals = remoteUser.getMyPals();
+            this.lastKnownCoordinate = remoteUser.getLastKnownCoordinate();
         } catch (IOException e) {
             e.printStackTrace();
         }

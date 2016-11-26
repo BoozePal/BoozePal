@@ -28,5 +28,5 @@ public class Coordinate {
     /**
      * Magasság.
      */
-    private Double altitude;
+    private Double longitude;
 }

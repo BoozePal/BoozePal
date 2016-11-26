@@ -30,7 +30,7 @@ public class MapUserVO {
     private Double latitude;
 
     /**
-     * Hosszúsági
+     * Hosszúsági.
      */
-    private Double altitude;
+    private Double longitude;
 }

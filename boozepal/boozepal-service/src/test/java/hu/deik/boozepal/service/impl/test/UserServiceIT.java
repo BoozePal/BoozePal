@@ -8,7 +8,11 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import org.hamcrest.Matchers;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.container.ClassContainer;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,10 +24,21 @@ import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.RegistrationException;
 import hu.deik.boozepal.common.vo.MapUserVO;
 import hu.deik.boozepal.service.UserService;
+import hu.deik.boozepal.service.impl.UserServiceImpl;
 import hu.deik.boozepal.util.MapUserConveter;
 
 @RunWith(Arquillian.class)
 public class UserServiceIT extends ArquillianContainer {
+
+    private static Class<?>[] testClasses = { UserService.class, UserServiceImpl.class, MapUserVO.class,
+            RegistrationException.class, User.class, MapUserConveter.class };
+
+    @Deployment
+    public static Archive<WebArchive> createDeployment() {
+        Archive<WebArchive> deployment = ArquillianContainer.createDeployment();
+        ((ClassContainer<WebArchive>) deployment).addClasses(testClasses);
+        return deployment;
+    }
 
     private static final String ADMIN_WHO_WILL_NOT_BE_SHOWN_TO_MAP = "AdminWhoWillNotBeShownToMap";
     private static final String ENCODED_PASSWORD = "EncodedPassword";

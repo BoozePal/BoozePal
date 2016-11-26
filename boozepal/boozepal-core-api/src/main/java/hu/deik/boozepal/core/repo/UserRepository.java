@@ -47,6 +47,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoleUser();
 
     /**
+     * Visszaadja a kért árkategória darabszámát, azaz hogy hány ember
+     * preferálja ezt a kategóriát.
+     * 
+     * @param category
+     *            a vizsgálandó kategória.
+     * @return a darabszám.
+     */
+    @Query("SELECT COUNT(u) FROM User u WHERE u.priceCategory = :category")
+    Integer countGivenPriceCategory(@Param("category") Integer category);
+
+    /**
      * Felhasználó aktuális koordinátájának frissítése.
      * 
      * @param latitude

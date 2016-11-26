@@ -162,7 +162,7 @@ public class UserServiceEndpoint implements Serializable {
             return Response.status(Status.BAD_REQUEST).entity(e).build();
         }
         RemoteUserVO user = remoteUserDetailsVO.getUser();
-
+        userServiceRest.updateUserLocation(user);
         List<User> usersInGivenRadiusAndCoordinate = userServiceRest.getUsersInGivenRadiusAndCoordinate(
                 user.getLastKnownCoordinate().getLatitude(), user.getLastKnownCoordinate().getLongitude(),
                 (double) user.getSearchRadius());

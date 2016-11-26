@@ -154,6 +154,16 @@ public class UserRepositoryTest {
         Assert.assertFalse(findByRoleUser.isEmpty());
 
     }
+    
+    @Test
+    public void testCountGivenPriceCategory() {
+        Integer lowest = userDao.countGivenPriceCategory(1);
+        Assert.assertEquals(Integer.valueOf(1), lowest);
+        Integer medium = userDao.countGivenPriceCategory(3);
+        Assert.assertEquals(Integer.valueOf(1), medium);
+        Integer highest = userDao.countGivenPriceCategory(5);
+        Assert.assertEquals(Integer.valueOf(0), highest);
+    }
 
     @After
     public void tearDown() {

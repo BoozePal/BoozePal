@@ -44,13 +44,13 @@ public class DrinkStatisticsServiceImpl extends AbstractStatisticsService<Drink>
     private static Logger logger = LoggerFactory.getLogger(DrinkStatisticsServiceImpl.class);
 
     /**
-     * 
+     * Ital típusokat kezelő adathozzáférési osztály.
      */
     @Autowired
     private DrinkTypeRepository drinkTypDao;
 
     /**
-     * 
+     * Felhasználókat elérő adathozzáférési osztály.
      */
     @Autowired
     private UserRepository userDao;

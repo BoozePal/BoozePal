@@ -1,6 +1,7 @@
 package hu.deik.boozepal.common.vo;
 
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import lombok.Value;
 
 /**
@@ -18,7 +19,7 @@ public class DrinkStatisticsVO {
     /**
      * A vizsgált ital típus.
      */
-    private final DrinkType drinkType;
+    private final DrinkTypeEnum drinkType;
     /**
      * A vizsált ital típus emberek által preferált darabszáma.
      */

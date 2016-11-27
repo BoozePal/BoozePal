@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 
 /**
  * Ital típusokat kezelőt adathozzáférési szolgáltatás.
@@ -34,6 +35,6 @@ public interface DrinkTypeRepository extends JpaRepository<DrinkType, Long> {
      * @return a pontos szám.
      */
     @Query(value = "SELECT COUNT(u) FROM User u join u.favouriteDrinks d where d.drinkType = :drinkType")
-    Integer getNumberOfDrinkType(@Param("drinkType") DrinkType drinkType);
+    Integer getNumberOfDrinkType(@Param("drinkType") DrinkTypeEnum drinkType);
 
 }

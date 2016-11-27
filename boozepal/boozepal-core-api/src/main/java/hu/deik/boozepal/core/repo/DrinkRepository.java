@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import hu.deik.boozepal.common.entity.Drink;
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 
 /**
  * Italokat kezelőt adathozzáférési szolgáltatás.
@@ -35,7 +36,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Long> {
      *            ital típusa.
      * @return a keresett típussal rendelkező italok listája.
      */
-    List<Drink> findByDrinkType(DrinkType drinkType);
+    List<Drink> findByDrinkType(DrinkTypeEnum drinkType);
 
     /**
      * Visszaadja a keresett ital számát, azaz hogy a keresendő ital hányszor

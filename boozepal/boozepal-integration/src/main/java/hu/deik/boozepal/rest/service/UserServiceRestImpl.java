@@ -187,7 +187,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     /**
-     * Kapot ráérési idők frissitése egy felhasználónál.
+     * Kapott ráérési idők frissitése egy felhasználónál.
      */
     @Override
     public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO) throws UserDetailsUpdateException, AuthenticationException {
@@ -233,6 +233,14 @@ public class UserServiceRestImpl implements UserServiceRest {
         userDao.updateUserCoordinate(coordinate.getLatitude(), coordinate.getLongitude(), userId);
         return userDao.findById(userId);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
 }

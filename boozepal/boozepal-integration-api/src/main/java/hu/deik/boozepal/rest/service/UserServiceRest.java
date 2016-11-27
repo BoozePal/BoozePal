@@ -80,4 +80,12 @@ public interface UserServiceRest {
      * @param remoteUser a frissítendő felhasználó.
      */
     public User updateUserLocation(RemoteUserVO remoteUser);
+
+    /**
+     * Felhasználó keresés.
+     *
+     * @param email
+     * @return felhasználó.
+     */
+    public User findByEmail(String email);
 }

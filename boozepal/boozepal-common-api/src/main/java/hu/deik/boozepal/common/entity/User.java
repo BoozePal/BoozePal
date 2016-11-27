@@ -26,15 +26,14 @@ import lombok.ToString;
  * Felhasználót reprezentáló entitás.
  *
  * @version 1.0
- *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false, of = { "username", "email" })
-@ToString(exclude = { "password" })
+@EqualsAndHashCode(callSuper = false, of = {"username", "email"})
+@ToString(exclude = {"password"})
 @Builder
 public class User extends BaseEntity {
 
@@ -92,7 +91,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó lakóhelye.
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     /**

@@ -79,7 +79,11 @@ public class UserHelper {
         if (remoteUserVO.getName() != null)
             user.setUsername(remoteUserVO.getName());
         if (remoteUserVO.getCity() != null)
-            user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+            if (user.getAddress() == null)
+                user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+            else {
+                user.getAddress().setTown(remoteUserVO.getCity());
+            }
         user.setPriceCategory(remoteUserVO.getPriceCategory());
         user.setSearchRadius(remoteUserVO.getSearchRadius());
         if (remoteUserVO.getSavedDates() != null)

@@ -9,22 +9,21 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.service.UserService;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @ManagedBean
 @ViewScoped
 @Named("userListMBean")
-public class UserListMBean implements Serializable {
+public class UserListMBean extends BoozePalAbstractMBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

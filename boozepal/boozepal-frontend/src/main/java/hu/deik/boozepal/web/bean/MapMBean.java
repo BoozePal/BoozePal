@@ -5,17 +5,17 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
 import com.google.gson.Gson;
 
 import hu.deik.boozepal.common.vo.MapUserVO;
 import hu.deik.boozepal.service.UserService;
 
-@Named("mapBean")
+@ManagedBean(name = "mapBean")
 @ViewScoped
-public class MapMBean implements Serializable {
+public class MapMBean extends BoozePalAbstractMBean implements Serializable {
 
     /**
      * 
@@ -27,6 +27,7 @@ public class MapMBean implements Serializable {
 
     private List<MapUserVO> onlineUsers;
     private Gson gson;
+
     @PostConstruct
     public void init() {
         gson = new Gson();

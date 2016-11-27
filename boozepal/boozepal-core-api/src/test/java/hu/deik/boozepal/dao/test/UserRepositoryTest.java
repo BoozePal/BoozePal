@@ -73,7 +73,7 @@ public class UserRepositoryTest {
         userDao.updateUserCoordinate(latitude, altitude, savedUser.getId());
         User findOne = userDao.findOne(savedUser.getId());
         Assert.assertEquals(latitude, findOne.getLastKnownCoordinate().getLatitude(), 0.0);
-        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getAltitude(), 0.0);
+        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getLongitude(), 0.0);
         // userDao.delete(savedUser.getId());
     }
 
@@ -153,6 +153,16 @@ public class UserRepositoryTest {
         List<User> findByRoleUser = userDao.findByRoleUser();
         Assert.assertFalse(findByRoleUser.isEmpty());
 
+    }
+    
+    @Test
+    public void testCountGivenPriceCategory() {
+        Integer lowest = userDao.countGivenPriceCategory(1);
+        Assert.assertEquals(Integer.valueOf(1), lowest);
+        Integer medium = userDao.countGivenPriceCategory(3);
+        Assert.assertEquals(Integer.valueOf(1), medium);
+        Integer highest = userDao.countGivenPriceCategory(5);
+        Assert.assertEquals(Integer.valueOf(0), highest);
     }
 
     @After

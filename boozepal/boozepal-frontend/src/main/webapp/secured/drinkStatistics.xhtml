@@ -24,11 +24,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="#{drinkStatistics.topList}" var="item">
-							<tr>
-								<td><p:outputLabel value="#{item}" /></td>
-							</tr>
-						</c:forEach>
+						<c:if test="#{not empty drinkStatistics.topList}">
+							<c:forEach items="#{drinkStatistics.topList}" var="item">
+								<tr>
+									<td><p:outputLabel value="#{item}" /></td>
+								</tr>
+							</c:forEach>
+						</c:if>
+						<c:otherwise>
+							<h3>#{out.noTopList}</h3>
+						</c:otherwise>
 					</tbody>
 				</table>
 			</div>

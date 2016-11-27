@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Origo koordináta.
      */
-    private static final Coordinate ORIGO = Coordinate.builder().latitude(0.0).altitude(0.0).build();
+    private static final Coordinate ORIGO = Coordinate.builder().latitude(0.0).longitude(0.0).build();
 
     /**
      * Osztály loggere.

@@ -1,16 +1,15 @@
 package hu.deik.boozepal.rest.service;
 
-import java.util.List;
-
-import javax.ejb.Local;
-
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
+
+import javax.ejb.Local;
+import java.util.List;
 
 /**
  * Felhasználó szolgáltatás az Android kliens által használt funkciókra.
@@ -44,7 +43,7 @@ public interface UserServiceRest {
      * @param userId felhasználó azonosítója.
      * @throws AuthenticationException
      */
-    public void logoutUserLogically(RemoteTokenVO remoteUser) throws AuthenticationException;
+    public void logoutUserLogically(RemoteTokenVO userId) throws AuthenticationException;
 
     /**
      * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
@@ -74,4 +73,11 @@ public interface UserServiceRest {
      * @throws UserDetailsUpdateException ha nem sikerült a felhasználót frissiteni.
      */
     public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO) throws AuthenticationException, UserDetailsUpdateException;
+
+    /**
+     * Felhasználó aktuális helyzetének frissítése.
+     *
+     * @param remoteUser a frissítendő felhasználó.
+     */
+    public User updateUserLocation(RemoteUserVO remoteUser);
 }

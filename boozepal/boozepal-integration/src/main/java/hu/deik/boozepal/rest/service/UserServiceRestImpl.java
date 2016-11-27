@@ -5,11 +5,10 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import hu.deik.boozepal.common.entity.*;
+import hu.deik.boozepal.common.entity.Role;
+import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
-import hu.deik.boozepal.core.repo.DrinkRepository;
-import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.helper.UserHelper;
@@ -21,14 +20,12 @@ import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,20 +115,26 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius) {
+    public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius) {
         List<User> onlineUsers = userDao.findOnlineUsers();
-        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, altitude, radius, p))
+        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, longitude, radius, p))
                 .collect(Collectors.toList());
         return usersInRadius;
     }
 
-    private boolean isInRadius(Double latitude, Double altitude, Double radius, User p) {
-        return distanceBetweenPoints(latitude, altitude, p) <= radius;
+    private boolean isInRadius(Double latitude, Double longitude, Double radius, User p) {
+        if (isNullCoordinate(p))
+            return false;
+        return distanceBetweenPoints(latitude, longitude, p) <= radius / 100;
     }
 
-    private double distanceBetweenPoints(Double latitude, Double altitude, User p) {
+    private boolean isNullCoordinate(User p) {
+        return p.getLastKnownCoordinate() == null || p.getLastKnownCoordinate().getLatitude() == null || p.getLastKnownCoordinate().getLatitude() == null;
+    }
+
+    private double distanceBetweenPoints(Double latitude, Double longitude, User p) {
         return Math.sqrt(toSquare((p.getLastKnownCoordinate().getLatitude() - latitude))
-                + toSquare((p.getLastKnownCoordinate().getAltitude() - altitude)));
+                + toSquare((p.getLastKnownCoordinate().getLongitude() - longitude)));
     }
 
     private User createNewUser(Payload payload) {
@@ -209,7 +212,7 @@ public class UserServiceRestImpl implements UserServiceRest {
         } catch (Exception e) {
             logger.info("Bad token!");
             return userHelper.remoteUserVoToUserEntityById(remoteUser.getUser());
-            //throw new UserDetailsUpdateException("Bad token!");
+            // throw new UserDetailsUpdateException("Bad token!");
         }
         if (idToken != null) {
             Payload payload = idToken.getPayload();
@@ -217,6 +220,19 @@ public class UserServiceRestImpl implements UserServiceRest {
         } else {
             return userHelper.remoteUserVoToUserEntityById(remoteUser.getUser());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User updateUserLocation(RemoteUserVO remoteUser) {
+        logger.info("{} felhasználó aktuális pozíciójának módosítása.");
+        CoordinateVO coordinate = remoteUser.getLastKnownCoordinate();
+        Long userId = remoteUser.getId();
+        userDao.updateUserCoordinate(coordinate.getLatitude(), coordinate.getLongitude(), userId);
+        return userDao.findById(userId);
+
     }
 
 }

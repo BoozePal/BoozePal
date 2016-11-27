@@ -1,7 +1,19 @@
 package hu.deik.boozepal.rest;
 
-import java.io.IOException;
-import java.io.Serializable;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
+import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -13,22 +25,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.google.gson.GsonBuilder;
-import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.AuthenticationException;
-import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
-import hu.deik.boozepal.rest.service.UserServiceRest;
-import hu.deik.boozepal.rest.vo.RemoteTokenVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * A külső felhasználók által használt szolgáltatások végpontja.
@@ -115,7 +114,6 @@ public class UserServiceEndpoint implements Serializable {
         return remoteUser;
     }
 
-
     /**
      * Külső felhasználó kiléptetése a rendszerből.
      *
@@ -163,5 +161,35 @@ public class UserServiceEndpoint implements Serializable {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
         }
         return Response.status(Status.OK).build();
+    }
+
+    /**
+     * Cimborák visszaadása az endpointon keresztül.
+     *
+     * @param string
+     * @return
+     */
+    @Path("/findPals")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response findPals(String string) {
+        logger.info("Cimborák keresése a közelben.");
+
+        RemoteUserDetailsVO remoteUserDetailsVO;
+
+        try {
+            remoteUserDetailsVO = getValue(string);
+        } catch (IOException e) {
+            logger.error("Hiba a JSON parsolása során, BAD_REQUEST küldése.");
+            return Response.status(Status.BAD_REQUEST).entity(e).build();
+        }
+        RemoteUserVO user = remoteUserDetailsVO.getUser();
+        userServiceRest.updateUserLocation(user);
+        List<User> usersInGivenRadiusAndCoordinate = userServiceRest.getUsersInGivenRadiusAndCoordinate(
+                user.getLastKnownCoordinate().getLatitude(), user.getLastKnownCoordinate().getLongitude(),
+                (double) user.getSearchRadius());
+
+        return Response.ok().entity(usersInGivenRadiusAndCoordinate).build();
     }
 }

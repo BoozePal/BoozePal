@@ -24,6 +24,7 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 @RunWith(Arquillian.class)
 public class UserServiceRestIT extends ArquillianContainer {
+
     private static final Double RADIUS = 500.0;
     private static final Coordinate ORIGO = new Coordinate(0.0, 0.0);
 
@@ -189,7 +190,7 @@ public class UserServiceRestIT extends ArquillianContainer {
                 .build();
 
         remoteTestUser.setId(testUser.getId());
-        remoteTestUser.setMyPals(Arrays.asList(remoteTestUserPal1,remoteTestUserPal2));
+        remoteTestUser.setMyPals(Arrays.asList(remoteTestUserPal1, remoteTestUserPal2));
 
         RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
                 .token("1/fFAGRNJru1FTz70BzhT3Zg")
@@ -206,7 +207,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         userService.deleteUser(testUserPal1);
         userService.deleteUser(testUserPal2);
     }
-    
+
     @Test
     public void testUpdateUserLocation() {
         User user = buildTestUser();
@@ -220,6 +221,15 @@ public class UserServiceRestIT extends ArquillianContainer {
         User updateUserLocation = userService.updateUserLocation(remoteUser);
         Assert.assertEquals(latitude, updateUserLocation.getLastKnownCoordinate().getLatitude());
         Assert.assertEquals(longitude, updateUserLocation.getLastKnownCoordinate().getLongitude());
+        userService.deleteUser(saveUser);
+    }
+
+    @Test
+    public void testFindByEmail() {
+        User user = buildTestUser();
+        User saveUser = userService.saveUser(user);
+        user = userService.findByEmail(user.getEmail());
+        Assert.assertEquals(user, saveUser);
         userService.deleteUser(saveUser);
     }
 

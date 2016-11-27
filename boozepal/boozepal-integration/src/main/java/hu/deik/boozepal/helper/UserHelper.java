@@ -1,5 +1,6 @@
 package hu.deik.boozepal.helper;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,11 +63,27 @@ public class UserHelper {
         }
     }
 
+    public boolean updateUserDates(final String email, final List<Date> timeBoards) throws UserDetailsUpdateException {
+        User user = userDao.findByEmail(email);
+        if (user == null) {
+            throw new UserDetailsUpdateException("User is null");
+        } else {
+            logger.info("User : {}", user.getUsername());
+            user.setTimeBoard(timeBoards);
+            userDao.save(user);
+        }
+        return true;
+    }
+
     private User mapper(final RemoteUserVO remoteUserVO, User user) {
         if (remoteUserVO.getName() != null)
             user.setUsername(remoteUserVO.getName());
         if (remoteUserVO.getCity() != null)
-            user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+            if (user.getAddress() == null)
+                user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+            else {
+                user.getAddress().setTown(remoteUserVO.getCity());
+            }
         user.setPriceCategory(remoteUserVO.getPriceCategory());
         user.setSearchRadius(remoteUserVO.getSearchRadius());
         if (remoteUserVO.getSavedDates() != null)

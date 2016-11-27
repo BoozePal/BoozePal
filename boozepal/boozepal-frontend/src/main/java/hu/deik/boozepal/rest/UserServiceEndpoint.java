@@ -138,7 +138,10 @@ public class UserServiceEndpoint implements Serializable {
     }
 
     /**
+     * Felhasználó ráérési napok frissitése.
      *
+     * @param remoteVO a felhasználó Google token-e és a ráérési napok listája.
+     * @return sikeres frissités után HTTP 200.
      */
     @Path("/timetable")
     @POST

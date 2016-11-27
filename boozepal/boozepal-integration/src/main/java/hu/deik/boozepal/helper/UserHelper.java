@@ -1,5 +1,6 @@
 package hu.deik.boozepal.helper;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,6 +61,18 @@ public class UserHelper {
             logger.info("User : {}", user.getUsername());
             return mapper(remoteUserVO, user);
         }
+    }
+
+    public boolean updateUserDates(final String email, final List<Date> timeBoards) throws UserDetailsUpdateException {
+        User user = userDao.findByEmail(email);
+        if (user == null) {
+            throw new UserDetailsUpdateException("User is null");
+        } else {
+            logger.info("User : {}", user.getUsername());
+            user.setTimeBoard(timeBoards);
+            userDao.save(user);
+        }
+        return true;
     }
 
     private User mapper(final RemoteUserVO remoteUserVO, User user) {

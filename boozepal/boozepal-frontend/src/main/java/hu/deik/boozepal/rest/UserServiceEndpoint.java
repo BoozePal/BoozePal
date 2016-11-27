@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.google.gson.GsonBuilder;
+import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,4 +137,28 @@ public class UserServiceEndpoint implements Serializable {
         return Response.status(Status.OK).build();
     }
 
+    /**
+     *
+     */
+    @Path("/timetable")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response timeTableRefresher(String remoteVO) {
+        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(remoteVO));
+        RemoteTimeTableVO remoteTimeTableVO;
+        try {
+            remoteTimeTableVO = mapper.readValue(remoteVO, RemoteTimeTableVO.class);
+        } catch (IOException e) {
+            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
+        }
+        try {
+            userServiceRest.updateUserDates(remoteTimeTableVO);
+        } catch (AuthenticationException e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage()).build();
+        } catch (UserDetailsUpdateException e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
+        }
+        return Response.status(Status.OK).build();
+    }
 }

@@ -13,10 +13,7 @@ import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.helper.UserHelper;
-import hu.deik.boozepal.rest.vo.PayloadUserVO;
-import hu.deik.boozepal.rest.vo.RemoteTokenVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import hu.deik.boozepal.rest.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,8 +152,8 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private PayloadUserVO getUserByGoogleToken(String token)
             throws AuthenticationException, GeneralSecurityException, IOException {
-        GoogleIdToken idToken = verifier.verify(token);
         PayloadUserVO payloadUserVO;
+        GoogleIdToken idToken = verifier.verify(token);
         if (idToken != null) {
             Payload payload = idToken.getPayload();
             User user = userDao.findByEmail(payload.getEmail());
@@ -184,6 +181,21 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     public void deleteUser(User user) {
         userDao.delete(user);
+    }
+
+    /**
+     * Kapot ráérési idők frissitése egy felhasználónál.
+     */
+    @Override
+    public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO) throws UserDetailsUpdateException, AuthenticationException {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = verifier.verify(remoteTimeTableVO.getToken());
+        } catch (Exception e) {
+            logger.info("Rossz token! {}", e);
+            throw new AuthenticationException("Rossz token!");
+        }
+        boolean ret = userHelper.updateUserDates(idToken.getPayload().getEmail(), remoteTimeTableVO.getTimeTableList());
     }
 
     /**

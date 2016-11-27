@@ -3,7 +3,17 @@ package hu.deik.boozepal.common.entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,15 +26,14 @@ import lombok.ToString;
  * Felhasználót reprezentáló entitás.
  *
  * @version 1.0
- *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false, of = { "username", "fullName", "email" })
-@ToString(exclude = { "password" })
+@EqualsAndHashCode(callSuper = false, of = {"username", "email"})
+@ToString(exclude = {"password"})
 @Builder
 public class User extends BaseEntity {
 
@@ -57,18 +66,20 @@ public class User extends BaseEntity {
      * Felhasználó jogai.
      */
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
     /**
      * Felhasználó kedvenc itala.
      */
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    private List<Drink> favouriteDrink;
+    @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
+    private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Pub> favouritePub;
 
     /**
@@ -80,7 +91,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó lakóhelye.
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     /**
@@ -109,6 +120,6 @@ public class User extends BaseEntity {
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
     @ElementCollection
-    @CollectionTable(name="boozepal_user_timeBoards", joinColumns=@JoinColumn(name="user_id"))
+    @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
 }

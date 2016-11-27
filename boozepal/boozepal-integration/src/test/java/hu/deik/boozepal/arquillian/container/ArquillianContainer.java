@@ -2,6 +2,7 @@ package hu.deik.boozepal.arquillian.container;
 
 import java.io.File;
 
+import hu.deik.boozepal.helper.UserHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,6 +53,7 @@ public class ArquillianContainer {
                 .addPackage(RemoteTokenVO.class.getPackage())
                 .addPackage(UserServiceRest.class.getPackage()).addPackage(UserServiceRestImpl.class.getPackage())
                 .addPackage(UserRepository.class.getPackage())
+                .addPackage(UserHelper.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
                 .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)

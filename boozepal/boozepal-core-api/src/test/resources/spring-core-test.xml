@@ -30,8 +30,13 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>
+	
+	<jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:db/h2/initDB.sql"/>
+    </jdbc:initialize-database>
+	
 	<tx:annotation-driven />
-
+	
 	<!-- Transaction Manager -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />

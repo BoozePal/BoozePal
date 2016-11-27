@@ -1,5 +1,6 @@
 package hu.deik.boozepal.dao.test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -11,8 +12,11 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import hu.deik.boozepal.common.contants.BoozePalConstants;
 import hu.deik.boozepal.common.entity.Coordinate;
+import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,6 +32,9 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userDao;
+
+    @Autowired
+    private RoleRepository roleDao;
 
     @Test
     public void testUserDaoNotNull() {
@@ -66,7 +73,7 @@ public class UserRepositoryTest {
         userDao.updateUserCoordinate(latitude, altitude, savedUser.getId());
         User findOne = userDao.findOne(savedUser.getId());
         Assert.assertEquals(latitude, findOne.getLastKnownCoordinate().getLatitude(), 0.0);
-        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getAltitude(), 0.0);
+        Assert.assertEquals(altitude, findOne.getLastKnownCoordinate().getLongitude(), 0.0);
         // userDao.delete(savedUser.getId());
     }
 
@@ -101,9 +108,9 @@ public class UserRepositoryTest {
 
     @Test
     public void testFindOnlineUsers() {
-        User onlineUser = createUser("onlineUser","online@online.com");
+        User onlineUser = createUser("onlineUser", "online@online.com");
         onlineUser.setLoggedIn(true);
-        User offlineUser = createUser("offlineUser","offline@offline.com");
+        User offlineUser = createUser("offlineUser", "offline@offline.com");
         offlineUser.setLoggedIn(false);
         userDao.save(onlineUser);
         userDao.save(offlineUser);
@@ -133,6 +140,31 @@ public class UserRepositoryTest {
         userDao.delete(user);
     }
 
+    @Test
+    public void testFindByRoleUser() {
+//        User nonUserUser = createUser("nonUserUser", "nonUserUser@email.com");
+//        userDao.save(nonUserUser);
+//        User createUserWithUserRole = createUserWithUserRole("userWithUserRole1", "userWithUserRole1@email.com");
+//        userDao.save(createUserWithUserRole);
+//        User createUserWithUserRole2 = createUserWithUserRole("userWithUserRole2", "userWithUserRole2@email.com");
+//        userDao.save(createUserWithUserRole2);
+
+        // TODO Nandi - átírni matcherre.
+        List<User> findByRoleUser = userDao.findByRoleUser();
+        Assert.assertFalse(findByRoleUser.isEmpty());
+
+    }
+    
+    @Test
+    public void testCountGivenPriceCategory() {
+        Integer lowest = userDao.countGivenPriceCategory(1);
+        Assert.assertEquals(Integer.valueOf(1), lowest);
+        Integer medium = userDao.countGivenPriceCategory(3);
+        Assert.assertEquals(Integer.valueOf(1), medium);
+        Integer highest = userDao.countGivenPriceCategory(5);
+        Assert.assertEquals(Integer.valueOf(0), highest);
+    }
+
     @After
     public void tearDown() {
         if (user != null && user.getId() != null)
@@ -160,6 +192,23 @@ public class UserRepositoryTest {
                 .lastKnownCoordinate(new Coordinate(10.0, 10.0))
                 .priceCategory(3)
                 .build();
+    }
+    
+    private User createUserWithUserRole(String username, String email) {
+        Role userRole = roleDao.findByRoleName(BoozePalConstants.ROLE_USER);
+        return User.builder()
+                .username(username)
+                .email(email)
+                .password(TEST_PASSWORD)
+                .remove(false)
+                .roles(Arrays.asList(userRole == null ? createAndGetUserRole():userRole))
+                .lastKnownCoordinate(new Coordinate(10.0, 10.0))
+                .priceCategory(3)
+                .build();
+    }
+
+    private Role createAndGetUserRole() {
+        return roleDao.save(new Role(BoozePalConstants.ROLE_USER));
     }
    //@formatter:on
 

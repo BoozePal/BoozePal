@@ -2,11 +2,19 @@ package hu.deik.boozepal.rest.vo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.*;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Távoli felhasználót repreneztáló érték osztály.
@@ -16,31 +24,21 @@ import java.util.List;
  *
  * @version 1.0
  */
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
-@EqualsAndHashCode(callSuper = false)
 public class RemoteTimeTableVO implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     /**
      * Token.
      */
-    @NonNull
-    @JsonProperty("token")
     private String token;
 
-    @JsonProperty("timeTableList")
+    /**
+     * Ráérési napok.
+     */
     private List<Date> timeTableList;
-
-    @JsonCreator
-    public RemoteTimeTableVO(@JsonProperty("token") String token, @JsonProperty("timeTableList") List<Date> timeTableList) {
-        super();
-        this.token = token;
-        this.timeTableList = timeTableList;
-    }
 }

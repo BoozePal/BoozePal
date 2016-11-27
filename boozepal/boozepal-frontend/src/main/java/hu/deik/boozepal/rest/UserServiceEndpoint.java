@@ -12,6 +12,7 @@ import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import org.omg.SendingContext.RunTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -138,27 +142,25 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Felhasználó ráérési napok frissitése.
      *
-     * @param remoteVO a felhasználó Google token-e és a ráérési napok listája.
+     * @param string a felhasználó Google token-e és a ráérési napok listája.
      * @return sikeres frissités után HTTP 200.
      */
     @Path("/timetable")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response timeTableRefresher(String remoteVO) {
-        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(remoteVO));
-        RemoteTimeTableVO remoteTimeTableVO;
+    public Response timeTableRefresher(String string) {
+        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(string));
         try {
-            remoteTimeTableVO = mapper.readValue(remoteVO, RemoteTimeTableVO.class);
-        } catch (IOException e) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
-        }
-        try {
-            userServiceRest.updateUserDates(remoteTimeTableVO);
+            RemoteTimeTableVO v = new GsonBuilder().create().fromJson(string, RemoteTimeTableVO.class);
+            userServiceRest.updateUserDates(v);
         } catch (AuthenticationException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage()).build();
         } catch (UserDetailsUpdateException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
+        } catch (RuntimeException e) {
+            logger.info("alma {} " ,e.getStackTrace());
+            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
         }
         return Response.status(Status.OK).build();
     }

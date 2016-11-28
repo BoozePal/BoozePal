@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<p:dialog header="#{out.userInfDialUserInformation}" widgetVar="userDialog" modal="true" showEffect="fade"
+          hideEffect="fade"
+          resizable="false">
+    <p:outputPanel id="userDetail" style="text-align:center;">
+        <p:panelGrid columns="2" rendered="#{not empty mbean.selectedUser}">
+
+            <h:outputText value="#{out.userInfDialUserName}"/>
+            <h:outputText value="#{mbean.selectedUser.username}"/>
+
+            <h:outputText value="#{out.userInfDialEmail} "/>
+            <h:outputText value="#{mbean.selectedUser.email}"/>
+
+            <h:outputText value="#{out.userInfDialSearchRadius}"/>
+            <h:outputText value="#{mbean.selectedUser.searchRadius}"/>
+
+            <h:outputText value="#{out.userInfDialLastKnownCoordinate}"/>
+            <ui:repeat value="#{mbean.selectedUser.lastKnownCoordinate}" var="lastKnownCoordinate">
+                <h:outputText value="#{lastKnownCoordinate.latitude} - #{lastKnownCoordinate.longitude}"
+                              style="display:block"/>
+            </ui:repeat>
+
+            <h:outputText value="#{out.userInfDialTimeBoard}"/>
+            <ui:repeat value="#{mbean.selectedUser.timeBoard}" var="timeBoard">
+                <h:outputText value="#{timeBoard}"
+                              style="display:block"/>
+            </ui:repeat>
+
+            <h:outputText value="#{out.userInfDialPreferencePriceCategory}"/>
+            <h:outputText value="#{mbean.selectedUser.priceCategory}"/>
+
+            <h:outputText value="#{out.userInfDialFavoriteDrink}"/>
+            <ui:repeat value="#{mbean.selectedUser.favouriteDrinks}" var="favouriteDrink">
+                <h:outputText value="#{favouriteDrink.name} - #{favouriteDrink.drinkType}"
+                              style="display:block"/>
+            </ui:repeat>
+            <h:outputText value="#{out.userInfDialFavoritePub}"/>
+            <ui:repeat value="#{mbean.selectedUser.favouritePub}" var="favouritePub">
+                <h:outputText value="#{favouritePub.name}"
+                              style="display:block"/>
+            </ui:repeat>
+
+            <h:outputText value="#{out.userInfDialAddress}"/>
+            <h:outputText value="#{mbean.selectedUser.address.town} " style="display:block"/>
+
+            <h:outputText value="#{out.userInfDialId}"/>
+            <h:outputText value="#{mbean.selectedUser.id}"/>
+
+            <h:outputText value="#{out.userInfDialRoles}"/>
+            <ui:repeat value="#{mbean.selectedUser.roles}" var="role">
+                <h:outputText value="#{role.roleName}" style="display:block"/>
+            </ui:repeat>
+        </p:panelGrid>
+    </p:outputPanel>
+</p:dialog>
+</html>

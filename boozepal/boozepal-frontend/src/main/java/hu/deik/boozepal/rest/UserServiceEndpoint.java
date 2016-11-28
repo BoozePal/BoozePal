@@ -1,19 +1,8 @@
 package hu.deik.boozepal.rest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.GsonBuilder;
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.AuthenticationException;
-import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
-import hu.deik.boozepal.rest.service.UserServiceRest;
-import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
-import hu.deik.boozepal.rest.vo.RemoteTokenVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,9 +14,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
  * A külső felhasználók által használt szolgáltatások végpontja.
@@ -96,9 +100,10 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
         RemoteUserDetailsVO remoteUserDetailsVO;
 
         try {
-            remoteUserDetailsVO = getValue(string);
-        } catch (IOException e) {
-            return Response.serverError().build();
+            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+        } catch (JsonSyntaxException e) {
+            logger.error("Hiba a cimborák keresése közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
         try {
             userServiceRest.updateUserDetails(remoteUserDetailsVO);
@@ -141,7 +146,7 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     /**
      * Felhasználó ráérési napok frissitése.
      *
-     * @param remoteVO
+     * @param string
      *            a felhasználó Google token-e és a ráérési napok listája.
      * @return sikeres frissités után HTTP 200.
      */
@@ -149,21 +154,19 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response timeTableRefresher(String remoteVO) {
-        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(remoteVO));
-        RemoteTimeTableVO remoteTimeTableVO;
+    public Response timeTableRefresher(String string) {
+        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(string));
         try {
-            remoteTimeTableVO = mapper.readValue(remoteVO, RemoteTimeTableVO.class);
-        } catch (IOException e) {
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
-        }
-        try {
-            userServiceRest.updateUserDates(remoteTimeTableVO);
+            RemoteTimeTableVO v = new GsonBuilder().create().fromJson(string, RemoteTimeTableVO.class);
+            userServiceRest.updateUserDates(v);
         } catch (AuthenticationException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage())
                     .build();
         } catch (UserDetailsUpdateException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
+        } catch (RuntimeException e) {
+            logger.info("alma {} ", e.getStackTrace());
+            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
         }
         return Response.status(Status.OK).build();
     }
@@ -182,12 +185,11 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
         logger.info("Cimborák keresése a közelben.");
 
         RemoteUserDetailsVO remoteUserDetailsVO;
-
         try {
-            remoteUserDetailsVO = getValue(string);
-        } catch (IOException e) {
-            logger.error("Hiba a JSON parsolása során, BAD_REQUEST küldése.");
-            return Response.status(Status.BAD_REQUEST).entity(e).build();
+            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+        } catch (JsonSyntaxException e) {
+            logger.error("Hiba a cimborák keresése közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
         RemoteUserVO user = remoteUserDetailsVO.getUser();
         userServiceRest.updateUserLocation(user);

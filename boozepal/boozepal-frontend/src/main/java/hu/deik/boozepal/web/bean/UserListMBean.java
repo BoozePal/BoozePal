@@ -1,8 +1,14 @@
 package hu.deik.boozepal.web.bean;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
+import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.service.UserService;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -11,70 +17,64 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.service.UserService;
-import lombok.NoArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
+@Getter
+@Setter
 @ManagedBean
-@ViewScoped
 @Named("userListMBean")
-public class UserListMBean extends BoozePalAbstractMBean implements Serializable {
+@ViewScoped
+public class UserListMBean extends BoozePalAbstractMBean {
 
-	private static final long serialVersionUID = 1L;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @EJB
+    private UserService userService;
 
-	@EJB
-	private UserService userService;
+    private List<User> users;
 
-	private List<User> users;
+    private List<User> allUsers;
 
-	private boolean activeUser;
+    private boolean activeUser;
 
-	@PostConstruct
-	public void init() {
-		setActiveUser(false);
-		users = allUsersList();
-		logger.info("=== init === {}", getUsers().size());
-	}
+    private User selectedUser;
 
-	public void switchUsers() {
-		if (activeUser) {
-			users = getUsers().stream().filter(e -> e.isLoggedIn() == true).collect(Collectors.toList());
-		} else {
-			users = allUsersList();
-		}
-		logger.info("== activeUser == {}", getUsers().size());
-	}
+    @PostConstruct
+    public void init() {
+        setActiveUser(true);
+        allUsers = allUsersList();
+        users = getAllUsers().stream().filter(e -> e.isLoggedIn()).collect(Collectors.toList());
+    }
 
-	private List<User> allUsersList() {
-		return userService.findAll();
-	}
+    public void switchUsers() {
+        if (activeUser) {
+            users = getAllUsers().stream().filter(e -> e.isLoggedIn()).collect(Collectors.toList());
+        } else {
+            users = getAllUsers();
+        }
+        logger.info("activeUser ==: {}", getUsers().size());
+    }
 
-	public void addMessage() {
-		String message = activeUser ? "Aktív felhasználó" : "Összes felhasználó";
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(message));
-	}
+    private List<User> allUsersList() {
+        return userService.findAll();
+    }
 
-	public List<User> getUsers() {
-		return users;
-	}
+    public void addMessage() {
+        String message = activeUser ? "Aktív felhasználó" : "Összes felhasználó";
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(message));
+    }
 
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
+    public void onRowSelect(SelectEvent event) {
+        logger.info("asl {}", selectedUser.toString());
+        FacesMessage msg = new FacesMessage("User Selected", ((User) event.getObject()).getUsername());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
-	public boolean isActiveUser() {
-		return activeUser;
-	}
-
-	public void setActiveUser(boolean activeUser) {
-		this.activeUser = activeUser;
-	}
+    public void onRowUnselect(UnselectEvent event) {
+        FacesMessage msg = new FacesMessage("User Unselected", ((User) event.getObject()).getUsername());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
 }

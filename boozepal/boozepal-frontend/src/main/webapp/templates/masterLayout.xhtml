@@ -2,113 +2,108 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:sec="http://www.springframework.org/security/tags"
-	xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:sec="http://www.springframework.org/security/tags"
+      xmlns:p="http://primefaces.org/ui">
 <f:view locale="#{localeBean.locale}">
-	<h:head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1.0, user-scalable=no" />
-		<title><ui:insert name="pageTitle"></ui:insert></title>
-		<ui:insert name="head-extra"></ui:insert>
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+        <title><ui:insert name="pageTitle"></ui:insert></title>
+        <ui:insert name="head-extra"></ui:insert>
 
-		<h:outputStylesheet library="bootstrap" name="css/bootstrap.css"></h:outputStylesheet>
-		<h:outputStylesheet library="bootstrap" name="css/basic.css"
-			rel="stylesheet" />
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans'
-			rel='stylesheet' type='text/css' />
+        <h:outputStylesheet library="bootstrap" name="css/bootstrap.css"></h:outputStylesheet>
+        <h:outputStylesheet library="bootstrap" name="css/basic.css"
+                            rel="stylesheet"/>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans'
+              rel='stylesheet' type='text/css'/>
 
-		<h:outputScript library="primefaces" name="jquery/jquery.js"
-			target="head" />
-		<h:outputScript library="primefaces" name="jquery/jquery-plugins.js"
-			target="head" />
-		<!-- BOOTSTRAP SCRIPTS -->
-		<h:outputScript library="bootstrap" name="js/bootstrap.js"></h:outputScript>
-		<!-- METISMENU SCRIPTS -->
-		<h:outputScript library="bootstrap" name="js/jquery.metisMenu.js"></h:outputScript>
-		<!-- CUSTOM SCRIPTS -->
-		<h:outputScript library="bootstrap"
-			name="js/wizard/modernizr-2.6.2.min.js"></h:outputScript>
-		<h:outputScript library="bootstrap"
-			name="js/wizard/jquery.cookie-1.3.1.js"></h:outputScript>
-		<h:outputScript library="bootstrap" name="js/wizard/jquery.steps.js"></h:outputScript>
-		<h:outputScript library="bootstrap" name="js/custom.js"></h:outputScript>
-	</h:head>
+        <h:outputScript library="primefaces" name="jquery/jquery.js"
+                        target="head"/>
+        <h:outputScript library="primefaces" name="jquery/jquery-plugins.js"
+                        target="head"/>
+        <!-- BOOTSTRAP SCRIPTS -->
+        <h:outputScript library="bootstrap" name="js/bootstrap.js"></h:outputScript>
+        <!-- METISMENU SCRIPTS -->
+        <h:outputScript library="bootstrap" name="js/jquery.metisMenu.js"></h:outputScript>
+        <!-- CUSTOM SCRIPTS -->
+        <h:outputScript library="bootstrap"
+                        name="js/wizard/modernizr-2.6.2.min.js"></h:outputScript>
+        <h:outputScript library="bootstrap"
+                        name="js/wizard/jquery.cookie-1.3.1.js"></h:outputScript>
+        <h:outputScript library="bootstrap" name="js/wizard/jquery.steps.js"></h:outputScript>
+        <h:outputScript library="bootstrap" name="js/custom.js"></h:outputScript>
+    </h:head>
 
-	<h:body>
-		<div id="wrapper">
-			<nav class="navbar navbar-default navbar-cls-top " role="navigation"
-				style="margin-bottom: 0">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#{request.contextPath}/index.xhtml">#{out.pageTitle}</a>
-			</div>
+    <h:body>
+        <div id="wrapper">
+            <nav class="navbar navbar-default navbar-cls-top " role="navigation"
+                 style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#{request.contextPath}/index.xhtml">#{out.pageTitle}</a>
+                </div>
 
-			<div class="header-right">
-				<div class="bfh-selectbox bfh-languages">
-					<h:form style="float: right">
-						<h:selectOneMenu value="#{localeBean.language}"
-							onchange="submit()">
-							<f:selectItem itemLabel="#{out.hungarian}" itemValue="hu" />
-							<f:selectItem itemLabel="#{out.english}" itemValue="en" />
-						</h:selectOneMenu>
-						<h:panelGrid columns="2">
-							<p:commandLink title="HU"
-								action="#{localeBean.setLanguage('hu')}" update="@all">
-							</p:commandLink>
-							<p:commandLink title="EN"
-								action="#{localeBean.setLanguage('en')}" update="@all">
-							</p:commandLink>
-						</h:panelGrid>
-					</h:form>
-				</div>
-				<sec:authorize access="hasAnyRole('ADMIN')">
-					<a href="#{request.contextPath}/logout" class="btn btn-danger"
-						title="Logout"> <b>#{out.logout}</b>
-					</a>
-				</sec:authorize>
-			</div>
+                <div class="header-right">
+                    <div class="bfh-selectbox bfh-languages">
+                        <h:form style="float: right">
+                            <h:selectOneMenu value="#{localeBean.language}"
+                                             onchange="submit()">
+                                <f:selectItem itemLabel="#{out.hungarian}" itemValue="hu"/>
+                                <f:selectItem itemLabel="#{out.english}" itemValue="en"/>
+                            </h:selectOneMenu>
+                            <h:panelGrid columns="2">
+                                <p:commandLink title="HU"
+                                               action="#{localeBean.setLanguage('hu')}" update="@all">
+                                </p:commandLink>
+                                <p:commandLink title="EN"
+                                               action="#{localeBean.setLanguage('en')}" update="@all">
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </h:form>
+                    </div>
+                    <sec:authorize access="hasAnyRole('ADMIN')">
+                        <a href="#{request.contextPath}/logout" class="btn btn-danger"
+                           title="Logout"> <b>#{out.logout}</b>
+                        </a>
+                    </sec:authorize>
+                </div>
 
-			</nav>
-			<!-- /. NAV TOP  -->
-			<nav class="navbar-default navbar-side" role="navigation">
-			<div class="sidebar-collapse">
-				<ul class="nav" id="main-menu">
-					<sec:authorize access="hasAnyRole('ADMIN')">
-						<li><p:outputPanel style="display:block"
-								styleClass="user-img-div">
-								<div class="inner-text" style="text-align: left">
-									<p:outputLabel value="#{out.userName}: " />
-									<br />
-									<p:outputLabel value="#{userSessionBean.sessionUser.username}" />
-								</div>
-							</p:outputPanel></li>
-						<li><a
-							href="#{request.contextPath}/secured/authentication.xhtml">#{out.button}</a></li>
-						<li><a href="#{request.contextPath}/secured/adminuser.xhtml">#{out.newAdminInsert}</a></li>
-						<li><a href="#{request.contextPath}/secured/userlist.xhtml">#{out.userMenu}</a></li>
-						<li><a
-							href="#{request.contextPath}/secured/onlineUsers.xhtml">#{out.usersOnMap}</a></li>
-						<li><a
-							href="#{request.contextPath}/secured/drinkStatistics.xhtml">#{out.drinkStatistics}</a></li>
-						<li><a
-							href="#{request.contextPath}/secured/priceCategoryStatistics.xhtml">Ár-kategória
-								statisztikák</a></li>
-					</sec:authorize>
-				</ul>
-			</div>
-			</nav>
-			<div id="page-wrapper">
-				<div id="page-inner">
-					<ui:insert name="content" />
-				</div>
-			</div>
-		</div>
-	</h:body>
+            </nav>
+            <!-- /. NAV TOP  -->
+            <nav class="navbar-default navbar-side" role="navigation">
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="main-menu">
+                        <sec:authorize access="hasAnyRole('ADMIN')">
+                            <li><p:outputPanel style="display:block"
+                                               styleClass="user-img-div">
+                                <div class="inner-text" style="text-align: left">
+                                    <p:outputLabel value="#{out.userName}: #{userSessionBean.sessionUser.username}"/>
+                                </div>
+                            </p:outputPanel></li>
+                            <li><a href="#{request.contextPath}/secured/adminuser.xhtml">#{out.newAdminInsert}</a></li>
+                            <li><a href="#{request.contextPath}/secured/userlist.xhtml">#{out.userMenu}</a></li>
+                            <li><a
+                                    href="#{request.contextPath}/secured/onlineUsers.xhtml">#{out.usersOnMap}</a></li>
+                            <li><a
+                                    href="#{request.contextPath}/secured/drinkStatistics.xhtml">#{out.drinkStatistics}</a>
+                            </li>
+                            <li><a
+                                    href="#{request.contextPath}/secured/priceCategoryStatistics.xhtml">Ár-kategória
+                                statisztikák</a></li>
+                        </sec:authorize>
+                    </ul>
+                </div>
+            </nav>
+            <div id="page-wrapper">
+                <div id="page-inner">
+                    <ui:insert name="content"/>
+                </div>
+            </div>
+        </div>
+    </h:body>
 </f:view>
 </html>

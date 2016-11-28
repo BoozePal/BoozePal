@@ -2,9 +2,6 @@ package hu.deik.boozepal.arquillian.container;
 
 import java.io.File;
 
-import javax.ejb.Startup;
-
-import hu.deik.boozepal.helper.UserHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -16,7 +13,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.RegistrationException;
+import hu.deik.boozepal.common.vo.DrinkVO;
 import hu.deik.boozepal.core.repo.UserRepository;
+import hu.deik.boozepal.helper.UserHelper;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.service.UserServiceRestImpl;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
@@ -40,6 +39,7 @@ public class ArquillianContainer {
     private static final String GOOGLE_JACKSON = "com.google.http-client:google-http-client-jackson2:1.22.0";
     private static final String GOOGLE_API = "com.google.api-client:google-api-client:1.22.0";
     private static final String COBERTURA = "net.sourceforge.cobertura:cobertura:2.1.1";
+    private static final String LOGBACK_FILE = "logback-test.xml";
     @Deployment
     public static Archive<WebArchive> createDeployment() {
         File[] springContext = Maven.resolver().resolve(SPRING_CONTEXT).withTransitivity().asFile();
@@ -53,14 +53,14 @@ public class ArquillianContainer {
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
-                .addPackage(RemoteTokenVO.class.getPackage())
-                .addPackage(UserServiceRest.class.getPackage()).addPackage(UserServiceRestImpl.class.getPackage())
-                .addPackage(UserRepository.class.getPackage())
+                .addPackage(RemoteTokenVO.class.getPackage()).addPackage(UserServiceRest.class.getPackage())
+                .addPackage(UserServiceRestImpl.class.getPackage()).addPackage(UserRepository.class.getPackage())
                 .addPackage(UserHelper.class.getPackage())
-                .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
-                .addAsResource(SPRING_CORE_TEST_XML).addAsResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addClasses(ArquillianContainer.class, RegistrationException.class,DrinkVO.class).addAsResource("beanRefContext.xml")
+                .addAsResource(SPRING_CORE_TEST_XML).addAsResource(EmptyAsset.INSTANCE, "beans.xml").addAsResource(LOGBACK_FILE)
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
-                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi).addAsLibraries(cobertura);
+                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson)
+                .addAsLibraries(googleApi).addAsLibraries(cobertura);
         return webArchive;
     }
 

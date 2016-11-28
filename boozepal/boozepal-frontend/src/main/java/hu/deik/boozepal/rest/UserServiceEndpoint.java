@@ -40,7 +40,7 @@ import hu.deik.boozepal.rest.vo.RemoteUserVO;
  */
 @Path("/user")
 @RequestScoped
-public class UserServiceEndpoint implements Serializable {
+public class UserServiceEndpoint extends AbstractEndpoint implements Serializable {
 
     /**
      *
@@ -93,8 +93,8 @@ public class UserServiceEndpoint implements Serializable {
      */
     @Path("/updateDetails")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ENCODING)
+    @Consumes(MediaType.APPLICATION_JSON + ENCODING)
     public Response updateUserInformation(String string) {
         logger.info("Felhasználó adatok módositása");
         RemoteUserDetailsVO remoteUserDetailsVO;
@@ -175,7 +175,7 @@ public class UserServiceEndpoint implements Serializable {
      * Cimborák visszaadása az endpointon keresztül.
      *
      * @param string
-     * @return
+     * @return a válasz.
      */
     @Path("/findPals")
     @POST

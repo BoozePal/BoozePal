@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.RegistrationException;
+import hu.deik.boozepal.common.vo.DrinkVO;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.service.UserServiceRestImpl;
@@ -37,6 +38,7 @@ public class ArquillianContainer {
     private static final String GOOGLE_JACKSON = "com.google.http-client:google-http-client-jackson2:1.22.0";
     private static final String GOOGLE_API = "com.google.api-client:google-api-client:1.22.0";
     private static final String COBERTURA = "net.sourceforge.cobertura:cobertura:2.1.1";
+
     @Deployment
     public static Archive<WebArchive> createDeployment() {
         File[] springContext = Maven.resolver().resolve(SPRING_CONTEXT).withTransitivity().asFile();
@@ -50,14 +52,14 @@ public class ArquillianContainer {
         replacePersistenceXMLFromArchive(coreApi, BOOZEPAL_CORE_API);
         Archive<WebArchive> webArchive = ShrinkWrap.create(WebArchive.class, "boozepal-test.war")
                 .addPackage("hu.deik.boozepal.*").addPackage(User.class.getPackage())
-                .addPackage(RemoteTokenVO.class.getPackage())
-                .addPackage(UserServiceRest.class.getPackage()).addPackage(UserServiceRestImpl.class.getPackage())
-                .addPackage(UserRepository.class.getPackage())
+                .addPackage(RemoteTokenVO.class.getPackage()).addPackage(UserServiceRest.class.getPackage())
+                .addPackage(UserServiceRestImpl.class.getPackage()).addPackage(UserRepository.class.getPackage())
                 .addPackage(UserHelper.class.getPackage())
-                .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
+                .addClasses(ArquillianContainer.class, RegistrationException.class,DrinkVO.class).addAsResource("beanRefContext.xml")
                 .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
-                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi).addAsLibraries(cobertura);
+                .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson)
+                .addAsLibraries(googleApi).addAsLibraries(cobertura);
         return webArchive;
     }
 

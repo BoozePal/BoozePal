@@ -14,6 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DrinkVO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Az ital azonosítója.
+     */
+    private Long id;
+
     /**
      * Ital megnevezése.
      */

@@ -257,5 +257,14 @@ public class UserServiceRestImpl implements UserServiceRest {
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException {
+        PayloadUserVO userByGoogleToken = getUserByGoogleToken(token);
+        return userByGoogleToken.getUser();
+    }
 
 }

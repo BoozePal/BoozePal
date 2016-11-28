@@ -2,14 +2,16 @@ package hu.deik.boozepal.rest;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
@@ -50,13 +51,6 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
 
     @EJB
     private UserServiceRest userServiceRest;
-
-    private ObjectMapper mapper;
-
-    @PostConstruct
-    public void init() {
-        mapper = new ObjectMapper();
-    }
 
     /**
      * Külső felhasználó beléptetése a rendszerbe.
@@ -115,12 +109,6 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
         return Response.status(Status.OK).build();
     }
 
-    private RemoteUserDetailsVO getValue(String string) throws IOException, JsonParseException, JsonMappingException {
-        RemoteUserDetailsVO remoteUser;
-        remoteUser = mapper.readValue(string, RemoteUserDetailsVO.class);
-        return remoteUser;
-    }
-
     /**
      * Külső felhasználó kiléptetése a rendszerből.
      *
@@ -165,7 +153,7 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
         } catch (UserDetailsUpdateException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
         } catch (RuntimeException e) {
-            logger.info("alma {} ", e.getStackTrace());
+            logger.info("RuntimeException:", e);
             return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
         }
         return Response.status(Status.OK).build();
@@ -198,5 +186,28 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
                 (double) user.getSearchRadius());
 
         return Response.ok().entity(usersInGivenRadiusAndCoordinate).build();
+    }
+
+    /**
+     * Felhasználó entitás lekérése token alapján.
+     * 
+     * @param tokenVo
+     *            a tokent tartalmazó VO.
+     * @return a felhasználó entitás.
+     */
+    @Path("/getUser/{token}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByToken(@PathParam("token") String token) {
+        logger.info("Felhasználó keresése token alapján.");
+        User user;
+        try {
+            user = userServiceRest.getUserByToken(token);
+        } catch (AuthenticationException | GeneralSecurityException | IOException e) {
+            logger.error("Hiba a felhasználó visszakérésekor.", e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.ok().entity(user).build();
     }
 }

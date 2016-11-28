@@ -9,6 +9,9 @@ import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 import javax.ejb.Local;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 /**
@@ -31,16 +34,19 @@ public interface UserServiceRest {
      * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
      * felhasználó létrehozása.
      *
-     * @param remoteUser távoli felhasználó.
+     * @param remoteUser
+     *            távoli felhasználó.
      * @return az újonnan létrehozott felhasználó vagy egy már meglévő.
-     * @throws AuthenticationException ha nem sikerült a token validálása.
+     * @throws AuthenticationException
+     *             ha nem sikerült a token validálása.
      */
     public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException;
 
     /**
      * Felhasználó logikai kiléptetése a rendszerből.
      *
-     * @param userId felhasználó azonosítója.
+     * @param userId
+     *            felhasználó azonosítója.
      * @throws AuthenticationException
      */
     public void logoutUserLogically(RemoteTokenVO userId) throws AuthenticationException;
@@ -49,9 +55,12 @@ public interface UserServiceRest {
      * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
      * helyezkednek el a megadott koordinátákhoz képest.
      *
-     * @param latitude szélesség.
-     * @param altitude magasság.
-     * @param radius   megadott körsugár.
+     * @param latitude
+     *            szélesség.
+     * @param altitude
+     *            magasság.
+     * @param radius
+     *            megadott körsugár.
      * @return a megadott körsugárban elérhető felhasználók.
      */
     public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius);
@@ -59,8 +68,10 @@ public interface UserServiceRest {
     /**
      * Távoli felhasználó adatmódositás
      *
-     * @param remoteUser távoli felhasználó.
-     * @throws UserDetailsUpdateException ha nem sikerült a felhasználót frissiteni.
+     * @param remoteUser
+     *            távoli felhasználó.
+     * @throws UserDetailsUpdateException
+     *             ha nem sikerült a felhasználót frissiteni.
      */
     public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
 
@@ -69,15 +80,19 @@ public interface UserServiceRest {
     /**
      * Távoli felhasználó ráérési napok frissitése
      *
-     * @param remoteTimeTableVO távoli felhasználó ráérési napajai és a google token.
-     * @throws UserDetailsUpdateException ha nem sikerült a felhasználót frissiteni.
+     * @param remoteTimeTableVO
+     *            távoli felhasználó ráérési napajai és a google token.
+     * @throws UserDetailsUpdateException
+     *             ha nem sikerült a felhasználót frissiteni.
      */
-    public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO) throws AuthenticationException, UserDetailsUpdateException;
+    public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO)
+            throws AuthenticationException, UserDetailsUpdateException;
 
     /**
      * Felhasználó aktuális helyzetének frissítése.
      *
-     * @param remoteUser a frissítendő felhasználó.
+     * @param remoteUser
+     *            a frissítendő felhasználó.
      */
     public User updateUserLocation(RemoteUserVO remoteUser);
 
@@ -88,4 +103,15 @@ public interface UserServiceRest {
      * @return felhasználó.
      */
     public User findByEmail(String email);
+
+    /**
+     * Felhasználó visszaadása token alapján.
+     * 
+     * @param token
+     *            a felhasználó tokene.
+     * @return a felhasználó.
+     * @throws GeneralSecurityException ha nem sikerül az authentikáció a Google API-n keresztül.
+     * @throws AuthenticationException ha nem sikerül az authentikáció belsőleg.  
+     */
+    public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException;
 }

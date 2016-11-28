@@ -129,7 +129,8 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     private boolean isNullCoordinate(User p) {
-        return p.getLastKnownCoordinate() == null || p.getLastKnownCoordinate().getLatitude() == null || p.getLastKnownCoordinate().getLatitude() == null;
+        return p.getLastKnownCoordinate() == null || p.getLastKnownCoordinate().getLatitude() == null
+                || p.getLastKnownCoordinate().getLatitude() == null;
     }
 
     private double distanceBetweenPoints(Double latitude, Double longitude, User p) {
@@ -190,7 +191,8 @@ public class UserServiceRestImpl implements UserServiceRest {
      * Kapott ráérési idők frissitése egy felhasználónál.
      */
     @Override
-    public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO) throws UserDetailsUpdateException, AuthenticationException {
+    public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO)
+            throws UserDetailsUpdateException, AuthenticationException {
         GoogleIdToken idToken = null;
         try {
             idToken = verifier.verify(remoteTimeTableVO.getToken());
@@ -227,8 +229,9 @@ public class UserServiceRestImpl implements UserServiceRest {
      */
     @Override
     public User updateUserLocation(RemoteUserVO remoteUser) {
-        logger.info("{} felhasználó aktuális pozíciójának módosítása.");
+        logger.info("{} felhasználó aktuális pozíciójának módosítása.", remoteUser.getName());
         CoordinateVO coordinate = remoteUser.getLastKnownCoordinate();
+        logger.info("Új koordináta: {}", coordinate);
         Long userId = remoteUser.getId();
         userDao.updateUserCoordinate(coordinate.getLatitude(), coordinate.getLongitude(), userId);
         return userDao.findById(userId);

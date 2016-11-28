@@ -1,17 +1,11 @@
-/*sör*/
-insert into boozepal_drinktype(id,name,displayName) values(1,'beer','Sör'); 
-/*vodka*/
-insert into boozepal_drinktype(id,name,displayName) values(2,'vodka','Vodka');
-/*rum*/
-insert into boozepal_drinktype(id,name,displayName) values(3,'rum','Rum');
 
-insert into boozepal_drink(id,name,drinkType_id) values(1,'Borsodi',1);
-insert into boozepal_drink(id,name,drinkType_id) values(2,'Sör',1);
-insert into boozepal_drink(id,name,drinkType_id) values(3,'Habos sör',1);
-insert into boozepal_drink(id,name,drinkType_id) values(4,'Royal vodka',2);
-insert into boozepal_drink(id,name,drinkType_id) values(5,'Gyengébb rum',3);
-insert into boozepal_drink(id,name,drinkType_id) values(6,'Közepes rum',3);
-insert into boozepal_drink(id,name,drinkType_id) values(7,'Eros rum',3);
+insert into boozepal_drink(id,name,drinkType) values(1,'Borsodi','BEER');
+insert into boozepal_drink(id,name,drinkType) values(2,'Sör','BEER');
+insert into boozepal_drink(id,name,drinkType) values(3,'Habos sör','BEER');
+insert into boozepal_drink(id,name,drinkType) values(4,'Royal vodka','VODKA');
+insert into boozepal_drink(id,name,drinkType) values(5,'Gyengébb rum','RUM');
+insert into boozepal_drink(id,name,drinkType) values(6,'Közepes rum','RUM');
+insert into boozepal_drink(id,name,drinkType) values(7,'Eros rum','RUM');
 
 insert into boozepal_user(id,username,password,remove,loggedin,searchradius,pricecategory) values(10,'DrinkTestUser','XXX',false,false,1,1);
 insert into boozepal_user(id,username,password,remove,loggedin,searchradius,pricecategory) values(11,'DrinkTestUser2','XXX',false,false,1,3);

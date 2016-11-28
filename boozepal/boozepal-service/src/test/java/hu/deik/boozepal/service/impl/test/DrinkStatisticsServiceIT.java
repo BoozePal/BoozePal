@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import hu.deik.boozepal.arquillian.container.ArquillianContainer;
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import hu.deik.boozepal.common.vo.DrinkStatisticsVO;
 import hu.deik.boozepal.core.repo.DrinkRepository;
 import hu.deik.boozepal.core.repo.DrinkTypeRepository;
@@ -57,29 +58,33 @@ public class DrinkStatisticsServiceIT extends ArquillianContainer {
 
     @Test
     public void testGetTheFavouriteDrinkType() {
-        DrinkType theFavouriteDrinkType = drinkStatisticsService.getTheFavouriteDrinkType();
-        Assert.assertEquals(drinkTypeService.findByName(RUM), theFavouriteDrinkType);
+        DrinkTypeEnum theFavouriteDrinkType = drinkStatisticsService.getTheFavouriteDrinkType();
+        Assert.assertEquals(DrinkTypeEnum.RUM, theFavouriteDrinkType);
     }
 
     @Test
     public void testGetDrinkStatistics() {
         // given
+
         // drinks in db
         // users in db
         // drink types in db
-        // Beer type
-        DrinkStatisticsVO beerTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(BEER), 2);
-        // Rum type
-        DrinkStatisticsVO rumTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(RUM), 3);
-        // vodka type
-        DrinkStatisticsVO vodkaTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(VODKA), 0);
+        DrinkStatisticsVO beerTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.BEER, 2);
+        DrinkStatisticsVO rumTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.RUM, 3);
+        DrinkStatisticsVO vodkaTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.VODKA, 0);
+        DrinkStatisticsVO champagneTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.CHAMPAGNE, 0);
+        DrinkStatisticsVO brandyTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.BRANDY, 0);
+        DrinkStatisticsVO ginTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.GIN, 0);
+        DrinkStatisticsVO wine = new DrinkStatisticsVO(DrinkTypeEnum.WINE, 0);
+        DrinkStatisticsVO whiskey = new DrinkStatisticsVO(DrinkTypeEnum.WHISKEY, 0);
+        DrinkStatisticsVO unknown = new DrinkStatisticsVO(DrinkTypeEnum.UNKNOWN, 0);
 
         // when
         List<DrinkStatisticsVO> drinkStatistics = drinkStatisticsService.getDrinkStatistics();
 
         // then
-        Assert.assertThat(Arrays.asList(beerTypeStat, rumTypeStat, vodkaTypeStat),
-                Matchers.containsInAnyOrder(drinkStatistics.toArray()));
+        Assert.assertThat(Arrays.asList(beerTypeStat, rumTypeStat, vodkaTypeStat, champagneTypeStat, wine, whiskey,
+                unknown, ginTypeStat, brandyTypeStat), Matchers.containsInAnyOrder(drinkStatistics.toArray()));
 
     }
 
@@ -87,9 +92,9 @@ public class DrinkStatisticsServiceIT extends ArquillianContainer {
     public void testGetDrinksTopList() {
         List<DrinkStatisticsVO> topList = drinkStatisticsService.getDrinksTopList();
         // Beer type
-        DrinkStatisticsVO beerTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(BEER), 2);
+        DrinkStatisticsVO beerTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.BEER, 2);
         // Rum type
-        DrinkStatisticsVO rumTypeStat = new DrinkStatisticsVO(drinkTypeService.findByName(RUM), 3);
+        DrinkStatisticsVO rumTypeStat = new DrinkStatisticsVO(DrinkTypeEnum.RUM, 3);
         // Assert in ORDER
         Assert.assertEquals(Arrays.asList(rumTypeStat, beerTypeStat), topList);
     }

@@ -1,20 +1,8 @@
 package hu.deik.boozepal.rest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.GsonBuilder;
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.AuthenticationException;
-import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
-import hu.deik.boozepal.rest.service.UserServiceRest;
-import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
-import hu.deik.boozepal.rest.vo.RemoteTokenVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
-import org.omg.SendingContext.RunTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -26,12 +14,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.common.exceptions.AuthenticationException;
+import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
+import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
  * A külső felhasználók által használt szolgáltatások végpontja.
@@ -61,7 +61,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó beléptetése a rendszerbe.
      *
-     * @param remoteUser a felhasználó Google token-e.
+     * @param remoteUser
+     *            a felhasználó Google token-e.
      * @return a beléptett felhasználót reprezentáló entitás.
      */
     @Path("/login")
@@ -83,7 +84,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó adatmódositására a rendszerbe.
      *
-     * @param string a felhasználó Google token-e.
+     * @param string
+     *            a felhasználó Google token-e.
      * @return ha sikerült az adatmódositás OK, ha nem akkor a hiba oka.
      * @throws IOException
      * @throws JsonMappingException
@@ -98,9 +100,10 @@ public class UserServiceEndpoint implements Serializable {
         RemoteUserDetailsVO remoteUserDetailsVO;
 
         try {
-            remoteUserDetailsVO = getValue(string);
-        } catch (IOException e) {
-            return Response.serverError().build();
+            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+        } catch (JsonSyntaxException e) {
+            logger.error("Hiba a cimborák keresése közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
         try {
             userServiceRest.updateUserDetails(remoteUserDetailsVO);
@@ -121,7 +124,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó kiléptetése a rendszerből.
      *
-     * @param remoteUser a felhasználó Google token-e.
+     * @param remoteUser
+     *            a felhasználó Google token-e.
      * @return sikeres kiléptetésnél HTTP 200. ha nem sikeres akkor HTTP 500.
      */
     @Path("/logout")
@@ -142,7 +146,8 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Felhasználó ráérési napok frissitése.
      *
-     * @param string a felhasználó Google token-e és a ráérési napok listája.
+     * @param string
+     *            a felhasználó Google token-e és a ráérési napok listája.
      * @return sikeres frissités után HTTP 200.
      */
     @Path("/timetable")
@@ -155,11 +160,12 @@ public class UserServiceEndpoint implements Serializable {
             RemoteTimeTableVO v = new GsonBuilder().create().fromJson(string, RemoteTimeTableVO.class);
             userServiceRest.updateUserDates(v);
         } catch (AuthenticationException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage()).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage())
+                    .build();
         } catch (UserDetailsUpdateException e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
         } catch (RuntimeException e) {
-            logger.info("alma {} " ,e.getStackTrace());
+            logger.info("alma {} ", e.getStackTrace());
             return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
         }
         return Response.status(Status.OK).build();
@@ -179,12 +185,11 @@ public class UserServiceEndpoint implements Serializable {
         logger.info("Cimborák keresése a közelben.");
 
         RemoteUserDetailsVO remoteUserDetailsVO;
-
         try {
-            remoteUserDetailsVO = getValue(string);
-        } catch (IOException e) {
-            logger.error("Hiba a JSON parsolása során, BAD_REQUEST küldése.");
-            return Response.status(Status.BAD_REQUEST).entity(e).build();
+            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+        } catch (JsonSyntaxException e) {
+            logger.error("Hiba a cimborák keresése közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
         RemoteUserVO user = remoteUserDetailsVO.getUser();
         userServiceRest.updateUserLocation(user);

@@ -1,9 +1,9 @@
 package hu.deik.boozepal.common.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +37,8 @@ public class Drink extends BaseEntity {
     /**
      * Ital típusa.
      */
-    @OneToOne(cascade = CascadeType.MERGE)
-    private DrinkType drinkType;
+//    @OneToOne(cascade = CascadeType.MERGE)
+    @Enumerated(EnumType.STRING)
+    private DrinkTypeEnum drinkType;
 
 }

@@ -63,7 +63,7 @@ public class DrinkServiceEndpoint extends AbstractEndpoint implements Serializab
      *            az ital típusa.
      * @return a megadott típussal megegyező italok.
      */
-    @Path("/{type}")
+    @Path("/type/{type}")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

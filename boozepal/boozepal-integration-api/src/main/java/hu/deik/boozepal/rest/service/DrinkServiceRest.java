@@ -15,15 +15,18 @@ import hu.deik.boozepal.common.vo.DrinkVO;
 public interface DrinkServiceRest {
 
     /**
+     * Visszaadja az összes italt.
      * 
-     * @return
+     * @return az összes ital listája.
      */
     List<DrinkVO> getAllDrinks();
 
     /**
+     * Visszaadja az italok típus szerint.
      * 
      * @param drinkType
-     * @return
+     *            a keresendő ital típus.
+     * @return a keresett ital típus italai.
      */
     List<DrinkVO> getAllDrinksByType(DrinkTypeEnum drinkType);
 

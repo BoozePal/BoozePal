@@ -28,6 +28,7 @@ import hu.deik.boozepal.rest.vo.RemoteTokenVO;
  *
  */
 public class ArquillianContainer {
+    protected static final String SPRING_CORE_TEST_XML = "spring-core-test.xml";
     private static final String SPRING_VERSION = "4.3.2.RELEASE";
     private static final String BOOZEPAL_CORE_API = "boozepal-core-api";
     private static final String CORE_API = "hu.deik:boozepal-core-api:1.0";
@@ -38,7 +39,7 @@ public class ArquillianContainer {
     private static final String GOOGLE_JACKSON = "com.google.http-client:google-http-client-jackson2:1.22.0";
     private static final String GOOGLE_API = "com.google.api-client:google-api-client:1.22.0";
     private static final String COBERTURA = "net.sourceforge.cobertura:cobertura:2.1.1";
-
+    private static final String LOGBACK_FILE = "logback-test.xml";
     @Deployment
     public static Archive<WebArchive> createDeployment() {
         File[] springContext = Maven.resolver().resolve(SPRING_CONTEXT).withTransitivity().asFile();
@@ -56,7 +57,7 @@ public class ArquillianContainer {
                 .addPackage(UserServiceRestImpl.class.getPackage()).addPackage(UserRepository.class.getPackage())
                 .addPackage(UserHelper.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class,DrinkVO.class).addAsResource("beanRefContext.xml")
-                .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsResource(SPRING_CORE_TEST_XML).addAsResource(EmptyAsset.INSTANCE, "beans.xml").addAsResource(LOGBACK_FILE)
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
                 .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson)
                 .addAsLibraries(googleApi).addAsLibraries(cobertura);

@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import hu.deik.boozepal.common.entity.Drink;
-import hu.deik.boozepal.common.entity.DrinkType;
 import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 
 /**
@@ -48,5 +47,13 @@ public interface DrinkRepository extends JpaRepository<Drink, Long> {
      */
     @Query(value = "SELECT COUNT(u) FROM User u WHERE :drink MEMBER u.favouriteDrinks")
     Integer getNumberOfFavouriteDrink(@Param("drink") Drink drink);
+
+    /**
+     * Az összes ital lekérdezése.
+     * 
+     * @return az összes ital listája.
+     */
+    @Query("SELECT d FROM Drink d")
+    List<Drink> getAll();
 
 }

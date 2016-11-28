@@ -6,12 +6,16 @@ import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = false, of = { "name", "drinkType" })
+@ToString(callSuper = false, of = { "name", "drinkType" })
 public class DrinkVO implements Serializable {
     private static final long serialVersionUID = 1L;
 

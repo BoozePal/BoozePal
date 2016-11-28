@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import hu.deik.boozepal.common.entity.Drink;
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import hu.deik.boozepal.core.repo.DrinkRepository;
 import hu.deik.boozepal.core.repo.DrinkTypeRepository;
 
@@ -36,16 +37,16 @@ public class DrinkRepositoryTest {
     public void testFindDrinkByType() {
         // List<Drink> createDrinks = createDrinks();
         // drinkDao.save(createDrinks);
-        DrinkType beerType = drinkTypeDao.findByName("beer");
-        List<Drink> beers = drinkDao.findByDrinkType(beerType);
+//        DrinkType beerType = drinkTypeDao.findByName("beer");
+        List<Drink> beers = drinkDao.findByDrinkType(DrinkTypeEnum.BEER);
         Assert.assertEquals(3, beers.size());
 
-        DrinkType rumType = drinkTypeDao.findByName("rum");
-        List<Drink> rums = drinkDao.findByDrinkType(rumType);
+//        DrinkType rumType = drinkTypeDao.findByName("rum");
+        List<Drink> rums = drinkDao.findByDrinkType(DrinkTypeEnum.RUM);
         Assert.assertEquals(3, rums.size());
 
-        DrinkType vodkaType = drinkTypeDao.findByName("vodka");
-        List<Drink> vodkas = drinkDao.findByDrinkType(vodkaType);
+//        DrinkType vodkaType = drinkTypeDao.findByName("vodka");
+        List<Drink> vodkas = drinkDao.findByDrinkType(DrinkTypeEnum.VODKA);
         Assert.assertEquals(1, vodkas.size());
     }
 
@@ -64,13 +65,13 @@ public class DrinkRepositoryTest {
 
     @Test
     public void testGetNumberOfDrinkType() {
-        Integer numberOfBeerType = drinkTypeDao.getNumberOfDrinkType(beerType());
+        Integer numberOfBeerType = drinkTypeDao.getNumberOfDrinkType(DrinkTypeEnum.BEER);
         Assert.assertEquals(Integer.valueOf(2), numberOfBeerType);
 
-        Integer numberOfVodkaType = drinkTypeDao.getNumberOfDrinkType(vodkaType());
+        Integer numberOfVodkaType = drinkTypeDao.getNumberOfDrinkType(DrinkTypeEnum.VODKA);
         Assert.assertEquals(Integer.valueOf(0), numberOfVodkaType);
 
-        Integer numberOfRumType = drinkTypeDao.getNumberOfDrinkType(rumType());
+        Integer numberOfRumType = drinkTypeDao.getNumberOfDrinkType(DrinkTypeEnum.RUM);
         Assert.assertEquals(Integer.valueOf(3), numberOfRumType);
     }
 
@@ -78,12 +79,12 @@ public class DrinkRepositoryTest {
     private List<Drink> createDrinks() {
         List<Drink> drinks = new ArrayList<Drink>();
         // 2 darab sörtípus létrehozása
-        drinks.add(Drink.builder().name("Sör").drinkType(beerType()).build());
-        drinks.add(Drink.builder().name("Habos sör").drinkType(beerType()).build());
+//        drinks.add(Drink.builder().name("Sör").drinkType(beerType()).build());
+//        drinks.add(Drink.builder().name("Habos sör").drinkType(beerType()).build());
         // 3 darab rumtípus
-        drinks.add(Drink.builder().name("Erős rum").drinkType(rumType()).build());
-        drinks.add(Drink.builder().name("Gyengébb rum").drinkType(rumType()).build());
-        drinks.add(Drink.builder().name("Közepes rum").drinkType(rumType()).build());
+//        drinks.add(Drink.builder().name("Erős rum").drinkType(rumType()).build());
+//        drinks.add(Drink.builder().name("Gyengébb rum").drinkType(rumType()).build());
+//        drinks.add(Drink.builder().name("Közepes rum").drinkType(rumType()).build());
         return drinks;
     }
 

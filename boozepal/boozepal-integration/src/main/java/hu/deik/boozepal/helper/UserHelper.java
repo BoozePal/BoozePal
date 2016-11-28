@@ -17,6 +17,7 @@ import hu.deik.boozepal.common.entity.Drink;
 import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.common.vo.DrinkVO;
 import hu.deik.boozepal.core.repo.DrinkRepository;
 import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
@@ -121,10 +122,12 @@ public class UserHelper {
 
     private List<Drink> getRemoteUserFavoritDrinks(final RemoteUserVO remoteUserVO) {
         List<Drink> drinks = new LinkedList<>();
-        for (String drinksName : remoteUserVO.getBoozes()) {
-            logger.info("Drink name: " + drinksName);
-            Drink savedDrink = drinkDao.saveAndFlush(Drink.builder().name(drinksName).build());
-            drinks.add(savedDrink);
+        for (DrinkVO drinksName : remoteUserVO.getBoozes()) {
+            logger.info("Drink name: " + drinksName.getName());
+            Drink drink = drinkDao.findByName(drinksName.getName());
+            if(drink == null)
+                drink = drinkDao.saveAndFlush(Drink.builder().name(drinksName.getName()).drinkType(drinksName.getDrinkType()).build());
+            drinks.add(drink);
         }
         return drinks;
     }

@@ -2,8 +2,10 @@ package hu.deik.boozepal.service.impl.test;
 
 import hu.deik.boozepal.arquillian.container.ArquillianContainer;
 import hu.deik.boozepal.common.entity.Coordinate;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.common.vo.DrinkVO;
 import hu.deik.boozepal.helper.UserHelper;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
@@ -98,7 +100,7 @@ public class UserHelperIT extends ArquillianContainer {
         return RemoteUserVO.builder()
                 .name("remoteTestUser")
                 .city("Debrecen")
-                .boozes(Arrays.asList("booze"))
+                .boozes(Arrays.asList(DrinkVO.builder().name("booze").drinkType(DrinkTypeEnum.BRANDY).build()))
                 .pubs(Arrays.asList("pub"))
                 .savedDates(Arrays.asList(new Date()))
                 .searchRadius(10)

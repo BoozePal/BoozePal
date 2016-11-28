@@ -57,7 +57,7 @@ public class DrinkStatisticsMBean extends BoozePalAbstractMBean implements Seria
         topList = new ArrayList<>();
         Integer rank = 1;
         for (DrinkStatisticsVO drinkStatisticsVO : drinkStatistics) {
-            topList.add((rank++) + ". " + getKeyFromProperty(drinkStatisticsVO.getDrinkType().getName()) + " ("
+            topList.add((rank++) + ". " + getKeyFromProperty(drinkStatisticsVO.getDrinkType().getValue()) + " ("
                     + drinkStatisticsVO.getTotal() + ")");
         }
     }
@@ -65,7 +65,7 @@ public class DrinkStatisticsMBean extends BoozePalAbstractMBean implements Seria
     private void createDrinkTypeModel(List<DrinkStatisticsVO> drinkStatistics) {
         drinkTypeModel = new PieChartModel();
         drinkStatistics.stream()
-                .forEach(p -> drinkTypeModel.set(getKeyFromProperty(p.getDrinkType().getName()), p.getTotal()));
+                .forEach(p -> drinkTypeModel.set(getKeyFromProperty(p.getDrinkType().getValue()), p.getTotal()));
         drinkTypeModel.setTitle(getKeyFromProperty("drinks"));
         drinkTypeModel.setLegendPosition("w");
     }

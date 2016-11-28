@@ -7,10 +7,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hu.deik.boozepal.common.vo.DrinkVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,7 +39,7 @@ public class RemoteUserVO implements Serializable {
     @JsonProperty("city")
     private String city;
     @JsonProperty("boozes")
-    private List<String> boozes;
+    private List<DrinkVO> boozes;
     @JsonProperty("pubs")
     private List<String> pubs;
     @JsonProperty("savedDates")

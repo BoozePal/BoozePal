@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import hu.deik.boozepal.common.entity.DrinkType;
+import hu.deik.boozepal.common.entity.DrinkTypeEnum;
 import hu.deik.boozepal.common.vo.DrinkStatisticsVO;
 
 /**
@@ -22,7 +23,7 @@ public interface DrinkStatisticsService {
      * 
      * @return a legkedveltebb ital típus.
      */
-    DrinkType getTheFavouriteDrinkType();
+    DrinkTypeEnum getTheFavouriteDrinkType();
 
     /**
      * Ital statisztikák diagramon való megjelenítéshez.

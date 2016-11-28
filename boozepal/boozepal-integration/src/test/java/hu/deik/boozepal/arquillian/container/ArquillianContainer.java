@@ -2,6 +2,8 @@ package hu.deik.boozepal.arquillian.container;
 
 import java.io.File;
 
+import javax.ejb.Startup;
+
 import hu.deik.boozepal.helper.UserHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,6 +29,7 @@ import hu.deik.boozepal.rest.vo.RemoteTokenVO;
  *
  */
 public class ArquillianContainer {
+    protected static final String SPRING_CORE_TEST_XML = "spring-core-test.xml";
     private static final String SPRING_VERSION = "4.3.2.RELEASE";
     private static final String BOOZEPAL_CORE_API = "boozepal-core-api";
     private static final String CORE_API = "hu.deik:boozepal-core-api:1.0";
@@ -55,7 +58,7 @@ public class ArquillianContainer {
                 .addPackage(UserRepository.class.getPackage())
                 .addPackage(UserHelper.class.getPackage())
                 .addClasses(ArquillianContainer.class, RegistrationException.class).addAsResource("beanRefContext.xml")
-                .addAsResource("spring-core-test.xml").addAsResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsResource(SPRING_CORE_TEST_XML).addAsResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)
                 .addAsLibraries(coreApi).addAsLibraries(googleJson).addAsLibraries(googleJackson).addAsLibraries(googleApi).addAsLibraries(cobertura);
         return webArchive;

@@ -116,10 +116,22 @@ public class UserServiceRestImpl implements UserServiceRest {
      */
     @Override
     public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double longitude, Double radius) {
-        List<User> onlineUsers = userDao.findOnlineUsers();
-        List<User> usersInRadius = onlineUsers.stream().filter(p -> isInRadius(latitude, longitude, radius, p))
+        logger.info("Felhasználók keresése: {} {} koordinátától {} km-es körsugárban.", latitude, longitude, radius);
+        List<User> onlineUsers = userDao.findByRoleUser();
+        List<User> usersInRadius = onlineUsers.stream()
+                .filter(p -> isInRadius(latitude, longitude, radius, p) && filterRequestor(latitude, longitude, p))
                 .collect(Collectors.toList());
         return usersInRadius;
+    }
+
+    private boolean filterRequestor(Double latitude, Double longitude, User p) {
+        if (p.getLastKnownCoordinate().getLatitude().equals(latitude)
+                && p.getLastKnownCoordinate().getLongitude().equals(longitude)) {
+            logger.info("Kérő kiszűrve.");
+            return false;
+        }
+        else
+            return true;
     }
 
     private boolean isInRadius(Double latitude, Double longitude, Double radius, User p) {

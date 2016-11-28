@@ -12,13 +12,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import hu.deik.boozepal.arquillian.container.ArquillianContainer;
+import hu.deik.boozepal.common.contants.BoozePalConstants;
 import hu.deik.boozepal.common.entity.Coordinate;
 import hu.deik.boozepal.common.entity.DrinkTypeEnum;
+import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.common.vo.DrinkVO;
+import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.CoordinateVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
@@ -33,8 +37,12 @@ public class UserServiceRestIT extends ArquillianContainer {
     @EJB
     private UserServiceRest userService;
 
+    private RoleRepository roleDao;
+        
     @Before
     public void setUp() throws Exception {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CORE_TEST_XML);
+        roleDao = context.getBean(RoleRepository.class);
     }
 
     @Test
@@ -51,47 +59,52 @@ public class UserServiceRestIT extends ArquillianContainer {
 
     @Test
     public void testGetUsersInGivenRadiusAndCoordinate() {
+        Role userRole = Role.builder().roleName(BoozePalConstants.ROLE_USER).build();
+        userRole = roleDao.save(userRole);
+        System.out.println(userRole);
         // Generate users
         // The user who is looking for pals, is always in the circle.
         User iAm = User.builder().username("looking4Pals").email("looking@pals.com").password("Pals").loggedIn(true)
-                .lastKnownCoordinate(ORIGO).build();
+                .roles(Arrays.asList(userRole)).lastKnownCoordinate(ORIGO).build();
         userService.saveUser(iAm);
 
         // x = 5, y = 0
         User firtUserInCircle = User.builder().username("firtUserInCircle").email("firtUserInCircle").password("pass")
-                .loggedIn(true).lastKnownCoordinate(Coordinate.builder().latitude(5.0).longitude(0.0).build()).build();
+                .roles(Arrays.asList(userRole)).loggedIn(true)
+                .lastKnownCoordinate(Coordinate.builder().latitude(5.0).longitude(0.0).build()).build();
         userService.saveUser(firtUserInCircle);
 
         // x = 0, y = 5
         User secodUserInCircle = User.builder().username("secodUserInCircle").email("secodUserInCircle")
-                .password("pass").loggedIn(true)
+                .roles(Arrays.asList(userRole)).password("pass").loggedIn(true)
                 .lastKnownCoordinate(Coordinate.builder().latitude(0.0).longitude(5.0).build()).build();
         userService.saveUser(secodUserInCircle);
 
         // x = 2, y = 2
         User thirdUserInCirlce = User.builder().username("thirdUserInCirlce").email("thirdUserInCirlce")
-                .password("pass").loggedIn(true)
+                .roles(Arrays.asList(userRole)).password("pass").loggedIn(true)
                 .lastKnownCoordinate(Coordinate.builder().latitude(2.0).longitude(2.0).build()).build();
         userService.saveUser(thirdUserInCirlce);
 
         // offline but in circle
         User offlineUserButInCircle = User.builder().username("offlineUserButInCircle").email("offlineUserButInCircle")
-                .password("pass").loggedIn(false)
+                .roles(Arrays.asList(userRole)).password("pass").loggedIn(false)
                 .lastKnownCoordinate(Coordinate.builder().latitude(0.0).longitude(3.0).build()).build();
         userService.saveUser(offlineUserButInCircle);
 
         // Online but not in circle
         User onlineUserButNotInCircle = User.builder().username("onlineUserButNotInCircle")
-                .email("onlineUserButNotInCircle").password("pass").loggedIn(true)
+                .roles(Arrays.asList(userRole)).email("onlineUserButNotInCircle").password("pass").loggedIn(true).roles(Arrays.asList(userRole))
                 .lastKnownCoordinate(Coordinate.builder().latitude(10.0).longitude(10.0).build()).build();
         userService.saveUser(onlineUserButNotInCircle);
 
         List<User> usersInGivenRadiusAndCoordinate = userService.getUsersInGivenRadiusAndCoordinate(
                 iAm.getLastKnownCoordinate().getLatitude(), iAm.getLastKnownCoordinate().getLongitude(), RADIUS);
-//        System.out.println(usersInGivenRadiusAndCoordinate.size());
+        System.out.println(usersInGivenRadiusAndCoordinate.size());
+        System.err.println(usersInGivenRadiusAndCoordinate);
         // Assert.assertEquals(Arrays.asList(iAm,firtUserInCircle,secodUserInCircle,thirdUserInCirlce),
         // usersInGivenRadiusAndCoordinate);
-        Assert.assertThat(Arrays.asList(firtUserInCircle, secodUserInCircle, thirdUserInCirlce, iAm),
+        Assert.assertThat(Arrays.asList(firtUserInCircle, secodUserInCircle, thirdUserInCirlce, offlineUserButInCircle),
                 Matchers.containsInAnyOrder(usersInGivenRadiusAndCoordinate.toArray()));
 
     }
@@ -104,13 +117,10 @@ public class UserServiceRestIT extends ArquillianContainer {
         RemoteUserVO remoteUser = buildTestRemoteUser();
         testUser = userService.saveUser(testUser);
         remoteUser.setId(testUser.getId());
-        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
-                .token("1/fFAGRNJru1FTz70BzhT3Zg")
-                .user(remoteUser)
-                .build();
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder().token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser).build();
         try {
-            savedUser = userService.updateUserDetails(
-                    remoteUserDetailsVO);
+            savedUser = userService.updateUserDetails(remoteUserDetailsVO);
             System.out.println("Mentett felhasznalo : " + savedUser.toString());
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
@@ -127,12 +137,9 @@ public class UserServiceRestIT extends ArquillianContainer {
         testUser = userService.saveUser(testUser);
         RemoteUserVO remoteUser = buildTestRemoteUser();
         remoteUser.setId(testUser.getId() + 1);
-        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
-                .token("1/fFAGRNJru1FTz70BzhT3Zg")
-                .user(remoteUser)
-                .build();
-        userService.updateUserDetails(
-                remoteUserDetailsVO);
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder().token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser).build();
+        userService.updateUserDetails(remoteUserDetailsVO);
         userService.deleteUser(testUser);
     }
 
@@ -142,18 +149,12 @@ public class UserServiceRestIT extends ArquillianContainer {
         Date day2 = new Date(2016, 11, 22);
         User testUser = buildTestUser();
         testUser = userService.saveUser(testUser);
-        RemoteUserVO remoteUser = RemoteUserVO.builder()
-                .name("tesztUser")
-                .id(testUser.getId())
-                .savedDates(Arrays.asList(day1, day2))
-                .build();
-        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
-                .token("1/fFAGRNJru1FTz70BzhT3Zg")
-                .user(remoteUser)
-                .build();
+        RemoteUserVO remoteUser = RemoteUserVO.builder().name("tesztUser").id(testUser.getId())
+                .savedDates(Arrays.asList(day1, day2)).build();
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder().token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteUser).build();
         try {
-            testUser = userService.updateUserDetails(
-                    remoteUserDetailsVO);
+            testUser = userService.updateUserDetails(remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
         }
@@ -178,29 +179,19 @@ public class UserServiceRestIT extends ArquillianContainer {
         testUserPal1 = userService.saveUser(testUserPal1);
         testUserPal2 = userService.saveUser(testUserPal2);
 
+        RemoteUserVO remoteTestUser = RemoteUserVO.builder().id(testUser.getId()).build();
 
-        RemoteUserVO remoteTestUser = RemoteUserVO.builder()
-                .id(testUser.getId())
-                .build();
+        RemoteUserVO remoteTestUserPal1 = RemoteUserVO.builder().id(testUserPal1.getId()).build();
 
-        RemoteUserVO remoteTestUserPal1 = RemoteUserVO.builder()
-                .id(testUserPal1.getId())
-                .build();
-
-        RemoteUserVO remoteTestUserPal2 = RemoteUserVO.builder()
-                .id(testUserPal2.getId())
-                .build();
+        RemoteUserVO remoteTestUserPal2 = RemoteUserVO.builder().id(testUserPal2.getId()).build();
 
         remoteTestUser.setId(testUser.getId());
         remoteTestUser.setMyPals(Arrays.asList(remoteTestUserPal1, remoteTestUserPal2));
 
-        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder()
-                .token("1/fFAGRNJru1FTz70BzhT3Zg")
-                .user(remoteTestUser)
-                .build();
+        RemoteUserDetailsVO remoteUserDetailsVO = RemoteUserDetailsVO.builder().token("1/fFAGRNJru1FTz70BzhT3Zg")
+                .user(remoteTestUser).build();
         try {
-            testUser = userService.updateUserDetails(
-                    remoteUserDetailsVO);
+            testUser = userService.updateUserDetails(remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
         }
@@ -236,24 +227,14 @@ public class UserServiceRestIT extends ArquillianContainer {
     }
 
     private User buildTestUser() {
-        return User.builder()
-                .username("tesztUser")
-                .email("looking@test.com")
-                .password("Palss")
-                .loggedIn(false)
-                .lastKnownCoordinate(ORIGO)
-                .build();
+        return User.builder().username("tesztUser").email("looking@test.com").password("Palss").loggedIn(false)
+                .lastKnownCoordinate(ORIGO).build();
     }
 
     private RemoteUserVO buildTestRemoteUser() {
-        return RemoteUserVO.builder()
-                .name("tesztUser")
-                .city("Debrecen")
+        return RemoteUserVO.builder().name("tesztUser").city("Debrecen")
                 .boozes(Arrays.asList(DrinkVO.builder().name("booze").drinkType(DrinkTypeEnum.BRANDY).build()))
-                .pubs(Arrays.asList("pub"))
-                .savedDates(Arrays.asList(new Date()))
-                .searchRadius(10)
-                .priceCategory(20)
+                .pubs(Arrays.asList("pub")).savedDates(Arrays.asList(new Date())).searchRadius(10).priceCategory(20)
                 .build();
     }
 }

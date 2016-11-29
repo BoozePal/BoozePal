@@ -29,6 +29,7 @@ import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
@@ -209,5 +210,26 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
             return Response.serverError().entity(e.getMessage()).build();
         }
         return Response.ok().entity(user).build();
+    }
+
+    /**
+     * Cimbora kérés fogadása a kliens felől.
+     * @param vo a kapott információk.
+     * @return a válasz.
+     */
+    @Path("/sendrequest")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response sendRequest(String string) {
+        logger.info("Felhasználó keresése token alapján.");
+        RemotePalRequestVO vo = new GsonBuilder().create().fromJson(string, RemotePalRequestVO.class);
+        try {
+            userServiceRest.palRequest(vo);
+        } catch (RuntimeException e) {
+            logger.error("Hiba a cimbora hozzáadása közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
     }
 }

@@ -1,7 +1,9 @@
 package hu.deik.boozepal.common.entity;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -12,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -32,8 +35,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "boozepal_user")
 @Data
-@EqualsAndHashCode(callSuper = false, of = {"username", "email"})
-@ToString(exclude = {"password"})
+@EqualsAndHashCode(callSuper = false, of = { "username", "email" })
+@ToString(exclude = { "password" })
 @Builder
 public class User extends BaseEntity {
 
@@ -108,8 +111,10 @@ public class User extends BaseEntity {
     /**
      * Aktuális cimborák.
      */
-    @ManyToMany
-    private List<User> actualPals;
+    @ElementCollection
+    @CollectionTable(name = "boozepal_pal_requests")
+    @MapKeyColumn(name = "id")
+    private Map<User, PalRequest> actualPals;
 
     /**
      * Bejelentkezett-e éppen.
@@ -122,4 +127,14 @@ public class User extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
+
+    public Map<User, PalRequest> getActualPals() {
+        if (actualPals == null) {
+            actualPals = new HashMap<>();
+            return actualPals;
+        } else
+            return actualPals;
+    }
+
+
 }

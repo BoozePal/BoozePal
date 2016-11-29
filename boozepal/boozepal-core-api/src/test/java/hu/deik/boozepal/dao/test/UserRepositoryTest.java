@@ -1,6 +1,7 @@
 package hu.deik.boozepal.dao.test;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -14,8 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import hu.deik.boozepal.common.contants.BoozePalConstants;
 import hu.deik.boozepal.common.entity.Coordinate;
+import hu.deik.boozepal.common.entity.PalRequest;
+import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
+import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 
@@ -35,6 +39,9 @@ public class UserRepositoryTest {
 
     @Autowired
     private RoleRepository roleDao;
+    
+    @Autowired
+    private PubRepository pubDao;
 
     @Test
     public void testUserDaoNotNull() {
@@ -165,6 +172,26 @@ public class UserRepositoryTest {
         Assert.assertEquals(Integer.valueOf(0), highest);
     }
 
+    @Test
+    public void testMakePals() {
+        Pub pub = Pub.builder().name("Ibolya").openHours("24:00").priceCategory(5).build();
+        pubDao.save(pub);
+        Pub ibolya = pubDao.findByName("Ibolya");
+        User viktor = User.builder().username("Viktor").email("viki@viki.com").password("xxx").build();
+        User savedViktor = userDao.save(viktor);
+        User nandi = User.builder().username("Nandi").email("nandi@viki.com").password("xxx").build();
+        User savedNandi = userDao.save(nandi);
+        
+        savedViktor.getActualPals().put(savedNandi, PalRequest.builder().date(new Date()).pub(ibolya).build());
+        User save = userDao.save(savedViktor);
+        save.getActualPals().put(savedNandi, PalRequest.builder().date(new Date()).pub(ibolya).build());
+        save = userDao.save(save);
+        
+        PalRequest palRequest = save.getActualPals().get(savedNandi);
+        Assert.assertEquals(ibolya, palRequest.getPub());
+        
+    }
+    
     @After
     public void tearDown() {
         if (user != null && user.getId() != null)

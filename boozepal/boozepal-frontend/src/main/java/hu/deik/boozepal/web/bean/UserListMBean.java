@@ -15,16 +15,14 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
+import javax.faces.bean.ViewScoped;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
 @Setter
-@ManagedBean
-@Named("userListMBean")
+@ManagedBean(name = "userListMBean")
 @ViewScoped
 public class UserListMBean extends BoozePalAbstractMBean {
 

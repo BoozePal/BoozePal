@@ -5,14 +5,20 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+
+import hu.deik.boozepal.common.entity.PalRequest;
+import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.helper.UserHelper;
 import hu.deik.boozepal.rest.vo.*;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +55,9 @@ public class UserServiceRestImpl implements UserServiceRest {
      */
     @Autowired
     private UserRepository userDao;
+    
+    @Autowired
+    private PubRepository pubDao;
 
     /**
      * Szerepköröket elérő adathozzáférési osztály.
@@ -129,8 +138,7 @@ public class UserServiceRestImpl implements UserServiceRest {
                 && p.getLastKnownCoordinate().getLongitude().equals(longitude)) {
             logger.info("Kérő kiszűrve.");
             return false;
-        }
-        else
+        } else
             return true;
     }
 
@@ -257,7 +265,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -265,6 +273,21 @@ public class UserServiceRestImpl implements UserServiceRest {
     public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException {
         PayloadUserVO userByGoogleToken = getUserByGoogleToken(token);
         return userByGoogleToken.getUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void palRequest(RemotePalRequestVO vo) {
+        logger.info(
+                "{} azonosítóval rendelkező felhasználó beszúrása, {} azonosítójú felhasználóhoz, {} nappal egybekötve.",
+                vo.getRequestedUserId(), vo.getUserId(), vo.getDate());
+        User user = userDao.findById(vo.getUserId());
+        User requestedUser = userDao.findById(vo.getRequestedUserId());
+        Pub pub = pubDao.getOne(vo.getPubId());
+        if(ObjectUtils.allNotNull(user,requestedUser,pub))
+            user.getActualPals().put(requestedUser, PalRequest.builder().date(vo.getDate()).pub(pub).build());
     }
 
 }

@@ -93,8 +93,8 @@ public class UserHelper {
             user.setFavouriteDrinks(getRemoteUserFavoritDrinks(remoteUserVO));
         if (remoteUserVO.getPubs() != null)
             user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
-        if (remoteUserVO.getMyPals() != null)
-            user.setActualPals(getActualUsersList(remoteUserVO));
+//        if (remoteUserVO.getMyPals() != null)
+//            user.setActualPals(getActualUsersList(remoteUserVO));
         logger.info("save update user");
         return userDao.save(user);
     }

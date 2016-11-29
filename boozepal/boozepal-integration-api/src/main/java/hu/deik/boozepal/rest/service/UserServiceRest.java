@@ -1,18 +1,19 @@
 package hu.deik.boozepal.rest.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
+
+import javax.ejb.Local;
+
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
-
-import javax.ejb.Local;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
 
 /**
  * Felhasználó szolgáltatás az Android kliens által használt funkciókra.
@@ -114,4 +115,10 @@ public interface UserServiceRest {
      * @throws AuthenticationException ha nem sikerül az authentikáció belsőleg.  
      */
     public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException;
+    
+    /**
+     * Cimbora hozzáadási kérelem feldolgozása.
+     * @param vo a kérelem VO reprezentációja.
+     */
+    public void palRequest(RemotePalRequestVO vo);
 }

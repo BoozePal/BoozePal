@@ -61,8 +61,7 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó beléptetése a rendszerbe.
      *
-     * @param remoteUser
-     *            a felhasználó Google token-e.
+     * @param remoteUser a felhasználó Google token-e.
      * @return a beléptett felhasználót reprezentáló entitás.
      */
     @Path("/login")
@@ -84,8 +83,7 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó adatmódositására a rendszerbe.
      *
-     * @param string
-     *            a felhasználó Google token-e.
+     * @param string a felhasználó Google token-e.
      * @return ha sikerült az adatmódositás OK, ha nem akkor a hiba oka.
      * @throws IOException
      * @throws JsonMappingException
@@ -124,8 +122,7 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Külső felhasználó kiléptetése a rendszerből.
      *
-     * @param remoteUser
-     *            a felhasználó Google token-e.
+     * @param remoteUser a felhasználó Google token-e.
      * @return sikeres kiléptetésnél HTTP 200. ha nem sikeres akkor HTTP 500.
      */
     @Path("/logout")
@@ -146,8 +143,7 @@ public class UserServiceEndpoint implements Serializable {
     /**
      * Felhasználó ráérési napok frissitése.
      *
-     * @param string
-     *            a felhasználó Google token-e és a ráérési napok listája.
+     * @param string a felhasználó Google token-e és a ráérési napok listája.
      * @return sikeres frissités után HTTP 200.
      */
     @Path("/timetable")

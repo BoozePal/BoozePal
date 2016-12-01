@@ -9,6 +9,7 @@ import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.common.vo.PubVO;
 import hu.deik.boozepal.rest.service.PubServiceRest;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
@@ -59,7 +60,7 @@ public class PubServiceEndpoint implements Serializable {
     public Response getPubs() {
         logger.info("kocsmák lekérdezése.");
         try {
-            List<Pub> pubs = pubServiceRest.getAllPubs();
+            List<PubVO> pubs = pubServiceRest.getAllPubs();
             return Response.ok().entity(pubs).build();
         } catch (RuntimeException e) {
             logger.info(e.getMessage(), e);

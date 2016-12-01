@@ -1,17 +1,14 @@
 package hu.deik.boozepal.service.statistics.impl;
 
-import hu.deik.boozepal.common.entity.Pub;
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.vo.PubCategoryVO;
-import hu.deik.boozepal.core.repo.PubRepository;
-import hu.deik.boozepal.core.repo.UserRepository;
-import hu.deik.boozepal.service.statistics.PubCategoryStatisticsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
+import hu.deik.boozepal.common.entity.*;
+import hu.deik.boozepal.common.vo.*;
+import hu.deik.boozepal.core.repo.*;
+import hu.deik.boozepal.service.statistics.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.ejb.interceptor.*;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
+import javax.ejb.*;
+import javax.interceptor.*;
 import java.util.*;
 
 /**
@@ -31,12 +28,14 @@ public class PubCategoryStatisticsServiceImpl implements PubCategoryStatisticsSe
     @Override
     public List<PubCategoryVO> getAllPubsCategoryStatistics() {
         List<User> allUsers = userDao.findByRoleUser ();
-        Map<Pub, Integer> allPabs = new TreeMap<> ();
+        Map<Pub, Integer> allPabs = new HashMap<> ();
         List<PubCategoryVO> listOfPubs = new ArrayList<> ();
         for (User user : allUsers) {
             for (Pub pub : user.getFavouritePub ()) {
-                allPabs.putIfAbsent (pub, 0);
+                if (allPabs.get (pub) == null)
+                    allPabs.put (pub, 0);
                 allPabs.put (pub, allPabs.get (pub) + 1);
+
             }
         }
         for (Pub p : allPabs.keySet ()) {

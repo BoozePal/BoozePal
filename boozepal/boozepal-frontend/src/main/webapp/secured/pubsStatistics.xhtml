@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/templates/masterLayout.xhtml">
+    <ui:define name="pageTitle">#{out.priceCategoryStatistics}</ui:define>
+
+    <f:metadata>
+        <ui:param name="mbean" value="#{pubsStatisticsMBean}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true"/>
+        <p:tabView dynamic="true" cache="true">
+            <p:tab title="#{out.pubLayoutMenu1}">
+                <h:panelGrid columns="1" cellpadding="10">
+                    <p:tagCloud model="#{mbean.tagCloudModel}">
+                        <p:ajax event="select" update="msgs" listener="#{mbean.onSelect}"/>
+                    </p:tagCloud>
+                </h:panelGrid>
+            </p:tab>
+            <p:tab title="#{out.pubLayoutMenu2}">
+                <h:panelGrid columns="1" cellpadding="10">
+                    <p:chart type="bar" model="#{mbean.animatedModel}" style="width:400px;"/>
+                </h:panelGrid>
+            </p:tab>
+            <!--<p:tab title="#{out.pubLayoutMenu3}">-->
+            <!--<h:panelGrid columns="1" cellpadding="10">-->
+            <!--<p:chart type="bubble" model="#{mbean.bubbleModel}" style="width:400px;"/>-->
+            <!--</h:panelGrid>-->
+            <!--</p:tab>-->
+        </p:tabView>
+    </ui:define>
+</ui:composition>

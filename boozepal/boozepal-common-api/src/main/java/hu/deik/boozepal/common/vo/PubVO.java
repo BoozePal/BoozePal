@@ -1,7 +1,7 @@
 package hu.deik.boozepal.common.vo;
 
-import hu.deik.boozepal.common.entity.DrinkTypeEnum;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.io.Serializable;
 

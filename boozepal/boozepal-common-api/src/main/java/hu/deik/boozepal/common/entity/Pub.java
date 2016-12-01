@@ -38,7 +38,7 @@ public class Pub extends BaseEntity {
     /**
      * Söröző címe.
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
     /**

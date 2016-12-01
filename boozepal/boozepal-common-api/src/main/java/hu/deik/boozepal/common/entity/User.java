@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -75,14 +76,14 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
     private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Pub> favouritePub;
 
     /**
@@ -94,7 +95,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó lakóhelye.
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Address address;
 
     /**
@@ -111,7 +112,7 @@ public class User extends BaseEntity {
     /**
      * Aktuális cimborák.
      */
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "boozepal_pal_requests")
     @MapKeyColumn(name = "id")
     private Map<User, PalRequest> actualPals;
@@ -124,7 +125,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
 

@@ -280,7 +280,6 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void palRequest(RemotePalRequestVO vo) {
         logger.info(
                 "{} azonosítóval rendelkező felhasználó beszúrása, {} azonosítójú felhasználóhoz, {} nappal egybekötve.",
@@ -295,7 +294,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             logger.info("Időpont:{}", vo.getDate());
             requestedUser.getActualPals().put(user.getId(),
                     PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).build());
-            userDao.save(requestedUser);
+//            userDao.save(requestedUser);
         } else {
             logger.info("PalRequest kérés NEM végezhető el, egyik mező NULL");
         }
@@ -305,7 +304,6 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void acceptRequest(RemotePalAcceptVO vo) {
         //user megjelölte requetedUsert hogy szeretne vele iszni.
         //óvatosan mert itt fordítva vannak a szerepek jelenleg.
@@ -318,12 +316,12 @@ public class UserServiceRestImpl implements UserServiceRest {
             //akkor user listájába is berakjuk a requestedusert mint cimbora
             if (user != null && requestedUser != null) {
                 requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).accepted(true).build());
-                userDao.save(requestedUser);
+//                userDao.save(requestedUser);
             }
         } else {
             //ha nem akkor pedig kidobjuk
             user.getActualPals().remove(requestedUser.getId());
-            userDao.save(user);
+//            userDao.save(user);
         }
     }
 

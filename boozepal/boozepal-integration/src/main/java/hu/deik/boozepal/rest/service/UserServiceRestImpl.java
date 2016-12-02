@@ -290,12 +290,12 @@ public class UserServiceRestImpl implements UserServiceRest {
         Pub pub = pubDao.findById (vo.getPubId ());
         logger.info ("Pub: {}", pub);
         if (user != null && requestedUser != null && pub != null) {
-            logger.info ("PalRequest kérés elvégezhető, egyik mező sem NULL");
-            logger.info ("Kocsma neve:{}", pub.getName ());
-            logger.info ("Időpont:{}", vo.getDate ());
-            requestedUser.getActualPals ().put (user,
-                    PalRequest.builder ().date (vo.getDate ()).pub (pub).accepted (false).build ());
-            userDao.save (requestedUser);
+            logger.info("PalRequest kérés elvégezhető, egyik mező sem NULL");
+            logger.info("Kocsma neve:{}", pub.getName());
+            logger.info("Időpont:{}", vo.getDate());
+            requestedUser.getActualPals().put(user.getId(),
+                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).build());
+            userDao.save(requestedUser);
         } else {
             logger.info ("PalRequest kérés NEM végezhető el, egyik mező NULL");
         }
@@ -312,18 +312,18 @@ public class UserServiceRestImpl implements UserServiceRest {
         User user = userDao.findById (vo.getUserId ());
         User requestedUser = userDao.findById (vo.getRequestedUserId ());
         //ha requestedUser elfogadta
-        if (vo.isAccepted ()) {
-            PalRequest palRequest = user.getActualPals ().get (requestedUser);
-            palRequest.setAccepted (true);
+        if(vo.isAccepted()) {
+            PalRequest palRequest = user.getActualPals().get(requestedUser.getId());
+            palRequest.setAccepted(true);
             //akkor user listájába is berakjuk a requestedusert mint cimbora
-            if (user != null && requestedUser != null) {
-                requestedUser.getActualPals ().put (user, PalRequest.builder ().date (palRequest.getDate ()).pub (palRequest.getPub ()).accepted (true).build ());
-                userDao.save (requestedUser);
+            if(user!=null && requestedUser != null) {
+                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).accepted(true).build());
+                userDao.save(requestedUser);
             }
         } else {
             //ha nem akkor pedig kidobjuk
-            user.getActualPals ().remove (requestedUser);
-            userDao.save (user);
+            user.getActualPals().remove(requestedUser.getId());
+            userDao.save(user);
         }
     }
 

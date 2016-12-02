@@ -76,14 +76,14 @@ public class User extends BaseEntity {
     /**
      * Felhasználó kedvenc itala.
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "boozepal_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id"))
     private List<Drink> favouriteDrinks;
 
     /**
      * Felhasználó kedvenc sörözője.
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private List<Pub> favouritePub;
 
     /**
@@ -95,7 +95,7 @@ public class User extends BaseEntity {
     /**
      * Felhasználó lakóhelye.
      */
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     /**
@@ -112,10 +112,10 @@ public class User extends BaseEntity {
     /**
      * Aktuális cimborák.
      */
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "boozepal_pal_requests")
     @MapKeyColumn(name = "id")
-    private Map<User, PalRequest> actualPals;
+    private Map<Long, PalRequest> actualPals;
 
     /**
      * Bejelentkezett-e éppen.
@@ -125,11 +125,11 @@ public class User extends BaseEntity {
     /**
      * Felhasználó "ráérési" táblája amibe beírja mikor érhető el.
      */
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
 
-    public Map<User, PalRequest> getActualPals() {
+    public Map<Long, PalRequest> getActualPals() {
         if (actualPals == null) {
             actualPals = new HashMap<>();
             return actualPals;

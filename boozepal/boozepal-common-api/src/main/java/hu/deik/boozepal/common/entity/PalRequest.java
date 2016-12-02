@@ -22,6 +22,9 @@ public class PalRequest {
 
     private Date date;
     
+    @ManyToOne
+    private User user;
+    
     private boolean accepted;
 
 }

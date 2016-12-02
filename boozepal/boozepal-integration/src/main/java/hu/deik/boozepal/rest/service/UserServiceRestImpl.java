@@ -293,7 +293,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             logger.info("Kocsma neve:{}", pub.getName());
             logger.info("Időpont:{}", vo.getDate());
             requestedUser.getActualPals().put(user.getId(),
-                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).build());
+                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).user(user).build());
 //            userDao.save(requestedUser);
         } else {
             logger.info("PalRequest kérés NEM végezhető el, egyik mező NULL");
@@ -315,7 +315,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             palRequest.setAccepted(true);
             //akkor user listájába is berakjuk a requestedusert mint cimbora
             if (user != null && requestedUser != null) {
-                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).accepted(true).build());
+                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).user(user).accepted(true).build());
 //                userDao.save(requestedUser);
             }
         } else {

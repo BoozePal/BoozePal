@@ -9,6 +9,7 @@ import javax.ejb.Local;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
+import hu.deik.boozepal.rest.vo.RemotePalAcceptVO;
 import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
@@ -111,14 +112,26 @@ public interface UserServiceRest {
      * @param token
      *            a felhasználó tokene.
      * @return a felhasználó.
-     * @throws GeneralSecurityException ha nem sikerül az authentikáció a Google API-n keresztül.
-     * @throws AuthenticationException ha nem sikerül az authentikáció belsőleg.  
+     * @throws GeneralSecurityException
+     *             ha nem sikerül az authentikáció a Google API-n keresztül.
+     * @throws AuthenticationException
+     *             ha nem sikerül az authentikáció belsőleg.
      */
     public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException;
-    
+
     /**
      * Cimbora hozzáadási kérelem feldolgozása.
-     * @param vo a kérelem VO reprezentációja.
+     * 
+     * @param vo
+     *            a kérelem VO reprezentációja.
      */
     public void palRequest(RemotePalRequestVO vo);
+
+    /**
+     * Felkérés elfogadása, ez jelentheti azt is hogy elutasítja ezzel törli a
+     * felhasználót a felkérési listájából.
+     * 
+     * @param vo
+     */
+    public void acceptRequest(RemotePalAcceptVO vo);
 }

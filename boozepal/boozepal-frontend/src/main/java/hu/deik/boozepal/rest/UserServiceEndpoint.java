@@ -29,6 +29,7 @@ import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.AuthenticationException;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.rest.service.UserServiceRest;
+import hu.deik.boozepal.rest.vo.RemotePalAcceptVO;
 import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
@@ -218,7 +219,7 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendRequest(String string) {
-        logger.info("Felhasználó keresése token alapján.");
+        logger.info("Felhasználó felkérése cimboraként.");
         RemotePalRequestVO vo = new GsonBuilder().create().fromJson(string, RemotePalRequestVO.class);
         try {
             userServiceRest.palRequest(vo);
@@ -228,4 +229,27 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
         }
         return Response.ok().build();
     }
+    
+    /**
+     * Cimbora kérés fogadása a kliens felől.
+     * @param vo a kapott információk.
+     * @return a válasz.
+     */
+    @Path("/acceptrequest")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response acceptRequest(String string) {
+        logger.info("Felhasználó elfogadása cimboraként.");
+        RemotePalAcceptVO vo = new GsonBuilder().create().fromJson(string, RemotePalAcceptVO.class);
+        try {
+            userServiceRest.acceptRequest(vo);
+        } catch (RuntimeException e) {
+            logger.error("Hiba a cimbora elfogadása/elutsítása közben.", e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.ok().build();
+    }
+    
+    
 }

@@ -3,6 +3,7 @@ package hu.deik.boozepal.service.impl.test;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 
@@ -18,13 +19,18 @@ import hu.deik.boozepal.arquillian.container.ArquillianContainer;
 import hu.deik.boozepal.common.contants.BoozePalConstants;
 import hu.deik.boozepal.common.entity.Coordinate;
 import hu.deik.boozepal.common.entity.DrinkTypeEnum;
+import hu.deik.boozepal.common.entity.PalRequest;
+import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.common.entity.Role;
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
 import hu.deik.boozepal.common.vo.DrinkVO;
+import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.rest.service.UserServiceRest;
 import hu.deik.boozepal.rest.vo.CoordinateVO;
+import hu.deik.boozepal.rest.vo.RemotePalAcceptVO;
+import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
@@ -38,11 +44,14 @@ public class UserServiceRestIT extends ArquillianContainer {
     private UserServiceRest userService;
 
     private RoleRepository roleDao;
+    
+    private PubRepository pubDao;
         
     @Before
     public void setUp() throws Exception {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CORE_TEST_XML);
         roleDao = context.getBean(RoleRepository.class);
+        pubDao = context.getBean(PubRepository.class);
     }
 
     @Test
@@ -224,6 +233,74 @@ public class UserServiceRestIT extends ArquillianContainer {
         user = userService.findByEmail(user.getEmail());
         Assert.assertEquals(user, saveUser);
         userService.deleteUser(saveUser);
+    }
+    
+    @Test
+    public void testPalRequestAndAcceptRequestCombination() {
+        Pub kitalacioPub = pubDao.findById(1L);
+        User viktor = User.builder().username("Viktor").email("Viktor@viktor.com").password("XXX").build();
+        viktor = userService.saveUser(viktor);
+        User fanny = User.builder().username("Fanny").email("Fanny@fanny.com").password("XXX").build();
+        fanny = userService.saveUser(fanny);
+        
+        //Viktor jelzi az igényt hogy menne inni a kitalációba Fannyval.
+        Date now = new Date();
+        userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
+        //Fannynak megérkezik a kérés a listájába hogy Viktor iszni vele
+        fanny = userService.findByEmail("Fanny@fanny.com");
+        Map<User, PalRequest> fannyPals = fanny.getActualPals();
+        System.out.println(fannyPals);
+        PalRequest request = fannyPals.get(viktor);
+        Assert.assertNotNull(request);
+        Assert.assertEquals(now, request.getDate());
+        Assert.assertEquals(kitalacioPub, request.getPub());
+        Assert.assertFalse(request.isAccepted());
+        
+        //első lehetőség Fanny elfogadja.
+        userService.acceptRequest(RemotePalAcceptVO.builder().accepted(true).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
+        viktor = userService.findByEmail("Viktor@viktor.com");
+        Map<User, PalRequest> viktorPals = viktor.getActualPals();
+        PalRequest palRequest = viktorPals.get(fanny);
+        
+        Assert.assertNotNull(palRequest);
+        Assert.assertTrue(viktorPals.containsKey(fanny));
+        Assert.assertEquals(now, palRequest.getDate());
+        Assert.assertEquals(kitalacioPub, palRequest.getPub());
+        Assert.assertTrue(palRequest.isAccepted());
+        
+    }
+    
+    @Test
+    public void testPalRequestAndDenniesRequestCombination() {
+        Pub kitalacioPub = pubDao.findById(1L);
+        System.out.println(kitalacioPub.getId());
+        User viktor = User.builder().username("Viktor1").email("Viktor1@viktor.com").password("XXX").build();
+        viktor = userService.saveUser(viktor);
+        User fanny = User.builder().username("Fanny1").email("Fanny1@fanny.com").password("XXX").build();
+        fanny = userService.saveUser(fanny);
+        
+        //Viktor jelzi az igényt hogy menne inni a kitalációba Fannyval.
+        Date now = new Date();
+        userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
+        //Fannynak megérkezik a kérés a listájába hogy Viktor iszni vele
+        fanny = userService.findByEmail("Fanny1@fanny.com");
+        Map<User, PalRequest> fannyPals = fanny.getActualPals();
+        System.out.println(fannyPals);
+        PalRequest request = fannyPals.get(viktor);
+        Assert.assertNotNull(request);
+        Assert.assertEquals(now, request.getDate());
+        Assert.assertEquals(kitalacioPub, request.getPub());
+        Assert.assertFalse(request.isAccepted());
+        
+        //másodk lehetőség Fanny elutasítja.
+        userService.acceptRequest(RemotePalAcceptVO.builder().accepted(false).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
+        viktor = userService.findByEmail("Viktor1@viktor.com");
+        Map<User, PalRequest> viktorPals = viktor.getActualPals();
+        fanny = userService.findByEmail("Fanny1@fanny.com");
+        Map<User, PalRequest> fannyPalsAfterDeny = fanny.getActualPals();
+        Assert.assertFalse(viktorPals.containsKey(fanny));
+        Assert.assertFalse(fannyPalsAfterDeny.containsKey(viktor));
+        
     }
 
     private User buildTestUser() {

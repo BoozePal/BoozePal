@@ -182,14 +182,13 @@ public class UserRepositoryTest {
         User nandi = User.builder().username("Nandi").email("nandi@viki.com").password("xxx").build();
         User savedNandi = userDao.save(nandi);
         
-        savedViktor.getActualPals().put(savedNandi, PalRequest.builder().date(new Date()).pub(ibolya).build());
+        savedViktor.getActualPals().put(savedNandi.getId(), PalRequest.builder().date(new Date()).pub(ibolya).build());
         User save = userDao.save(savedViktor);
-        save.getActualPals().put(savedNandi, PalRequest.builder().date(new Date()).pub(ibolya).build());
+        save.getActualPals().put(savedNandi.getId(), PalRequest.builder().date(new Date()).pub(ibolya).build());
         save = userDao.save(save);
         
-        PalRequest palRequest = save.getActualPals().get(savedNandi);
+        PalRequest palRequest = save.getActualPals().get(savedNandi.getId());
         Assert.assertEquals(ibolya, palRequest.getPub());
-        
     }
     
     @After

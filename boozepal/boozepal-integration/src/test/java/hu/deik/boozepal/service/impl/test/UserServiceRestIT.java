@@ -248,9 +248,9 @@ public class UserServiceRestIT extends ArquillianContainer {
         userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
         //Fannynak megérkezik a kérés a listájába hogy Viktor iszni vele
         fanny = userService.findByEmail("Fanny@fanny.com");
-        Map<User, PalRequest> fannyPals = fanny.getActualPals();
+        Map<Long, PalRequest> fannyPals = fanny.getActualPals();
         System.out.println(fannyPals);
-        PalRequest request = fannyPals.get(viktor);
+        PalRequest request = fannyPals.get(viktor.getId());
         Assert.assertNotNull(request);
         Assert.assertEquals(now, request.getDate());
         Assert.assertEquals(kitalacioPub, request.getPub());
@@ -259,11 +259,11 @@ public class UserServiceRestIT extends ArquillianContainer {
         //első lehetőség Fanny elfogadja.
         userService.acceptRequest(RemotePalAcceptVO.builder().accepted(true).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
         viktor = userService.findByEmail("Viktor@viktor.com");
-        Map<User, PalRequest> viktorPals = viktor.getActualPals();
-        PalRequest palRequest = viktorPals.get(fanny);
+        Map<Long, PalRequest> viktorPals = viktor.getActualPals();
+        PalRequest palRequest = viktorPals.get(fanny.getId());
         
         Assert.assertNotNull(palRequest);
-        Assert.assertTrue(viktorPals.containsKey(fanny));
+        Assert.assertTrue(viktorPals.containsKey(fanny.getId()));
         Assert.assertEquals(now, palRequest.getDate());
         Assert.assertEquals(kitalacioPub, palRequest.getPub());
         Assert.assertTrue(palRequest.isAccepted());
@@ -284,9 +284,9 @@ public class UserServiceRestIT extends ArquillianContainer {
         userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
         //Fannynak megérkezik a kérés a listájába hogy Viktor iszni vele
         fanny = userService.findByEmail("Fanny1@fanny.com");
-        Map<User, PalRequest> fannyPals = fanny.getActualPals();
+        Map<Long, PalRequest> fannyPals = fanny.getActualPals();
         System.out.println(fannyPals);
-        PalRequest request = fannyPals.get(viktor);
+        PalRequest request = fannyPals.get(viktor.getId());
         Assert.assertNotNull(request);
         Assert.assertEquals(now, request.getDate());
         Assert.assertEquals(kitalacioPub, request.getPub());
@@ -295,11 +295,11 @@ public class UserServiceRestIT extends ArquillianContainer {
         //másodk lehetőség Fanny elutasítja.
         userService.acceptRequest(RemotePalAcceptVO.builder().accepted(false).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
         viktor = userService.findByEmail("Viktor1@viktor.com");
-        Map<User, PalRequest> viktorPals = viktor.getActualPals();
+        Map<Long, PalRequest> viktorPals = viktor.getActualPals();
         fanny = userService.findByEmail("Fanny1@fanny.com");
-        Map<User, PalRequest> fannyPalsAfterDeny = fanny.getActualPals();
-        Assert.assertFalse(viktorPals.containsKey(fanny));
-        Assert.assertFalse(fannyPalsAfterDeny.containsKey(viktor));
+        Map<Long, PalRequest> fannyPalsAfterDeny = fanny.getActualPals();
+        Assert.assertFalse(viktorPals.containsKey(fanny.getId()));
+        Assert.assertFalse(fannyPalsAfterDeny.containsKey(viktor.getId()));
         
     }
 

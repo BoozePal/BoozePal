@@ -28,16 +28,16 @@ public class PubServiceRestImpl implements PubServiceRest {
 
 
     @Override
-    public List<PubVO> getAllPubs() {
-        List<Pub> pubs = pubDao.findAll ();
-        List<PubVO> remotePubs = mapper (pubs);
-        return remotePubs;
+    public List<Pub> getAllPubs() {
+        List<Pub> pubs = pubDao.findAll();
+        //List<PubVO> remotePubs = mapper (pubs);
+        return pubs;
     }
 
     private List<PubVO> mapper(List<Pub> pubs) {
-        List<PubVO> remotePubs = new LinkedList<> ();
+        List<PubVO> remotePubs = new LinkedList<>();
         for (Pub pub : pubs) {
-            remotePubs.add (PubVO.builder ().id (pub.getId ()).name (pub.getName ()).town (pub.getAddress ().getTown ()).build ());
+            remotePubs.add(PubVO.builder().id(pub.getId()).name(pub.getName()).town(pub.getAddress().getTown()).build());
         }
         return remotePubs;
     }

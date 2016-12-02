@@ -1,6 +1,6 @@
 package hu.deik.boozepal.rest;
 
-import hu.deik.boozepal.common.vo.PubVO;
+import hu.deik.boozepal.common.entity.Pub;
 import hu.deik.boozepal.rest.service.PubServiceRest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class PubServiceEndpoint implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
-    private final Logger logger = LoggerFactory.getLogger (this.getClass ());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @EJB
     private PubServiceRest pubServiceRest;
@@ -44,13 +44,13 @@ public class PubServiceEndpoint implements Serializable {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getPubs() {
-        logger.info ("kocsmák lekérdezése.");
+        logger.info("kocsmák lekérdezése.");
         try {
-            List<PubVO> pubs = pubServiceRest.getAllPubs ();
-            return Response.ok ().entity (pubs).build ();
+            List<Pub> pubs = pubServiceRest.getAllPubs();
+            return Response.ok().entity(pubs).build();
         } catch (RuntimeException e) {
-            logger.info (e.getMessage (), e);
-            return Response.status (Status.CONFLICT).build ();
+            logger.info(e.getMessage(), e);
+            return Response.status(Status.CONFLICT).build();
         }
     }
 }

@@ -70,19 +70,20 @@ public class UserHelperIT extends ArquillianContainer {
 
     @Test
     public void testRemoteUserVoToUserEntityByGoogleToken() {
-        RemoteUserVO remoteUser = buildTestRemoteUser();
+        hu.deik.boozepal.common.entity.User remoteUser = buildTestUser();
         try {
+
             user = userHelper.remoteUserVoToUserEntityByGoogleToken(remoteUser, user.getEmail());
         } catch (UserDetailsUpdateException e) {
             Assert.fail(e.getMessage());
         }
-        Assert.assertTrue(user.getAddress().getTown().equals(remoteUser.getCity()));
-        Assert.assertEquals(user.getUsername(), remoteUser.getName());
+        Assert.assertTrue(user.getAddress().getTown().equals(remoteUser.getAddress().getTown()));
+        Assert.assertEquals(user.getUsername(), remoteUser.getUsername());
     }
 
     @Test(expected = UserDetailsUpdateException.class)
     public void testExceptionRemoteUserVoToUserEntityByGoogleToken() throws UserDetailsUpdateException {
-        RemoteUserVO remoteUser = buildTestRemoteUser();
+        hu.deik.boozepal.common.entity.User remoteUser = buildTestUser();
         userHelper.remoteUserVoToUserEntityByGoogleToken(remoteUser, "exceptionEmail@email.com");
     }
 
@@ -92,6 +93,7 @@ public class UserHelperIT extends ArquillianContainer {
                 .email("looking@test.com")
                 .password("Palss")
                 .loggedIn(false)
+                .address(hu.deik.boozepal.common.entity.Address.builder().town("Debrcen").build())
                 .lastKnownCoordinate(ORIGO)
                 .build();
     }

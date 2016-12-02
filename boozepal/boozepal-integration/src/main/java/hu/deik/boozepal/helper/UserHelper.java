@@ -41,7 +41,7 @@ public class UserHelper {
     @Autowired
     private PubRepository pubDao;
 
-    public User remoteUserVoToUserEntityByGoogleToken(final RemoteUserVO remoteUserVO, final String email)
+    public User remoteUserVoToUserEntityByGoogleToken(final hu.deik.boozepal.common.entity.User remoteUserVO, final String email)
             throws UserDetailsUpdateException {
         User user = userDao.findByEmail(email);
         if (user == null || remoteUserVO == null) {
@@ -54,7 +54,7 @@ public class UserHelper {
     }
 
     @Deprecated
-    public User remoteUserVoToUserEntityById(final RemoteUserVO remoteUserVO) throws UserDetailsUpdateException {
+    public User remoteUserVoToUserEntityById(final User remoteUserVO) throws UserDetailsUpdateException {
         User user = userDao.findById(remoteUserVO.getId());
         if (user == null) {
             throw new UserDetailsUpdateException("User is null");
@@ -76,25 +76,24 @@ public class UserHelper {
         return true;
     }
 
-    private User mapper(final RemoteUserVO remoteUserVO, User user) {
-        if (remoteUserVO.getName() != null)
-            user.setUsername(remoteUserVO.getName());
-        if (remoteUserVO.getCity() != null)
+    private User mapper(final User remoteUserVO, User user) {
+
+        if (remoteUserVO.getUsername() != null)
+            user.setUsername(remoteUserVO.getUsername());
+        if (remoteUserVO.getAddress() != null)
             if (user.getAddress() == null)
-                user.setAddress(Address.builder().town(remoteUserVO.getCity()).build());
+                user.setAddress(Address.builder().town(remoteUserVO.getAddress().getTown()).build());
             else {
-                user.getAddress().setTown(remoteUserVO.getCity());
+                user.getAddress().setTown(remoteUserVO.getAddress().getTown());
             }
         user.setPriceCategory(remoteUserVO.getPriceCategory());
         user.setSearchRadius(remoteUserVO.getSearchRadius());
-        if (remoteUserVO.getSavedDates() != null)
-            user.setTimeBoard(remoteUserVO.getSavedDates());
-        if (remoteUserVO.getBoozes() != null)
-            user.setFavouriteDrinks(getRemoteUserFavoritDrinks(remoteUserVO));
-        if (remoteUserVO.getPubs() != null)
-            user.setFavouritePub(getRemoteUserPubs(remoteUserVO));
-//        if (remoteUserVO.getMyPals() != null)
-//            user.setActualPals(getActualUsersList(remoteUserVO));
+        if (remoteUserVO.getTimeBoard() != null)
+            user.setTimeBoard(remoteUserVO.getTimeBoard());
+        if (remoteUserVO.getFavouriteDrinks() != null)
+            user.setFavouriteDrinks(remoteUserVO.getFavouriteDrinks());
+        if (remoteUserVO.getFavouritePub() != null)
+            user.setFavouritePub(remoteUserVO.getFavouritePub());
         logger.info("save update user");
         return userDao.save(user);
     }
@@ -125,7 +124,7 @@ public class UserHelper {
         for (DrinkVO drinksName : remoteUserVO.getBoozes()) {
             logger.info("Drink name: " + drinksName.getName());
             Drink drink = drinkDao.findByName(drinksName.getName());
-            if(drink == null)
+            if (drink == null)
                 drink = drinkDao.saveAndFlush(Drink.builder().name(drinksName.getName()).drinkType(drinksName.getDrinkType()).build());
             drinks.add(drink);
         }

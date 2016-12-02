@@ -36,19 +36,16 @@ public interface UserServiceRest {
      * Távoli felhasználó beléptetése vagy ha még nem létezik akkor új
      * felhasználó létrehozása.
      *
-     * @param remoteUser
-     *            távoli felhasználó.
+     * @param remoteUser távoli felhasználó.
      * @return az újonnan létrehozott felhasználó vagy egy már meglévő.
-     * @throws AuthenticationException
-     *             ha nem sikerült a token validálása.
+     * @throws AuthenticationException ha nem sikerült a token validálása.
      */
     public User createOrLoginUser(RemoteTokenVO remoteUser) throws AuthenticationException;
 
     /**
      * Felhasználó logikai kiléptetése a rendszerből.
      *
-     * @param userId
-     *            felhasználó azonosítója.
+     * @param userId felhasználó azonosítója.
      * @throws AuthenticationException
      */
     public void logoutUserLogically(RemoteTokenVO userId) throws AuthenticationException;
@@ -57,12 +54,9 @@ public interface UserServiceRest {
      * Visszaadja azon felhasználók listáját akik egy bizonyos sugarú körben
      * helyezkednek el a megadott koordinátákhoz képest.
      *
-     * @param latitude
-     *            szélesség.
-     * @param altitude
-     *            magasság.
-     * @param radius
-     *            megadott körsugár.
+     * @param latitude szélesség.
+     * @param altitude magasság.
+     * @param radius   megadott körsugár.
      * @return a megadott körsugárban elérhető felhasználók.
      */
     public List<User> getUsersInGivenRadiusAndCoordinate(Double latitude, Double altitude, Double radius);
@@ -70,10 +64,8 @@ public interface UserServiceRest {
     /**
      * Távoli felhasználó adatmódositás
      *
-     * @param remoteUser
-     *            távoli felhasználó.
-     * @throws UserDetailsUpdateException
-     *             ha nem sikerült a felhasználót frissiteni.
+     * @param remoteUser távoli felhasználó.
+     * @throws UserDetailsUpdateException ha nem sikerült a felhasználót frissiteni.
      */
     public User updateUserDetails(RemoteUserDetailsVO remoteUser) throws UserDetailsUpdateException;
 
@@ -82,10 +74,8 @@ public interface UserServiceRest {
     /**
      * Távoli felhasználó ráérési napok frissitése
      *
-     * @param remoteTimeTableVO
-     *            távoli felhasználó ráérési napajai és a google token.
-     * @throws UserDetailsUpdateException
-     *             ha nem sikerült a felhasználót frissiteni.
+     * @param remoteTimeTableVO távoli felhasználó ráérési napajai és a google token.
+     * @throws UserDetailsUpdateException ha nem sikerült a felhasználót frissiteni.
      */
     public void updateUserDates(RemoteTimeTableVO remoteTimeTableVO)
             throws AuthenticationException, UserDetailsUpdateException;
@@ -93,8 +83,7 @@ public interface UserServiceRest {
     /**
      * Felhasználó aktuális helyzetének frissítése.
      *
-     * @param remoteUser
-     *            a frissítendő felhasználó.
+     * @param remoteUser a frissítendő felhasználó.
      */
     public User updateUserLocation(User remoteUser);
 
@@ -108,29 +97,25 @@ public interface UserServiceRest {
 
     /**
      * Felhasználó visszaadása token alapján.
-     * 
-     * @param token
-     *            a felhasználó tokene.
+     *
+     * @param token a felhasználó tokene.
      * @return a felhasználó.
-     * @throws GeneralSecurityException
-     *             ha nem sikerül az authentikáció a Google API-n keresztül.
-     * @throws AuthenticationException
-     *             ha nem sikerül az authentikáció belsőleg.
+     * @throws GeneralSecurityException ha nem sikerül az authentikáció a Google API-n keresztül.
+     * @throws AuthenticationException  ha nem sikerül az authentikáció belsőleg.
      */
     public User getUserByToken(String token) throws AuthenticationException, GeneralSecurityException, IOException;
 
     /**
      * Cimbora hozzáadási kérelem feldolgozása.
-     * 
-     * @param vo
-     *            a kérelem VO reprezentációja.
+     *
+     * @param vo a kérelem VO reprezentációja.
      */
     public void palRequest(RemotePalRequestVO vo);
 
     /**
      * Felkérés elfogadása, ez jelentheti azt is hogy elutasítja ezzel törli a
      * felhasználót a felkérési listájából.
-     * 
+     *
      * @param vo
      */
     public void acceptRequest(RemotePalAcceptVO vo);

@@ -96,7 +96,7 @@ public interface UserServiceRest {
      * @param remoteUser
      *            a frissítendő felhasználó.
      */
-    public User updateUserLocation(RemoteUserVO remoteUser);
+    public User updateUserLocation(User remoteUser);
 
     /**
      * Felhasználó keresés.

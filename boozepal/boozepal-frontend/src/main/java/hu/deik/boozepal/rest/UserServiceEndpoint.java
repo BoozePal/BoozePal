@@ -49,7 +49,7 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
      *
      */
     private static final long serialVersionUID = 1L;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger (this.getClass ());
 
     @EJB
     private UserServiceRest userServiceRest;
@@ -65,13 +65,13 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public User loginUser(RemoteTokenVO remoteUser) {
-        logger.info("Felhasználó beléptetése.");
+        logger.info ("Felhasználó beléptetése.");
         User user = null;
         try {
-            user = userServiceRest.createOrLoginUser(remoteUser);
-            logger.info("Felhasználó beléptetése sikeres!");
+            user = userServiceRest.createOrLoginUser (remoteUser);
+            logger.info ("Felhasználó beléptetése sikeres!");
         } catch (AuthenticationException e) {
-            logger.error(e.getMessage(), e);
+            logger.error (e.getMessage (), e);
         }
         return user;
     }
@@ -90,23 +90,23 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON + ENCODING)
     @Consumes(MediaType.APPLICATION_JSON + ENCODING)
     public Response updateUserInformation(String string) {
-        logger.info("Felhasználó adatok módositása");
+        logger.info ("Felhasználó adatok módositása");
         RemoteUserDetailsVO remoteUserDetailsVO;
 
         try {
-            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+            remoteUserDetailsVO = new GsonBuilder ().create ().fromJson (string, RemoteUserDetailsVO.class);
         } catch (JsonSyntaxException e) {
-            logger.error("Hiba a cimborák keresése közben.", e);
-            return Response.serverError().entity(e.getMessage()).build();
+            logger.error ("Hiba a cimborák keresése közben.", e);
+            return Response.serverError ().entity (e.getMessage ()).build ();
         }
         try {
-            userServiceRest.updateUserDetails(remoteUserDetailsVO);
+            userServiceRest.updateUserDetails (remoteUserDetailsVO);
         } catch (UserDetailsUpdateException e) {
-            logger.info("Felhasználó adatmódositás sikertelen volt! {}", e.getMessage());
-            return Response.serverError().build();
+            logger.info ("Felhasználó adatmódositás sikertelen volt! {}", e.getMessage ());
+            return Response.serverError ().build ();
         }
-        logger.info("Felhasználó adatmódositás sikeres volt!");
-        return Response.status(Status.OK).build();
+        logger.info ("Felhasználó adatmódositás sikeres volt!");
+        return Response.status (Status.OK).build ();
     }
 
     /**
@@ -120,14 +120,14 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logoutUser(RemoteTokenVO remoteUser) {
-        logger.info("Felhasználó kiléptetése.");
+        logger.info ("Felhasználó kiléptetése.");
         try {
-            userServiceRest.logoutUserLogically(remoteUser);
-            logger.info("Felhasználó kiléptetése.");
+            userServiceRest.logoutUserLogically (remoteUser);
+            logger.info ("Felhasználó kiléptetése.");
         } catch (AuthenticationException e) {
-            return Response.serverError().build();
+            return Response.serverError ().build ();
         }
-        return Response.status(Status.OK).build();
+        return Response.status (Status.OK).build ();
     }
 
     /**
@@ -141,20 +141,20 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response timeTableRefresher(String string) {
-        logger.info("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder().create().toJson(string));
+        logger.info ("Felhasználó ráérési időpontok fogadása: {}", new GsonBuilder ().create ().toJson (string));
         try {
-            RemoteTimeTableVO v = new GsonBuilder().create().fromJson(string, RemoteTimeTableVO.class);
-            userServiceRest.updateUserDates(v);
+            RemoteTimeTableVO v = new GsonBuilder ().create ().fromJson (string, RemoteTimeTableVO.class);
+            userServiceRest.updateUserDates (v);
         } catch (AuthenticationException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen bejelentkezés" + e.getMessage())
-                    .build();
+            return Response.status (Status.INTERNAL_SERVER_ERROR).entity ("Sikertelen bejelentkezés" + e.getMessage ())
+                    .build ();
         } catch (UserDetailsUpdateException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Sikertelen ráérési idő frissités").build();
+            return Response.status (Status.INTERNAL_SERVER_ERROR).entity ("Sikertelen ráérési idő frissités").build ();
         } catch (RuntimeException e) {
-            logger.info("RuntimeException:", e);
-            return Response.status(Status.NOT_ACCEPTABLE).entity("Tokent és List<Date> várunk").build();
+            logger.info ("RuntimeException:", e);
+            return Response.status (Status.NOT_ACCEPTABLE).entity ("Tokent és List<Date> várunk").build ();
         }
-        return Response.status(Status.OK).build();
+        return Response.status (Status.OK).build ();
     }
 
     /**
@@ -168,29 +168,27 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response findPals(String string) {
-        logger.info("Cimborák keresése a közelben.");
+        logger.info ("Cimborák keresése a közelben.");
 
-        RemoteUserDetailsVO remoteUserDetailsVO;
+        User user;
         try {
-            remoteUserDetailsVO = new GsonBuilder().create().fromJson(string, RemoteUserDetailsVO.class);
+            user = new GsonBuilder ().create ().fromJson (string, User.class);
         } catch (JsonSyntaxException e) {
-            logger.error("Hiba a cimborák keresése közben.", e);
-            return Response.serverError().entity(e.getMessage()).build();
+            logger.error ("Hiba a cimborák keresése közben.", e);
+            return Response.serverError ().entity (e.getMessage ()).build ();
         }
-        RemoteUserVO user = remoteUserDetailsVO.getUser();
-        userServiceRest.updateUserLocation(user);
-        List<User> usersInGivenRadiusAndCoordinate = userServiceRest.getUsersInGivenRadiusAndCoordinate(
-                user.getLastKnownCoordinate().getLatitude(), user.getLastKnownCoordinate().getLongitude(),
-                (double) user.getSearchRadius());
+        userServiceRest.updateUserLocation (user);
+        List<User> usersInGivenRadiusAndCoordinate = userServiceRest.getUsersInGivenRadiusAndCoordinate (
+                user.getLastKnownCoordinate ().getLatitude (), user.getLastKnownCoordinate ().getLongitude (),
+                (double) user.getSearchRadius ());
 
-        return Response.ok().entity(usersInGivenRadiusAndCoordinate).build();
+        return Response.ok ().entity (usersInGivenRadiusAndCoordinate).build ();
     }
 
     /**
      * Felhasználó entitás lekérése token alapján.
-     * 
-     * @param tokenVo
-     *            a tokent tartalmazó VO.
+     *
+     * @param tokenVo a tokent tartalmazó VO.
      * @return a felhasználó entitás.
      */
     @Path("/getUser/{token}")
@@ -198,19 +196,20 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByToken(@PathParam("token") String token) {
-        logger.info("Felhasználó keresése token alapján.");
+        logger.info ("Felhasználó keresése token alapján.");
         User user;
         try {
-            user = userServiceRest.getUserByToken(token);
+            user = userServiceRest.getUserByToken (token);
         } catch (AuthenticationException | GeneralSecurityException | IOException e) {
-            logger.error("Hiba a felhasználó visszakérésekor.", e);
-            return Response.serverError().entity(e.getMessage()).build();
+            logger.error ("Hiba a felhasználó visszakérésekor.", e);
+            return Response.serverError ().entity (e.getMessage ()).build ();
         }
-        return Response.ok().entity(user).build();
+        return Response.ok ().entity (user).build ();
     }
 
     /**
      * Cimbora kérés fogadása a kliens felől.
+     *
      * @param vo a kapott információk.
      * @return a válasz.
      */
@@ -219,19 +218,20 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendRequest(String string) {
-        logger.info("Felhasználó felkérése cimboraként.");
-        RemotePalRequestVO vo = new GsonBuilder().create().fromJson(string, RemotePalRequestVO.class);
+        logger.info ("Felhasználó felkérése cimboraként.");
+        RemotePalRequestVO vo = new GsonBuilder ().create ().fromJson (string, RemotePalRequestVO.class);
         try {
-            userServiceRest.palRequest(vo);
+            userServiceRest.palRequest (vo);
         } catch (RuntimeException e) {
-            logger.error("Hiba a cimbora hozzáadása közben.", e);
-            return Response.serverError().entity(e.getMessage()).build();
+            logger.error ("Hiba a cimbora hozzáadása közben.", e);
+            return Response.serverError ().entity (e.getMessage ()).build ();
         }
-        return Response.ok().build();
+        return Response.ok ().build ();
     }
-    
+
     /**
      * Cimbora kérés fogadása a kliens felől.
+     *
      * @param vo a kapott információk.
      * @return a válasz.
      */
@@ -240,16 +240,16 @@ public class UserServiceEndpoint extends AbstractEndpoint implements Serializabl
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response acceptRequest(String string) {
-        logger.info("Felhasználó elfogadása cimboraként.");
-        RemotePalAcceptVO vo = new GsonBuilder().create().fromJson(string, RemotePalAcceptVO.class);
+        logger.info ("Felhasználó elfogadása cimboraként.");
+        RemotePalAcceptVO vo = new GsonBuilder ().create ().fromJson (string, RemotePalAcceptVO.class);
         try {
-            userServiceRest.acceptRequest(vo);
+            userServiceRest.acceptRequest (vo);
         } catch (RuntimeException e) {
-            logger.error("Hiba a cimbora elfogadása/elutsítása közben.", e);
-            return Response.serverError().entity(e.getMessage()).build();
+            logger.error ("Hiba a cimbora elfogadása/elutsítása közben.", e);
+            return Response.serverError ().entity (e.getMessage ()).build ();
         }
-        return Response.ok().build();
+        return Response.ok ().build ();
     }
-    
-    
+
+
 }

@@ -14,10 +14,10 @@ import lombok.Setter;
 
 /**
  * Távoli felhasználót repreneztáló érték osztály.
- * 
+ *
  * A távoli felhasználó az akit az Android kliensről "léptetünk" a
  * rendszerünkbe, azaz az adatait letároljuk a mi adatbázisunkban is.
- * 
+ *
  * @version 1.0
  *
  */

@@ -1,38 +1,21 @@
 package hu.deik.boozepal.service.impl.test;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import hu.deik.boozepal.arquillian.container.*;
+import hu.deik.boozepal.common.contants.*;
+import hu.deik.boozepal.common.entity.*;
+import hu.deik.boozepal.common.exceptions.*;
+import hu.deik.boozepal.common.vo.*;
+import hu.deik.boozepal.core.repo.*;
+import hu.deik.boozepal.rest.service.*;
+import hu.deik.boozepal.rest.vo.*;
+import org.hamcrest.*;
+import org.jboss.arquillian.junit.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.springframework.context.support.*;
 
-import javax.ejb.EJB;
-
-import org.hamcrest.Matchers;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import hu.deik.boozepal.arquillian.container.ArquillianContainer;
-import hu.deik.boozepal.common.contants.BoozePalConstants;
-import hu.deik.boozepal.common.entity.Coordinate;
-import hu.deik.boozepal.common.entity.DrinkTypeEnum;
-import hu.deik.boozepal.common.entity.PalRequest;
-import hu.deik.boozepal.common.entity.Pub;
-import hu.deik.boozepal.common.entity.Role;
-import hu.deik.boozepal.common.entity.User;
-import hu.deik.boozepal.common.exceptions.UserDetailsUpdateException;
-import hu.deik.boozepal.common.vo.DrinkVO;
-import hu.deik.boozepal.core.repo.PubRepository;
-import hu.deik.boozepal.core.repo.RoleRepository;
-import hu.deik.boozepal.rest.service.UserServiceRest;
-import hu.deik.boozepal.rest.vo.CoordinateVO;
-import hu.deik.boozepal.rest.vo.RemotePalAcceptVO;
-import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
-import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
+import javax.ejb.*;
+import java.util.*;
 
 @RunWith(Arquillian.class)
 public class UserServiceRestIT extends ArquillianContainer {
@@ -44,9 +27,9 @@ public class UserServiceRestIT extends ArquillianContainer {
     private UserServiceRest userService;
 
     private RoleRepository roleDao;
-    
+
     private PubRepository pubDao;
-        
+
     @Before
     public void setUp() throws Exception {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(SPRING_CORE_TEST_XML);
@@ -214,13 +197,13 @@ public class UserServiceRestIT extends ArquillianContainer {
     public void testUpdateUserLocation() {
         User user = buildTestUser();
         User saveUser = userService.saveUser(user);
-        RemoteUserVO remoteUser = new RemoteUserVO();
-        remoteUser.setId(saveUser.getId());
+//        RemoteUserVO remoteUser = new RemoteUserVO();
+//        remoteUser.setId(saveUser.getId());
         Double latitude = 5.0;
         Double longitude = 6.0;
-        CoordinateVO coordinateVO = CoordinateVO.builder().latitude(latitude).longitude(longitude).build();
-        remoteUser.setLastKnownCoordinate(coordinateVO);
-        User updateUserLocation = userService.updateUserLocation(remoteUser);
+        Coordinate coordinateVO = hu.deik.boozepal.common.entity.Coordinate.builder().latitude(latitude).longitude(longitude).build();
+        saveUser.setLastKnownCoordinate(coordinateVO);
+        User updateUserLocation = userService.updateUserLocation(saveUser);
         Assert.assertEquals(latitude, updateUserLocation.getLastKnownCoordinate().getLatitude());
         Assert.assertEquals(longitude, updateUserLocation.getLastKnownCoordinate().getLongitude());
         userService.deleteUser(saveUser);
@@ -234,7 +217,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         Assert.assertEquals(user, saveUser);
         userService.deleteUser(saveUser);
     }
-    
+
     @Test
     public void testPalRequestAndAcceptRequestCombination() {
         Pub kitalacioPub = pubDao.findById(1L);
@@ -242,7 +225,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         viktor = userService.saveUser(viktor);
         User fanny = User.builder().username("Fanny").email("Fanny@fanny.com").password("XXX").build();
         fanny = userService.saveUser(fanny);
-        
+
         //Viktor jelzi az igényt hogy menne inni a kitalációba Fannyval.
         Date now = new Date();
         userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
@@ -255,21 +238,21 @@ public class UserServiceRestIT extends ArquillianContainer {
         Assert.assertEquals(now, request.getDate());
         Assert.assertEquals(kitalacioPub, request.getPub());
         Assert.assertFalse(request.isAccepted());
-        
+
         //első lehetőség Fanny elfogadja.
         userService.acceptRequest(RemotePalAcceptVO.builder().accepted(true).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
         viktor = userService.findByEmail("Viktor@viktor.com");
         Map<User, PalRequest> viktorPals = viktor.getActualPals();
         PalRequest palRequest = viktorPals.get(fanny);
-        
+
         Assert.assertNotNull(palRequest);
         Assert.assertTrue(viktorPals.containsKey(fanny));
         Assert.assertEquals(now, palRequest.getDate());
         Assert.assertEquals(kitalacioPub, palRequest.getPub());
         Assert.assertTrue(palRequest.isAccepted());
-        
+
     }
-    
+
     @Test
     public void testPalRequestAndDenniesRequestCombination() {
         Pub kitalacioPub = pubDao.findById(1L);
@@ -278,7 +261,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         viktor = userService.saveUser(viktor);
         User fanny = User.builder().username("Fanny1").email("Fanny1@fanny.com").password("XXX").build();
         fanny = userService.saveUser(fanny);
-        
+
         //Viktor jelzi az igényt hogy menne inni a kitalációba Fannyval.
         Date now = new Date();
         userService.palRequest(RemotePalRequestVO.builder().date(now).pubId(kitalacioPub.getId()).userId(viktor.getId()).requestedUserId(fanny.getId()).build());
@@ -291,7 +274,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         Assert.assertEquals(now, request.getDate());
         Assert.assertEquals(kitalacioPub, request.getPub());
         Assert.assertFalse(request.isAccepted());
-        
+
         //másodk lehetőség Fanny elutasítja.
         userService.acceptRequest(RemotePalAcceptVO.builder().accepted(false).userId(fanny.getId()).requestedUserId(viktor.getId()).build());
         viktor = userService.findByEmail("Viktor1@viktor.com");
@@ -300,7 +283,7 @@ public class UserServiceRestIT extends ArquillianContainer {
         Map<User, PalRequest> fannyPalsAfterDeny = fanny.getActualPals();
         Assert.assertFalse(viktorPals.containsKey(fanny));
         Assert.assertFalse(fannyPalsAfterDeny.containsKey(viktor));
-        
+
     }
 
     private User buildTestUser() {

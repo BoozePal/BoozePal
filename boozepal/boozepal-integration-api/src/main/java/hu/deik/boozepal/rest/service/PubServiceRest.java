@@ -1,6 +1,6 @@
 package hu.deik.boozepal.rest.service;
 
-import hu.deik.boozepal.common.vo.PubVO;
+import hu.deik.boozepal.common.entity.Pub;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface PubServiceRest {
      *
      * @return list of pubs
      */
-    List<PubVO> getAllPubs();
+    List<Pub> getAllPubs();
 
 
 }

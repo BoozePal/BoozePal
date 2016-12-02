@@ -280,7 +280,6 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void palRequest(RemotePalRequestVO vo) {
         logger.info(
                 "{} azonosítóval rendelkező felhasználó beszúrása, {} azonosítójú felhasználóhoz, {} nappal egybekötve.",

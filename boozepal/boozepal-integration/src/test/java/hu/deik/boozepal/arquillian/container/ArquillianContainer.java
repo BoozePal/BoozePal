@@ -56,6 +56,7 @@ public class ArquillianContainer {
                 .addPackage(RemoteTokenVO.class.getPackage()).addPackage(UserServiceRest.class.getPackage())
                 .addPackage(UserServiceRestImpl.class.getPackage()).addPackage(UserRepository.class.getPackage())
                 .addPackage(UserHelper.class.getPackage())
+                .addAsResource("initPub.sql")
                 .addClasses(ArquillianContainer.class, RegistrationException.class,DrinkVO.class).addAsResource("beanRefContext.xml")
                 .addAsResource(SPRING_CORE_TEST_XML).addAsResource(EmptyAsset.INSTANCE, "beans.xml").addAsResource(LOGBACK_FILE)
                 .addAsLibraries(springContext).addAsLibraries(springWeb).addAsLibraries(springBeans)

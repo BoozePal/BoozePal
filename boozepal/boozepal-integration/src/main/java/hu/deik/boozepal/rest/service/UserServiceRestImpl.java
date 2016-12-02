@@ -28,6 +28,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -279,15 +281,51 @@ public class UserServiceRestImpl implements UserServiceRest {
      * {@inheritDoc}
      */
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void palRequest(RemotePalRequestVO vo) {
         logger.info(
                 "{} azonosítóval rendelkező felhasználó beszúrása, {} azonosítójú felhasználóhoz, {} nappal egybekötve.",
                 vo.getRequestedUserId(), vo.getUserId(), vo.getDate());
         User user = userDao.findById(vo.getUserId());
         User requestedUser = userDao.findById(vo.getRequestedUserId());
-        Pub pub = pubDao.getOne(vo.getPubId());
-        if(ObjectUtils.allNotNull(user,requestedUser,pub))
-            user.getActualPals().put(requestedUser, PalRequest.builder().date(vo.getDate()).pub(pub).build());
+        Pub pub = pubDao.findById(vo.getPubId());
+        logger.info("Pub: {}",pub);
+        if (user != null && requestedUser != null && pub != null) {
+            logger.info("PalRequest kérés elvégezhető, egyik mező sem NULL");
+            logger.info("Kocsma neve:{}", pub.getName());
+            logger.info("Időpont:{}", vo.getDate());
+            requestedUser.getActualPals().put(user,
+                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).build());
+            userDao.save(requestedUser);
+        } else {
+            logger.info("PalRequest kérés NEM végezhető el, egyik mező NULL");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void acceptRequest(RemotePalAcceptVO vo) {
+        //user megjelölte requetedUsert hogy szeretne vele iszni.
+        //óvatosan mert itt fordítva vannak a szerepek jelenleg.
+        User user = userDao.findById(vo.getUserId());
+        User requestedUser = userDao.findById(vo.getRequestedUserId());
+        //ha requestedUser elfogadta
+        if(vo.isAccepted()) {
+            PalRequest palRequest = user.getActualPals().get(requestedUser);
+            palRequest.setAccepted(true);
+            //akkor user listájába is berakjuk a requestedusert mint cimbora
+            if(user!=null && requestedUser != null) {
+                requestedUser.getActualPals().put(user, PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).accepted(true).build());
+                userDao.save(requestedUser);
+            }
+        } else {
+            //ha nem akkor pedig kidobjuk
+            user.getActualPals().remove(requestedUser);
+            userDao.save(user);
+        }
     }
 
 }

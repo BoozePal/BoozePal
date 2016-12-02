@@ -22,5 +22,7 @@ public interface PubRepository extends JpaRepository<Pub, Long> {
      * @return megtalált söröző entitás.
      */
     Pub findByName(String name);
+    
+    Pub findById(Long id);
 
 }

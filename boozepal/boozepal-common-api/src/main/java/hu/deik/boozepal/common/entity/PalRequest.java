@@ -21,5 +21,7 @@ public class PalRequest {
     private Pub pub;
 
     private Date date;
+    
+    private boolean accepted;
 
 }

@@ -31,7 +31,10 @@
 		<property name="password" value="" />
 	</bean>
 	<tx:annotation-driven />
-
+		<!-- DB INIT -->
+	<jdbc:initialize-database data-source="dataSource">
+		<jdbc:script location="classpath:initPub.sql" />
+	</jdbc:initialize-database>
 	<!-- Transaction Manager -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />

@@ -116,7 +116,6 @@ public class User extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "boozepal_pal_requests")
     @MapKeyColumn(name = "id")
-    @JsonManagedReference
     private Map<Long, PalRequest> actualPals;
 
     /**

@@ -166,7 +166,8 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private User createNewUser(Payload payload) {
         User newUser = User.builder().email(payload.getEmail()).username((String) payload.get("name"))
-                .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).lastLoggedinTime(new Date()).build();
+                .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true)
+                .lastLoggedinTime(new Date()).build();
         return userDao.save(newUser);
     }
 
@@ -259,7 +260,8 @@ public class UserServiceRestImpl implements UserServiceRest {
         logger.info("{} felhasználó aktuális pozíciójának módosítása.", remoteUser.getUsername());
         logger.info("Új koordináta: {}", remoteUser.getLastKnownCoordinate());
         Long userId = remoteUser.getId();
-        userDao.updateUserCoordinate(remoteUser.getLastKnownCoordinate().getLatitude(), remoteUser.getLastKnownCoordinate().getLongitude(), userId);
+        userDao.updateUserCoordinate(remoteUser.getLastKnownCoordinate().getLatitude(),
+                remoteUser.getLastKnownCoordinate().getLongitude(), userId);
         return userDao.findById(userId);
 
     }
@@ -293,17 +295,21 @@ public class UserServiceRestImpl implements UserServiceRest {
         User requestedUser = userDao.findById(vo.getRequestedUserId());
         Pub pub = pubDao.findById(vo.getPubId());
         logger.info("Pub: {}", pub);
-        if (user != null && requestedUser != null && pub != null) {
+        if (canBePalRequest(user, requestedUser, pub)) {
             logger.info("PalRequest kérés elvégezhető, egyik mező sem NULL");
             logger.info("Kocsma neve:{}", pub.getName());
             logger.info("Időpont:{}", vo.getDate());
             user.setLastLoggedinTime(new Date());
-            requestedUser.getActualPals().put(user.getId(),
-                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).requesterUserId(user.getId()).build());
-//            userDao.save(requestedUser);
+            requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(vo.getDate()).pub(pub)
+                    .accepted(false).requesterUserId(user.getId()).build());
+            // userDao.save(requestedUser);
         } else {
             logger.info("PalRequest kérés NEM végezhető el, egyik mező NULL");
         }
+    }
+
+    private boolean canBePalRequest(User user, User requestedUser, Pub pub) {
+        return user != null && requestedUser != null && pub != null;
     }
 
     /**
@@ -311,25 +317,29 @@ public class UserServiceRestImpl implements UserServiceRest {
      */
     @Override
     public void acceptRequest(RemotePalAcceptVO vo) {
-        //user megjelölte requetedUsert hogy szeretne vele iszni.
-        //óvatosan mert itt fordítva vannak a szerepek jelenleg.
+        logger.info("Cimbora felkérés fogadása.");
+        logger.info("{} azonosítóval rendelkező felhasználó {} a {} azonosítóval rendelkező felhasználó felkérését.",
+                vo.getUserId(), getAcceptanceText(vo), vo.getRequestedUserId());
+        // user megjelölte requetedUsert hogy szeretne vele iszni.
+        // óvatosan mert itt fordítva vannak a szerepek jelenleg.
         User user = userDao.findById(vo.getUserId());
         user.setLastLoggedinTime(new Date());
         User requestedUser = userDao.findById(vo.getRequestedUserId());
-        //ha requestedUser elfogadta
+        // ha requestedUser elfogadta
         if (vo.isAccepted()) {
             PalRequest palRequest = user.getActualPals().get(requestedUser.getId());
             palRequest.setAccepted(true);
-            //akkor user listájába is berakjuk a requestedusert mint cimbora
             if (user != null && requestedUser != null) {
-                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).requesterUserId(user.getId()).accepted(true).build());
-//                userDao.save(requestedUser);
+                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate())
+                        .pub(palRequest.getPub()).requesterUserId(user.getId()).accepted(true).build());
             }
         } else {
-            //ha nem akkor pedig kidobjuk
             user.getActualPals().remove(requestedUser.getId());
-//            userDao.save(user);
         }
+    }
+
+    private Object getAcceptanceText(RemotePalAcceptVO vo) {
+        return vo.isAccepted() ? "elfogadta" : "elutasítota";
     }
 
     @Override

@@ -131,6 +131,8 @@ public class User extends BaseEntity {
     @CollectionTable(name = "boozepal_user_timeBoards", joinColumns = @JoinColumn(name = "user_id"))
     private List<Date> timeBoard;
 
+    private Date lastLoggedinTime;
+
     public Map<Long, PalRequest> getActualPals() {
         if (actualPals == null) {
             actualPals = new HashMap<>();

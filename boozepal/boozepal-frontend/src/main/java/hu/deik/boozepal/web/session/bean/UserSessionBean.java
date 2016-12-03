@@ -2,6 +2,7 @@ package hu.deik.boozepal.web.session.bean;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,6 +44,7 @@ public class UserSessionBean implements Serializable {
                 try {
                     sessionUser = userService.findUserByName(principal.getName());
                     sessionUser.setLoggedIn(true);
+                    sessionUser.setLastLoggedinTime(new Date());
                     userService.save(sessionUser);
                 } catch (Exception e) {
                     e.getMessage();

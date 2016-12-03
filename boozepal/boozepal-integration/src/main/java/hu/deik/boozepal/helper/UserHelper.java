@@ -71,6 +71,7 @@ public class UserHelper {
         } else {
             logger.info("User : {}", user.getUsername());
             user.setTimeBoard(timeBoards);
+            user.setLastLoggedinTime(new Date());
             userDao.save(user);
         }
         return true;
@@ -94,6 +95,7 @@ public class UserHelper {
             user.setFavouriteDrinks(remoteUserVO.getFavouriteDrinks());
         if (remoteUserVO.getFavouritePub() != null)
             user.setFavouritePub(remoteUserVO.getFavouritePub());
+        user.setLastLoggedinTime(new Date());
         logger.info("save update user");
         return userDao.save(user);
     }

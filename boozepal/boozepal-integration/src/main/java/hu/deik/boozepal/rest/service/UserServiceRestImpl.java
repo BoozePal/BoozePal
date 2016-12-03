@@ -5,6 +5,7 @@ import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,7 +166,7 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     private User createNewUser(Payload payload) {
         User newUser = User.builder().email(payload.getEmail()).username((String) payload.get("name"))
-                .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).build();
+                .password(ANDROID_USER_DOES_NOT_NEED_PASSWORD).roles(Arrays.asList(userRole)).loggedIn(true).lastLoggedinTime(new Date()).build();
         return userDao.save(newUser);
     }
 
@@ -175,6 +176,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             return createNewUser(userByGoogleToken.getPayload());
         else {
             user.setLoggedIn(true);
+            user.setLastLoggedinTime(new Date());
             return userDao.save(user);
         }
     }
@@ -295,6 +297,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             logger.info("PalRequest kérés elvégezhető, egyik mező sem NULL");
             logger.info("Kocsma neve:{}", pub.getName());
             logger.info("Időpont:{}", vo.getDate());
+            user.setLastLoggedinTime(new Date());
             requestedUser.getActualPals().put(user.getId(),
                     PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).requesterUserId(user.getId()).build());
 //            userDao.save(requestedUser);
@@ -311,6 +314,7 @@ public class UserServiceRestImpl implements UserServiceRest {
         //user megjelölte requetedUsert hogy szeretne vele iszni.
         //óvatosan mert itt fordítva vannak a szerepek jelenleg.
         User user = userDao.findById(vo.getUserId());
+        user.setLastLoggedinTime(new Date());
         User requestedUser = userDao.findById(vo.getRequestedUserId());
         //ha requestedUser elfogadta
         if (vo.isAccepted()) {

@@ -41,7 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 		logger.info("Felhasználó belépés: {}", user.getUsername());
 		for (Role e : user.getRoles()) {
 			if (e.getRoleName().equals(ROLE_ADMIN) && !user.isRemove()) {
-				user.setRemove(true);
 				List<GrantedAuthority> authorities = buildUserAuthority(user.getRoles());
 				return buildUserForAuthentication(user, authorities);
 			}

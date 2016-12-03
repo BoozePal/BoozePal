@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -113,7 +114,7 @@ public class User extends BaseEntity {
     /**
      * Aktuális cimborák.
      */
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "boozepal_pal_requests")
     @MapKeyColumn(name = "id")
     private Map<Long, PalRequest> actualPals;

@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class PalRequest {
     private Date date;
     
     @ManyToOne
+    @JsonBackReference
     private User requesterUser;
     
     private boolean accepted;

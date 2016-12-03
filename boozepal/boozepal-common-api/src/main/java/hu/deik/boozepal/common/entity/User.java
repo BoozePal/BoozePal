@@ -11,13 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -115,6 +116,7 @@ public class User extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "boozepal_pal_requests")
     @MapKeyColumn(name = "id")
+    @JsonManagedReference
     private Map<Long, PalRequest> actualPals;
 
     /**

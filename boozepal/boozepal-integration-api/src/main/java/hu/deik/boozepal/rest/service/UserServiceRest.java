@@ -14,7 +14,6 @@ import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
 import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
 import hu.deik.boozepal.rest.vo.RemoteTokenVO;
 import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
-import hu.deik.boozepal.rest.vo.RemoteUserVO;
 
 /**
  * Felhasználó szolgáltatás az Android kliens által használt funkciókra.
@@ -119,4 +118,6 @@ public interface UserServiceRest {
      * @param vo
      */
     public void acceptRequest(RemotePalAcceptVO vo);
+    
+    public User getUserById(Long id);
 }

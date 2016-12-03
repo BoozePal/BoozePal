@@ -1,5 +1,24 @@
 package hu.deik.boozepal.rest.service;
 
+import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -16,28 +35,12 @@ import hu.deik.boozepal.core.repo.PubRepository;
 import hu.deik.boozepal.core.repo.RoleRepository;
 import hu.deik.boozepal.core.repo.UserRepository;
 import hu.deik.boozepal.helper.UserHelper;
-import hu.deik.boozepal.rest.vo.*;
-
-import org.apache.commons.lang3.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.interceptor.Interceptors;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static hu.deik.boozepal.common.contants.BoozePalConstants.ROLE_USER;
+import hu.deik.boozepal.rest.vo.PayloadUserVO;
+import hu.deik.boozepal.rest.vo.RemotePalAcceptVO;
+import hu.deik.boozepal.rest.vo.RemotePalRequestVO;
+import hu.deik.boozepal.rest.vo.RemoteTimeTableVO;
+import hu.deik.boozepal.rest.vo.RemoteTokenVO;
+import hu.deik.boozepal.rest.vo.RemoteUserDetailsVO;
 
 /**
  * A távoli felhasználók igényeit megvalósító szolgáltatás.
@@ -293,7 +296,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             logger.info("Kocsma neve:{}", pub.getName());
             logger.info("Időpont:{}", vo.getDate());
             requestedUser.getActualPals().put(user.getId(),
-                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).requesterUser(user).build());
+                    PalRequest.builder().date(vo.getDate()).pub(pub).accepted(false).requesterUserId(user.getId()).build());
 //            userDao.save(requestedUser);
         } else {
             logger.info("PalRequest kérés NEM végezhető el, egyik mező NULL");
@@ -315,7 +318,7 @@ public class UserServiceRestImpl implements UserServiceRest {
             palRequest.setAccepted(true);
             //akkor user listájába is berakjuk a requestedusert mint cimbora
             if (user != null && requestedUser != null) {
-                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).requesterUser(user).accepted(true).build());
+                requestedUser.getActualPals().put(user.getId(), PalRequest.builder().date(palRequest.getDate()).pub(palRequest.getPub()).requesterUserId(user.getId()).accepted(true).build());
 //                userDao.save(requestedUser);
             }
         } else {
@@ -323,6 +326,11 @@ public class UserServiceRestImpl implements UserServiceRest {
             user.getActualPals().remove(requestedUser.getId());
 //            userDao.save(user);
         }
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userDao.findById(id);
     }
 
 }

@@ -12,24 +12,18 @@
 
     <ui:define name="content">
         <p:growl id="msgs" showDetail="true"/>
-        <p:tabView dynamic="true" cache="true">
-            <p:tab title="#{out.pubLayoutMenu1}">
-                <h:panelGrid columns="1" cellpadding="10">
-                    <p:tagCloud model="#{mbean.tagCloudModel}">
-                        <p:ajax event="select" update="msgs" listener="#{mbean.onSelect}"/>
-                    </p:tagCloud>
-                </h:panelGrid>
-            </p:tab>
-            <p:tab title="#{out.pubLayoutMenu2}">
-                <h:panelGrid columns="1" cellpadding="10">
-                    <p:chart type="bar" model="#{mbean.animatedModel}" style="width:400px;"/>
-                </h:panelGrid>
-            </p:tab>
-            <!--<p:tab title="#{out.pubLayoutMenu3}">-->
-            <!--<h:panelGrid columns="1" cellpadding="10">-->
-            <!--<p:chart type="bubble" model="#{mbean.bubbleModel}" style="width:400px;"/>-->
-            <!--</h:panelGrid>-->
-            <!--</p:tab>-->
-        </p:tabView>
+        <p:fieldset legend="#{out.pubLayoutMenu1}" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+            <h:panelGrid columns="1" cellpadding="10">
+                <p:chart type="bar" model="#{mbean.animatedModel}" style="width:400px;"/>
+            </h:panelGrid>
+        </p:fieldset>
+        <p:fieldset legend="#{out.pubLayoutMenu2}" toggleable="true" toggleSpeed="500">
+
+            <h:panelGrid columns="1" cellpadding="10">
+                <p:tagCloud model="#{mbean.tagCloudModel}">
+                    <p:ajax event="select" update="msgs" listener="#{mbean.onSelect}"/>
+                </p:tagCloud>
+            </h:panelGrid>
+        </p:fieldset>
     </ui:define>
 </ui:composition>

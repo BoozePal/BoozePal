@@ -4,12 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 <p:dialog header="#{out.userInfDialUserInformation}" widgetVar="userDialog" modal="true" showEffect="fade"
           hideEffect="fade"
           resizable="false">
     <p:outputPanel id="userDetail" style="text-align:center;">
         <p:panelGrid columns="2" rendered="#{not empty mbean.selectedUser}">
+            <f:facet name="header">
+                <p:graphicImage name="images/kobe.png" />
+            </f:facet>
 
             <h:outputText value="#{out.userInfDialUserName}"/>
             <h:outputText value="#{mbean.selectedUser.username}"/>

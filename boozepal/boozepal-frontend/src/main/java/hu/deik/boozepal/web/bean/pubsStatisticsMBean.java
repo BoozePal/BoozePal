@@ -11,6 +11,8 @@ import org.primefaces.model.tagcloud.DefaultTagCloudItem;
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;
 import org.primefaces.model.tagcloud.TagCloudItem;
 import org.primefaces.model.tagcloud.TagCloudModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -31,6 +33,9 @@ import java.util.Random;
 @ViewScoped
 public class pubsStatisticsMBean extends BoozePalAbstractMBean {
 
+
+    private static final Logger logger = LoggerFactory.getLogger(pubsStatisticsMBean.class);
+
     private TagCloudModel tagCloudModel;
 
     private BubbleChartModel bubbleModel;
@@ -42,27 +47,28 @@ public class pubsStatisticsMBean extends BoozePalAbstractMBean {
 
     @PostConstruct
     public void init() {
-        List<PubCategoryVO> pubCategoryStatistics = pubStatisticsService.getAllPubsCategoryStatistics ();
-        createCloudModels (pubCategoryStatistics);
+        logger.info("pub statistic init ");
+        List<PubCategoryVO> pubCategoryStatistics = pubStatisticsService.getAllPubsCategoryStatistics();
+        createCloudModels(pubCategoryStatistics);
 //        createBubbleModels (pubCategoryStatistics);
-        createBarChartModels (pubCategoryStatistics);
+        createBarChartModels(pubCategoryStatistics);
     }
 
     public void onSelect(SelectEvent event) {
-        TagCloudItem item = (TagCloudItem) event.getObject ();
-        FacesMessage msg = new FacesMessage (FacesMessage.SEVERITY_INFO, getKeyFromProperty ("pubLayoutPopUp"), item.getLabel ());
-        FacesContext.getCurrentInstance ().addMessage (null, msg);
+        TagCloudItem item = (TagCloudItem) event.getObject();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, getKeyFromProperty("pubLayoutPopUp"), item.getLabel());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     private void createCloudModels(List<PubCategoryVO> statistic) {
-        tagCloudModel = new DefaultTagCloudModel ();
+        tagCloudModel = new DefaultTagCloudModel();
         for (PubCategoryVO pubCategoryVO : statistic) {
             DefaultTagCloudItem bubbleChartSeries =
-                    new DefaultTagCloudItem (pubCategoryVO.getPubName (), pubCategoryVO.getTotalLike ());
-            tagCloudModel.addTag (bubbleChartSeries);
+                    new DefaultTagCloudItem(pubCategoryVO.getPubName(), pubCategoryVO.getTotalLike());
+            tagCloudModel.addTag(bubbleChartSeries);
         }
-        if (tagCloudModel.getTags ().isEmpty ()) {
-            tagCloudModel.addTag (new DefaultTagCloudItem (getKeyFromProperty ("pubStatisticLayoutPubNull"), 0));
+        if (tagCloudModel.getTags().isEmpty()) {
+            tagCloudModel.addTag(new DefaultTagCloudItem(getKeyFromProperty("pubStatisticLayoutPubNull"), 0));
         }
     }
 
@@ -82,27 +88,27 @@ public class pubsStatisticsMBean extends BoozePalAbstractMBean {
 //    }
 
     private void createBarChartModels(List<PubCategoryVO> statistic) {
-        animatedModel = new BarChartModel ();
-        initAnimatedModelProperties (animatedModel);
+        animatedModel = new BarChartModel();
+        initAnimatedModelProperties(animatedModel);
         for (PubCategoryVO priceCategoryVO : statistic) {
-            ChartSeries boys = new ChartSeries ();
-            boys.setLabel (priceCategoryVO.getPubName ());
-            boys.set (getKeyFromProperty ("pubLayoutPubName"), priceCategoryVO.getTotalLike ());
-            animatedModel.addSeries (boys);
+            ChartSeries boys = new ChartSeries();
+            boys.setLabel(priceCategoryVO.getPubName());
+            boys.set(getKeyFromProperty("pubLayoutPubName"), priceCategoryVO.getTotalLike());
+            animatedModel.addSeries(boys);
         }
-        if (animatedModel.getSeries ().isEmpty ()) {
-            animatedModel.setTitle (getKeyFromProperty ("pubStatisticLayoutPubNull"));
-            ChartSeries emptyPub = new ChartSeries ();
-            emptyPub.setLabel (getKeyFromProperty ("pubLayoutPubName"));
-            emptyPub.set (getKeyFromProperty ("pubLayoutPubName"), 0);
-            animatedModel.addSeries (emptyPub);
+        if (animatedModel.getSeries().isEmpty()) {
+            animatedModel.setTitle(getKeyFromProperty("pubStatisticLayoutPubNull"));
+            ChartSeries emptyPub = new ChartSeries();
+            emptyPub.setLabel(getKeyFromProperty("pubLayoutPubName"));
+            emptyPub.set(getKeyFromProperty("pubLayoutPubName"), 0);
+            animatedModel.addSeries(emptyPub);
         }
     }
 
     private void initAnimatedModelProperties(BarChartModel animatedModel) {
-        animatedModel.setTitle (getKeyFromProperty ("masterLayoutPubCategoryMenu"));
-        animatedModel.setAnimate (true);
-        animatedModel.setLegendPosition ("ne");
+        animatedModel.setTitle(getKeyFromProperty("masterLayoutPubCategoryMenu"));
+        animatedModel.setAnimate(true);
+        animatedModel.setLegendPosition("ne");
     }
 
 //    private void initBubbleModelProperties(BubbleChartModel bubbleModel) {

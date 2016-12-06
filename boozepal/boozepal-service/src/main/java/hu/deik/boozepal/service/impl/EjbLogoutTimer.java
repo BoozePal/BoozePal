@@ -2,6 +2,8 @@ package hu.deik.boozepal.service.impl;
 
 import hu.deik.boozepal.common.entity.User;
 import hu.deik.boozepal.core.repo.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ejb.interceptor.SpringBeanAutowiringInterceptor;
 
@@ -23,6 +25,11 @@ public class EjbLogoutTimer {
 
     public static final int DURATION_OF_MINUTES = 5;
 
+    /**
+     * Osztály loggere.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(EjbLogoutTimer.class);
+
     @Autowired
     private UserRepository userDao;
 
@@ -36,7 +43,7 @@ public class EjbLogoutTimer {
             user.setLoggedIn(false);
             userDao.saveAndFlush(user);
         }
-        System.out.println("Online User : " + onlineUsers.size());
+        logger.info("Online User : {} ", onlineUsers.size());
     }
 
     private boolean durationOfTwoDate(User actualUser) {
